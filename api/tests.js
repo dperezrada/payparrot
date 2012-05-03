@@ -20,7 +20,7 @@ describe('Accounts', function(){
  			.end(function(created_account){
 				self.created_account = created_account;
 				self.account_data.id = created_account.body.id;
-				done();
+				done();		//To prevent asynchronous when done it's called 'before' will end
  			});
 	});
 	describe('POST /accounts', function(){
@@ -35,6 +35,34 @@ describe('Accounts', function(){
 			});
 		});
 	});
+	// describe('PUT /accounts/:id', function(){
+ //    	this.account_data = {
+	//         'id'	: self.account_data.id,
+	//         'email'	: 'juan@payparrot.com',
+	//         'name'	: 'Juan'
+	// 	}
+	// 	self = this;
+	// 	request
+	// 		.put('http://localhost:3000/accounts/'+id)
+	// 		.set('Content-Type', 'application/json')
+	// 		.send(self.account_data)
+ // 			.end(function(created_account){
+	// 			self.created_account = created_account;
+	// 			self.account_data.id = created_account.body.id;
+	// 			done();		//To prevent asynchronous when done it's called 'before' will end
+ // 			});
+
+ //    	it('should update an account with the data provided', function(done){
+ //      		assert.equal(201,self.created_account.statusCode);
+	// 		request.get('http://localhost:3000/accounts/'+self.account_data.id).end(function(received_account){
+	// 			assert.equal(200,received_account.statusCode);
+	// 			var expected_body = _.extend({'id': self.account_data.id}, self.account_data);
+	// 			delete expected_body.password;
+	// 			assert.deepEqual(expected_body, received_account.body);
+	// 			done();
+	// 		});
+	// 	});
+	// });
 	describe('POST /accounts/:id/messages', function(){
     	it('should create a new message', function(done){
 			this.message_data = {
