@@ -8,6 +8,7 @@
         "mocha": ">=1.0.2",
 		"superagent":">=0.0.1",
 		"mongodb":">=0.0.1",
-		"supervisor":">=0.0.1"
+		"supervisor":">=0.0.1",
+		"underscore":">=0.0.1"
  	 }
 }
