@@ -37,12 +37,9 @@ exports.get = function(req, res){
 	var id = req.params.id;
 	require('mongodb').connect(mongourl, function(err, conn){
 		conn.collection('accounts', function(err, coll){
-			coll.find({"_id": new mongodb.ObjectID(id)}, function(err, result){
-				res.writeHead(200, {
-					"Content-Type": "application/json",
-					"Access-Control-Allow-Origin": "*"
-				});
-				res.end(result);
+			coll.findOne({"_id": new mongodb.ObjectID(id)}, {"_id": 0}, function(err, result){
+				result['id'] = id;
+				res.send(result);
 			});
 		});
 	});

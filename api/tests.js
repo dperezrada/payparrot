@@ -16,10 +16,10 @@ describe('/accounts are the corps that have bought the product', function(){
  			.end(function(res1){
 				assert.equal(201,res1.statusCode);
 				var id = res1.body.id;
-				console.log("ID: "+id);
 				request.get('http://localhost:3000/accounts/'+id).end(function(res2){
 					assert.equal(200,res2.statusCode);
 					assert.deepEqual({
+						'id': id,
 				        'email': 'daniel@payparrot.com',
 				        'name': 'Daniel',
 				        'startup': 'Payparrot',
