@@ -2,7 +2,6 @@ var mongodb = require('mongodb');
 
 exports.create = function(req, res){
 	mongodb.connect(req.mongo_url, function(err, conn){
-		console.log("AAAAA");
 		conn.collection('messages', function(err, coll){
 			var message = req.body;
 			message['account_id'] = new mongodb.ObjectID(req.params.id);
