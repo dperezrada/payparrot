@@ -1,10 +1,13 @@
 var mongoose = require('mongoose');
-Schema = mongoose.Schema;
+var Schema = mongoose.Schema;
+var ObjectId = Schema.ObjectId
 
 var messages_schema = new Schema({
  	text: String,
 	url: String,
-	id: String
+	id: String,
+	account_id: ObjectId
 });
 
-module.exports = messages_schema;
+mongoose.model('Messages',messages_schema);
+module.exports = mongoose.model('Messages');

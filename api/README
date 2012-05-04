@@ -3,4 +3,4 @@ npm install -d
 #RUN
 supervisor app.js
 #TESTS
-./node_modules/mocha/bin/mocha tests.js
+./node_modules/mocha/bin/mocha --reporter spec tests.js

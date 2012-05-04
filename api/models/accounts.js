@@ -1,8 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var messages_schema = require('./messages');
-
 var accounts_schema = new Schema({
  	email: String,
  	password: String,
@@ -10,7 +8,7 @@ var accounts_schema = new Schema({
 	startup: String,
 	url: String,
 	id: String,
-	messages: [messages_schema],
 });
 
-module.exports = accounts_schema;
+mongoose.model('Accounts',accounts_schema);
+module.exports = mongoose.model('Accounts');

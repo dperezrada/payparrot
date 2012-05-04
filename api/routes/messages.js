@@ -1,13 +1,12 @@
 var mongoose = require('mongoose');
-var Accounts = mongoose.model('Accounts',require('../models/accounts'));
-var Messages = mongoose.model('Messages',require('../models/messages'));
+var Messages = require('../models/messages');
+var Accounts = require('../models/accounts');
 
 
 exports.create = function(req, res){
-	Accounts.findOne({_id: req.params.id},function(err,doc){
-		var message = new Messages({text:req.body.text, url: req.body.url});
-		doc.messages.push(message);
-		doc.save(function(){
+	Accounts.findOne({_id: req.params.account_id},function(err, account){
+		var message = new Messages({text:req.body.text, url: req.body.url, account_id : req.params.account_id});
+		message.save(function(){
 			res.statusCode = 201;
 			res.send({id: message._id});
 		});
@@ -15,10 +14,9 @@ exports.create = function(req, res){
 };
 
 exports.get = function(req, res){
-	Accounts.find({"messages._id": req.params.message_id},{"messages._id": 0},function(err,docs){
+	Messages.findOne({_id: req.params.message_id, account_id: req.params.account_id}, {_id: 0, account_id: 0},function(err,message){
 		res.statusCode = 200;
-		var message = docs[0].messages[0];
 		message.id=req.params.message_id;
-		res.send(message);	
+		res.send(message);
 	});
 };

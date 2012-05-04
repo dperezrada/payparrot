@@ -44,9 +44,9 @@ app.configure('production', function(){
 // Routes
 
 app.post('/accounts', accounts.create);
-app.get('/accounts/:id', accounts.get);
-app.post('/accounts/:id/messages', messages.create);
-app.get('/accounts/:id/messages/:message_id', messages.get);
+app.get('/accounts/:account_id', accounts.get);
+app.post('/accounts/:account_id/messages', messages.create);
+app.get('/accounts/:account_id/messages/:message_id', messages.get);
 
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
