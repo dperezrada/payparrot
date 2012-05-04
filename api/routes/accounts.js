@@ -1,5 +1,5 @@
-var mongodb = require('mongodb');
-var Accounts = require('../models/accounts');
+var mongoose = require('mongoose');
+var Accounts = mongoose.model('Accounts',require('../models/accounts.js'));
 var _ = require('underscore');
 
 exports.create = function(req, res){
@@ -11,7 +11,7 @@ exports.create = function(req, res){
 };
 
 exports.get = function(req, res){
-	Accounts.findOne({_id: req.params.id}, {_id: 0, password: 0}, function (err, account){
+	Accounts.findOne({_id: req.params.id}, {_id: 0, password: 0,messages:0}, function (err, account){
 		account.id = req.params.id;
 		res.send(account);
 	});

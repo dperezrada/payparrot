@@ -15,6 +15,11 @@ function mongo_middleware(req, res, next){
 	req.mongo_url = create_mongo_url({});
 	next();
 }
+//Conexion Mongoose
+var mongoose = require('mongoose');
+var generate_mongo_url = require('./libs/mongodb');
+var mongo_url = generate_mongo_url({});
+db = mongoose.connect(mongo_url),
 
 // Configuration
 
