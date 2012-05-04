@@ -16,3 +16,10 @@ exports.get = function(req, res){
 		res.send(account);
 	});
 };
+
+exports.update = function(req, res){
+	var account = Accounts.update({_id: req.params.account_id},req.body,{safe:true},function(err,account){
+		res.statusCode = 204;
+		res.send();	
+	});
+};

@@ -35,6 +35,35 @@ describe('Accounts', function(){
 			});
 		});
 	});
+	describe('PUT /accounts/:account_id', function(){
+		before(function(done){
+			this.account_data_modified = {
+		        'email': 'daniel@payparroting.com',
+		        'password': '34',
+		        'startup': 'PayparrotIng',
+		        'url': 'http://payparroting.com/',
+			}			
+			request
+				.put('http://localhost:3000/accounts/'+self.account_data.id)
+				.set('Content-Type', 'application/json')
+				.send(self.account_data_modified)
+	 			.end(function(updated_account){
+					self.updated_account = updated_account;
+					done();		//To prevent asynchronous when done it's called 'before' will end
+	 			});	
+		});
+    	it('should allow to modify the account', function(done){
+      		assert.equal(204,self.updated_account.statusCode);
+			request.get('http://localhost:3000/accounts/'+self.account_data.id).end(function(received_account){
+				assert.equal(200,received_account.statusCode);
+				var expected_body = _.extend({'id': self.account_data.id}, self.account_data);
+				var expected_body = _.extend(expected_body, self.account_data_modified);
+				delete expected_body.password;
+				assert.deepEqual(expected_body, received_account.body);
+				done();
+			});
+		});
+	});
 	describe('POST /accounts/:id/messages', function(){
 		before(function(done){
 			self.messages_data = [

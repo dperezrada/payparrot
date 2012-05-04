@@ -45,6 +45,7 @@ app.configure('production', function(){
 
 app.post('/accounts', accounts.create);
 app.get('/accounts/:account_id', accounts.get);
+app.put('/accounts/:account_id', accounts.update);
 app.post('/accounts/:account_id/messages', messages.create);
 app.get('/accounts/:account_id/messages/:message_id', messages.get);
 
