@@ -30,10 +30,6 @@ describe('Accounts', function(){
 				assert.equal(200,received_account.statusCode);
 				var expected_body = _.extend({'id': self.account_data.id}, self.account_data);
 				delete expected_body.password;
-				console.log("EXPECTED");
-				console.log(expected_body);
-				console.log("RECEIVED");
-				console.log(received_account.body);
 				assert.deepEqual(expected_body, received_account.body);
 				done();
 			});
@@ -42,7 +38,8 @@ describe('Accounts', function(){
 			request.get('http://localhost:3000/accounts/'+self.account_data.id+'/credentials')
 				.end(function(received_credentials){
 					assert.equal(200,received_credentials.statusCode);
-					assert.ok(received_credentials.body.public_token.lenght > 20)
+					assert.ok(received_credentials.body.public_token.length >= 40)
+					done();
 				});
 		});
 	});

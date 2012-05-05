@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var _ = require('underscore');
+var crypto = require('crypto');
 
 var accounts_schema = new Schema({
  	email: String,
@@ -13,7 +14,10 @@ var accounts_schema = new Schema({
 });
 // TODO: Check problem with redefine
 accounts_schema.pre('save', function(next){
-	this.credentials = {'public_token':1};
+	var current_date = (new Date()).valueOf().toString();
+	var random = Math.random().toString();
+	
+	this.credentials = {'public_token': crypto.createHash('sha1').update(current_date + random).digest('hex')};
 	next();
 });
 
