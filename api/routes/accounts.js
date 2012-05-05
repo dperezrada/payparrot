@@ -11,9 +11,8 @@ exports.create = function(req, res){
 };
 
 exports.get = function(req, res){
-	Accounts.findOne({_id: req.params.account_id}, {_id: 0, password: 0,messages:0}, function (err, account){
-		account.id = req.params.account_id;
-		res.send(account);
+	Accounts.findOne({_id: req.params.account_id}, {}, function (err, account){
+		res.send(account.returnJSON());
 	});
 };
 
@@ -21,5 +20,12 @@ exports.update = function(req, res){
 	var account = Accounts.update({_id: req.params.account_id},req.body,{safe:true},function(err,account){
 		res.statusCode = 204;
 		res.send();	
+	});
+};
+
+exports.get_credentials = function(req, res){
+	Accounts.findOne({_id: req.params.account_id}, {credentials: 1}, function (err, account){								
+		res.statusCode = 200;
+		res.send(account.credentials);
 	});
 };
