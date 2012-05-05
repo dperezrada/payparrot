@@ -15,6 +15,11 @@ function mongo_middleware(req, res, next){
 	req.mongo_url = create_mongo_url({});
 	next();
 }
+//Conexion Mongoose
+var mongoose = require('mongoose');
+var generate_mongo_url = require('./libs/mongodb');
+var mongo_url = generate_mongo_url({});
+db = mongoose.connect(mongo_url),
 
 // Configuration
 
@@ -38,10 +43,13 @@ app.configure('production', function(){
 
 // Routes
 
+
+app.get('/accounts/:account_id/credentials', accounts.get_credentials);
+app.post('/accounts/:account_id/messages', messages.create);
+app.get('/accounts/:account_id/messages/:message_id', messages.get);
 app.post('/accounts', accounts.create);
-app.get('/accounts/:id', accounts.get);
-app.post('/accounts/:id/messages', messages.create);
-app.get('/accounts/:id/messages/:message_id', messages.get);
+app.get('/accounts/:account_id', accounts.get);
+app.put('/accounts/:account_id', accounts.update);
 
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

@@ -1,29 +1,22 @@
-var mongodb = require('mongodb');
+var mongoose = require('mongoose');
+var Messages = require('../models/messages');
+var Accounts = require('../models/accounts');
+
 
 exports.create = function(req, res){
-	mongodb.connect(req.mongo_url, function(err, conn){
-		conn.collection('messages', function(err, coll){
-			var message = req.body;
-			message['account_id'] = new mongodb.ObjectID(req.params.id);
-			coll.insert(message, {safe:true}, function(err){
-				res.writeHead(201, {
-					"Content-Type": "application/json",
-					"Access-Control-Allow-Origin": "*"
-				});
-				res.end(JSON.stringify({id: message._id}));
-			});
+	Accounts.findOne({_id: req.params.account_id},function(err, account){
+		var message = new Messages({text:req.body.text, url: req.body.url, account_id : req.params.account_id});
+		message.save(function(){
+			res.statusCode = 201;
+			res.send({id: message._id});
 		});
 	});
 };
 
 exports.get = function(req, res){
-	var id = req.params.message_id;
-	mongodb.connect(req.mongo_url, function(err, conn){
-		conn.collection('messages', function(err, coll){
-			coll.findOne({"_id": new mongodb.ObjectID(id)}, {"_id": 0, 'account_id':0}, function(err, result){
-				result['id'] = id;
-				res.send(result);
-			});
-		});
+	Messages.findOne({_id: req.params.message_id, account_id: req.params.account_id}, {_id: 0, account_id: 0},function(err,message){
+		res.statusCode = 200;
+		message.id=req.params.message_id;
+		res.send(message);
 	});
 };
