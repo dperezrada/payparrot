@@ -1,9 +1,8 @@
 var mongoose = require('mongoose'),
-	generate_mongo_url = require('./libs/mongodb'),
-	mongo_url = generate_mongo_url({}),
+	mongo_url = require('../../libs/mongodb').mongo_url({}),
 	db = mongoose.connect(mongo_url),
 	assert = require('assert'),
-	Accounts = require('./models/accounts');
+	Accounts = require('../../models/accounts');
 
 suite('Accounts', function(){
 	setup(function(done){
@@ -21,8 +20,8 @@ suite('Accounts', function(){
 
 	});
 
-	suite('Instance', function(){
-		test('Should override method toJSON', function(){
+	suite('returnJSON', function(){
+		test('Should return only public attributes ', function(){
 			var expected_account = {
 		        'email': 'daniel@payparrot.com',
 		        'name': 'Daniel',
