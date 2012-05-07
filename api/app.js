@@ -5,32 +5,24 @@
 
 var express = require('express')
   , accounts = require('./routes/accounts')
-  , messages = require('./routes/messages');
+  , messages = require('./routes/messages')
+  , parrots = require('./routes/parrots');
 
 var app = module.exports = express.createServer();
 
-// Middlewares
-function mongo_middleware(req, res, next){
-	var create_mongo_url = require('./libs/mongodb');
-	req.mongo_url = create_mongo_url({});
-	next();
-}
 //Conexion Mongoose
 var mongoose = require('mongoose');
-var generate_mongo_url = require('./libs/mongodb');
-var mongo_url = generate_mongo_url({});
-db = mongoose.connect(mongo_url),
+var mongo_url = require('./libs/mongodb').mongo_url({});
+var db = mongoose.connect(mongo_url);
 
 // Configuration
 
 app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.use(mongo_middleware);
-  app.use(express.bodyParser());
-
-  app.use(express.methodOverride());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
+	app.set('views', __dirname + '/views');
+	app.use(express.bodyParser());
+	app.use(express.methodOverride());
+	app.use(app.router);
+	app.use(express.static(__dirname + '/public'));
 });
 
 app.configure('development', function(){
@@ -42,14 +34,14 @@ app.configure('production', function(){
 });
 
 // Routes
-
-
 app.get('/accounts/:account_id/credentials', accounts.get_credentials);
 app.post('/accounts/:account_id/messages', messages.create);
 app.get('/accounts/:account_id/messages/:message_id', messages.get);
 app.post('/accounts', accounts.create);
 app.get('/accounts/:account_id', accounts.get);
 app.put('/accounts/:account_id', accounts.update);
+app.get('/parrots/start', parrots.start);
+app.get('/parrots/finish', parrots.finish);
 
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
