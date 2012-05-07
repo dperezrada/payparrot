@@ -12,6 +12,7 @@ describe('POST /accounts', function(){
 	        'name': 'Daniel',
 	        'startup': 'Payparrot',
 	        'url': 'http://payparrot.com/',
+			'callback_url': 'http://www.epistemonikos.org'
 		}
 		request
 			.post('http://localhost:3000/accounts')

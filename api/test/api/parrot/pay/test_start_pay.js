@@ -12,6 +12,7 @@ describe('GET /parrots/start', function(){
 	        'name': 'Daniel',
 	        'startup': 'Payparrot',
 	        'url': 'http://payparrot.com/',
+	        'callback_url': 'http://www.epistemonikos.org',
 		}
 		request
 			.post('http://localhost:3000/accounts')
@@ -33,6 +34,7 @@ describe('GET /parrots/start', function(){
 			.redirects(0)
 			.end(function(response){
 				assert.equal(302, response.statusCode);
+				console.log(response.header.location);
 				assert.equal(
 					'https://api.twitter.com/oauth/authorize?oauth_token='
 					, response.header.location.substring(0, 52)
@@ -40,7 +42,7 @@ describe('GET /parrots/start', function(){
 				done();
 			});
 	});
-	it('should be redirected to twitter', function(done){
+	it('Should reject invalid tokens', function(done){
 		request.get('http://localhost:3000/parrots/start?external_id=1&token=invalid_token')
 			.end(function(response){
 				assert.equal(404, response.statusCode);
