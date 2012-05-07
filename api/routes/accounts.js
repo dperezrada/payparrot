@@ -11,9 +11,13 @@ exports.create = function(req, res){
 };
 
 exports.get = function(req, res){
-	Accounts.findOne({_id: req.params.account_id}, {}, function (err, account){
-		res.send(account.returnJSON());
-	});
+	if(req.params.account_id == 'me'){
+		res.send(req.user.returnJSON());
+	}else{
+		Accounts.findOne({_id: req.params.account_id}, {}, function (err, account){
+			res.send(account.returnJSON());
+		});
+	}
 };
 
 exports.update = function(req, res){
