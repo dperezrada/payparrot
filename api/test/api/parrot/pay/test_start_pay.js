@@ -29,6 +29,9 @@ describe('GET /parrots/start', function(){
 					});
 			});
 	});
+	after(function(done){
+		require('../../../tear_down').remove_all(done);
+	});
    	it('should be redirected to twitter', function(done){
 		request.get('http://localhost:3000/parrots/start?external_id=1&token='+self.account.credentials.public_token)
 			.redirects(0)

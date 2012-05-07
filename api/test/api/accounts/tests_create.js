@@ -25,6 +25,9 @@ describe('POST /accounts', function(){
 				done();
 			});
 	});
+	after(function(done){
+		require('../../tear_down').remove_all(done);
+	});
    	it('should create a new account', function(done){
 		request.get('http://localhost:3000/accounts/'+self.account.id).end(function(response){
 			assert.equal(200, response.statusCode);

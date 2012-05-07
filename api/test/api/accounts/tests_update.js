@@ -40,10 +40,11 @@ describe('PUT /accounts/:account_id', function(){
 			
 			});
 	});
+	after(function(done){
+		require('../../tear_down').remove_all(done);
+	});
 	it('should allow to modify the account', function(done){
 		request.get('http://localhost:3000/accounts/'+self.account.id).end(function(response){
-			console.log(response.body);
-			console.log(self.account);
 			assert.deepEqual(self.account, response.body);
 			done();
 		});

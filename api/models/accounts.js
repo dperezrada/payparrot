@@ -19,7 +19,7 @@ var accounts_schema = new Schema({
 }, {strict:true});
 
 accounts_schema.method('verify_password', function(password, callback) {
-  received_password = crypto.createHash('sha1').update(this.salt + password).digest('hex');
+  var received_password = crypto.createHash('sha1').update(this.salt + password).digest('hex');
   if(received_password == this.password){
   	callback(null, true);
   }else{
@@ -41,8 +41,6 @@ accounts_schema.static('authenticate', function(email, password, callback) {
 
 // TODO: Check problem with redefine
 accounts_schema.pre('save', function(next){
-	console.log('saving');
-	console.log(this);
 	var current_date = (new Date()).valueOf().toString();
 	var random = Math.random().toString();
 	this.credentials = {'public_token': crypto.createHash('sha1').update(current_date + random).digest('hex')};
@@ -50,12 +48,12 @@ accounts_schema.pre('save', function(next){
 	if(this.password){
 		this.salt = random;
   		this.password = crypto.createHash('sha1').update(this.salt + this.password).digest('hex');
-  		console.log(this.password);
   	}
 	next();
 });
 
 mongoose.model('Accounts', accounts_schema);
-module.exports = Accounts = mongoose.model('Accounts');
+var Accounts = mongoose.model('Accounts');
+module.exports = Accounts;
 
 Accounts.prototype.returnJSON = returnJSON;
