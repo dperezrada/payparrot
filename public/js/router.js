@@ -8,7 +8,8 @@ require.config({
     Underscore: 'libs/underscore/underscore',
     Backbone: 'libs/backbone/backbone',
     templates: '../templates',
-    bootstrap: 'bootstrap'
+    bootstrap: 'bootstrap',
+    tojson: 'libs/jquery/tojson_loader'
   }
 });
 
@@ -18,8 +19,9 @@ define([
   'Underscore',
   'Backbone',
   'objects/accounts/view',
-  'bootstrap'
-], function($, _, Backbone, accountView, bootstrap ){
+  'bootstrap',
+  'tojson',
+], function($, _, Backbone, accountView, bootstrap, tojson ){
   var AppRouter = Backbone.Router.extend({
     routes: {
       '/projects': 'showProjects',

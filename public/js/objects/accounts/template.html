@@ -1,3 +1,27 @@
-<ul>
-  <li>Startup: <%= startup %></li>
-</ul>
+<h3>Your personal settings</h3>
+<div class="row">
+	<div class="span6">
+		<table class="table">
+			<tr>
+				<td>Name: </td>
+				<td><%= name %></td>
+			</tr>
+			<tr>
+				<td>E-mail: </td>
+				<td><%= email %></td>
+			</tr>
+			<tr>
+				<td>Company: </td>
+				<td><%= startup %></td>
+			</tr>
+			<tr>
+				<td>Unique identifier: </td>
+				<td><%= id %></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><button class="edit btn btn-primary">Edit</button></td>
+			</tr>
+		</table>
+	</div>
+</div>
