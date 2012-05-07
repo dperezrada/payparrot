@@ -4,29 +4,23 @@ define([
   'Underscore',
   'Backbone',
   // Pull in the Collection module from above
-  './collection',
+  './model',
   'libs/require/text!./template.html'
 
-], function($, _, Backbone, projectsCollection, projectListTemplate){
+], function($, _, Backbone, accountModel, accountTemplate){
   var projectListView = Backbone.View.extend({
     el: $("#page"),
+    template: _.template(accountTemplate),
     initialize: function(){
-      this.collection = projectsCollection;
-      this.collection.bind("add", this.exampleBind);
-      this.collection = projectsCollection.add({ name: "Twitter"});
-      this.collection = projectsCollection.add({ name: "Facebook"});
-      this.collection = projectsCollection.add({ name: "Myspace", score: 20});
+      this.model = new accountModel;
+      this.model.fetch();
+      this.model.bind('change', this.render, this);
     },
     exampleBind: function( model ){
       //console.log(model);
     },
     render: function(){
-      var data = {
-        projects: this.collection.models,
-        _: _ 
-      };
-      var compiledTemplate = _.template( projectListTemplate, data );
-      $("#page").html( compiledTemplate ); 
+      $("#page").html(this.template(this.model.toJSON())); 
     }
   });
   return new projectListView;

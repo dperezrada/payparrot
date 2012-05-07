@@ -2,14 +2,13 @@ define([
   'Underscore',
   'Backbone'
 ], function(_, Backbone) {
-  var projectsModel = Backbone.Model.extend({
-    defaults: {
-      score: 10
-    },
+  var accountModel = Backbone.Model.extend({
     initialize: function(){
-    }
+
+    },
+    url: '/accounts/me'
     
   });
-  return projectsModel;
+  return accountModel;
 
 });

@@ -37,5 +37,5 @@ define([
 
 	var app_router = new AppRouter;
 	Backbone.history.start();
-	accountView.render();
+	//accountView.render();
 });
