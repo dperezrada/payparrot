@@ -20,20 +20,19 @@ exports.get = function(req, res){
 	}
 };
 
-exports.update = function(req, res){
-	var account = Accounts.update({_id: req.params.account_id},req.body,{safe:true},function(err,account){
-		res.statusCode = 204;
-		res.send();	
-	});
-};
+// exports.update = function(req, res){
+// 	var account = Accounts.update({_id: req.params.account_id},req.body,{safe:true},function(err,account){
+// 		res.statusCode = 204;
+// 		res.send();	
+// 	});
+// };
 
-exports.update_password = function(req, res){
-	Accounts.findOne({_id: req.params.account_id}, {}, function (err, selected_account){
-		var account = new Accounts(selected_account);
-		account.password = req.body.password;
+exports.update = function(req, res){
+	Accounts.findOne({_id: req.params.account_id}, {}, function (err, account){
+		_.extend(account,req.body);
 		account.save(function(){
 			res.statusCode = 204;
-			res.send({id: account._id});
+			res.send();
 		});
 	});
 }

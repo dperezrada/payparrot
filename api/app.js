@@ -4,7 +4,7 @@
  */
 var express     = require('express')
   , routes      = require('./routes')
-  , mongoStore  = require('connect-mongodb');
+  , accounts    = require('./routes/accounts');
 
 var app = module.exports = express.createServer();
 var Accounts = require('./models/accounts.js');
@@ -35,23 +35,14 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
-// Middlewares
-function mongo_middleware(req, res, next){
-	var create_mongo_url = require('./libs/mongodb');
-	req.mongo_url = create_mongo_url({});
-	next();
-}
-//Mongoose Connection
 var mongoose = require('mongoose');
-var generate_mongo_url = require('./libs/mongodb');
-var mongo_url = generate_mongo_url({});
-db = mongoose.connect(mongo_url),
+var mongo_url = require('./libs/mongodb').mongo_url({});
+var db = mongoose.connect(mongo_url);
 
 // Configuration
 app.configure(function(){
   app.set("view options", { layout: false });
   app.set('views', __dirname + '/views');
-  app.use(mongo_middleware);
   app.use(express.cookieParser());
   app.use(express.bodyParser());
 
