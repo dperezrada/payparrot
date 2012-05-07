@@ -49,6 +49,9 @@ describe('POST /accounts/:id/messages', function(){
 					});
 			});
 	});
+	after(function(done){
+		require('../../../tear_down').remove_all(done);
+	});
 	it('should create a new message', function(done){
 		request.get('http://localhost:3000/accounts/'+self.account_id+'/messages/'+self.messages[0].id)
 			.end(function(response){
@@ -56,20 +59,13 @@ describe('POST /accounts/:id/messages', function(){
 				assert.deepEqual(self.messages[0], response.body);
 				done();
 			});
-	
 	});
-	// it('should get the correct message', function(done){
-	// 	assert.equal(201, self.created_messages[1].statusCode);
-	// 	var message_id = self.created_messages[1].body.id;
-	// 	request.get('http://localhost:3000/accounts/'+self.account_id+'/messages/'+message_id)
-	// 		.end(function(received_message){
-	// 			assert.equal(200,received_message.statusCode);
-	// 			var expected_body = _.extend({'id': message_id}, self.messages_data[1]);
-	// 			assert.deepEqual(expected_body, received_message.body);
-	// 			done();
-	// 		});
-	// 
-	// });
-
-
+	it('should get the correct message', function(done){
+		request.get('http://localhost:3000/accounts/'+self.account_id+'/messages/'+self.messages[1].id)
+			.end(function(response){
+				assert.equal(200,response.statusCode);
+				assert.deepEqual(self.messages[1], response.body);
+				done();
+			});
+	});
 });

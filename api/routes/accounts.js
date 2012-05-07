@@ -11,21 +11,43 @@ exports.create = function(req, res){
 };
 
 exports.get = function(req, res){
-	Accounts.findOne({_id: req.params.account_id}, {}, function (err, account){
-		res.send(account.returnJSON());
-	});
+	if(req.params.account_id == 'me'){
+		res.send(req.user.returnJSON());
+	}else{
+		Accounts.findOne({_id: req.params.account_id}, {}, function (err, account){
+			res.send(account.returnJSON());
+		});
+	}
 };
 
+// exports.update = function(req, res){
+// 	var account = Accounts.update({_id: req.params.account_id},req.body,{safe:true},function(err,account){
+// 		res.statusCode = 204;
+// 		res.send();	
+// 	});
+// };
+
 exports.update = function(req, res){
-	var account = Accounts.update({_id: req.params.account_id},req.body,{safe:true},function(err,account){
-		res.statusCode = 204;
-		res.send();	
+	Accounts.findOne({_id: req.params.account_id}, {}, function (err, account){
+		_.extend(account,req.body);
+		account.save(function(){
+			res.statusCode = 204;
+			res.send();
+		});
 	});
-};
+}
 
 exports.get_credentials = function(req, res){
 	Accounts.findOne({_id: req.params.account_id}, {credentials: 1}, function (err, account){								
 		res.statusCode = 200;
 		res.send(account.credentials);
 	});
+};
+
+exports.logged = function(req, res){
+	res.send(req.user);
+};
+
+exports.login = function(req, res){
+	res.render('login.jade');
 };

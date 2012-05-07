@@ -5,6 +5,7 @@ var mongoose = require('mongoose'),
 	Accounts = require('../../models/accounts');
 
 suite('Accounts', function(){
+	var self;
 	setup(function(done){
 		this.account_data = {
 	        'email': 'daniel@payparrot.com',
@@ -17,6 +18,7 @@ suite('Accounts', function(){
 		this.account.save(function(){
 			done();
 		});
+		self = this;
 
 	});
 
@@ -32,6 +34,17 @@ suite('Accounts', function(){
 			expected_account['id'] = received_account['id'];
 			
 			assert.deepEqual(expected_account, received_account);
+		});
+	});
+
+	suite('Mongoose', function(){
+		test('Update should not save the password (not defined in the schema)', function(done){
+			Accounts.update({'_id': self.account._id}, {'lala': 'hola'}, function(err, data){
+				Accounts.findOne({_id: self.account._id}, {}, function (err, account){
+					assert.equal(null, account.lala);
+					done();
+				});
+			});
 		});
 	});
 });
