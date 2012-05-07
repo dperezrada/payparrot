@@ -9,6 +9,11 @@
 	"superagent":">=0.0.1",
 	"mongodb":">=0.0.1",
 	"underscore":">=0.0.1",
-	"mongoose":">=2.2.2"
+	"mongoose":">=2.2.2",
+	"connect-mongodb":">=0.0.1",
+	"bcrypt": ">= 0.5.0",
+	"jade": ">=0.0.1",
+	"passport":">=0.0.1",
+	"passport-local": ">= 0.0.0"
  	 }
 }
