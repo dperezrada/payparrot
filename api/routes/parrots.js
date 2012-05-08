@@ -28,6 +28,7 @@ var oauth_session = function(){
 };
 
 exports.start = function(req, res){
+	console.log(req.query);
 	Accounts.findOne({'credentials.public_token': req.query.token}, {}, function (err, account){
 		if(account){
 			var oauth_twitter = oauth_session();
