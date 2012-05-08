@@ -1,6 +1,6 @@
 define([
-  'underscore',
-  'backbone'
+  'Underscore',
+  'Backbone'
 ], function(_, Backbone) {
   var accountModel = Backbone.Model.extend({
     initialize: function(){

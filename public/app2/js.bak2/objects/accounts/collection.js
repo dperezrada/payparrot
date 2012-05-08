@@ -1,7 +1,7 @@
 define([
   'jQuery',
-  'underscore',
-  'backbone',
+  'Underscore',
+  'Backbone',
   './model'
 ], function($, _, Backbone, projectsModel){
   var projectsCollection = Backbone.Collection.extend({

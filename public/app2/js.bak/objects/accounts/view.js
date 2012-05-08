@@ -1,13 +1,12 @@
 // Filename: views/projects/list
 define([
   'jQuery',
-  'underscore',
-  'backbone',
+  'Underscore',
+  'Backbone',
   // Pull in the Collection module from above
   './model',
-  'libs/text!./template.html',
-  'libs/text!./templateEdit.html',
-  'libs/jquery/tojson'
+  'libs/require/text!./template.html',
+  'libs/require/text!./templateEdit.html'
 
 ], function($, _, Backbone, accountModel, accountTemplate, accountTemplateEdit){
   var projectListView = Backbone.View.extend({
