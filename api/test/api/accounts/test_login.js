@@ -1,4 +1,4 @@
-var request = require('superagent'),
+var request = require('request'),
 	assert = require('assert'),
 	_ = require('underscore');
 
@@ -13,67 +13,61 @@ describe('POST /login', function(){
 	        'startup': 'Payparrot',
 	        'url': 'http://payparrot.com/'
 	    }
-		request
-			.post('http://localhost:3000/accounts')
-			.set('Content-Type', 'application/json')
-			.send(self.account)
-			.end(function(post_response){
-				assert.equal(201, post_response.statusCode);
-				self.account.id = post_response.body.id;
-				delete self.account.password;
-				done();
-			});
+		request.post({url: 'http://localhost:3000/accounts', json: self.account}, function (e, r, body) {
+			assert.equal(201, r.statusCode);
+			self.account.id = r.body.id;
+			delete self.account.password;
+			request.post(
+				{
+					url: 'http://localhost:3000/login',
+					json: {
+						'email': 'daniel@payparrot.com',
+		       			'password': '123'
+					},
+					followRedirect: false
+				},
+				function (e, r, body) {
+					assert.equal(302, r.statusCode);
+					assert.equal('http://localhost:3000/logged', r.headers.location);
+					done();
+				}
+			);
+		});
 	});
 	after(function(done){
 		require('../../tear_down').remove_all(done);
 	});
    	it('should be able to login', function(done){
-		request
-			.post('http://localhost:3000/login')
-			.redirects(0)
-			.send({
-	        	'email': 'daniel@payparrot.com',
-	        	'password': '123'})
-			.end(function(post_response){
-				assert.equal(302, post_response.statusCode);
-				assert.equal('http://localhost:3000/logged', post_response.header.location);
-				done();
-			});
+		request.get({url: 'http://localhost:3000/logged', followRedirect: false}, function(e, r, body){
+			assert.equal(200, r.statusCode);
+			done();
+		});
 	});
 	it('should be able to logout', function(done){
-		request
-			.post('http://localhost:3000/login')
-			.redirects(0)
-			.send({
-	        	'email': 'daniel@payparrot.com',
-	        	'password': '123'})
-			.end(function(post_response){
-				
-				request.get('http://localhost:3000/logout')
-					.redirects(0)
-					.end(function(response){
-						assert.equal(302, response.statusCode);
-						
-						request.get('http://localhost:3000/logged')
-							.redirects(0)
-							.end(function(response){
-								assert.equal(302, response.statusCode);
-								done();
-							});
-					});
-			});
-	});
-	it('should not be able to login with invalid credentials', function(done){
-		request
-			.post('http://localhost:3000/login')
-			.redirects(0)
-			.send({
-	        	'email': 'daniel@payparrot.com',
-	        	'password': '456'})
-			.end(function(post_response){
-				assert.equal(302, post_response.statusCode);
-				assert.equal('http://localhost:3000/login', post_response.header.location);
+		request.get({url: 'http://localhost:3000/logout', followRedirect: false}, function(e, r, body){
+			assert.equal(302, r.statusCode);
+			assert.equal('http://localhost:3000/', r.headers.location);
+			request.get({url: 'http://localhost:3000/logged', followRedirect: false}, function(e, r, body){
+				assert.equal(302, r.statusCode);
 				done();
 			});
+		});
+	});
+	it('should not be able to login with invalid credentials', function(done){
+		request.post(
+			{
+				url: 'http://localhost:3000/login',
+				json: {
+					'email': 'daniel@payparrot.com',
+	       			'password': '456'
+				},
+				followRedirect: false
+			},
+			function (e, r, body) {
+				assert.equal(302, r.statusCode);
+				assert.equal('http://localhost:3000/login', r.headers.location);
+				done();
+			}
+		);
 	});
 });
