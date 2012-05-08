@@ -1,6 +1,7 @@
 var request = require('request'),
 	assert = require('assert'),
-	_ = require('underscore');
+	_ = require('underscore'),
+	test_utils = require('../utils.js');
 
 describe('POST /login', function(){
 	var self;
@@ -13,26 +14,7 @@ describe('POST /login', function(){
 	        'startup': 'Payparrot',
 	        'url': 'http://payparrot.com/'
 	    }
-		request.post({url: 'http://localhost:3000/accounts', json: self.account}, function (e, r, body) {
-			assert.equal(201, r.statusCode);
-			self.account.id = r.body.id;
-			delete self.account.password;
-			request.post(
-				{
-					url: 'http://localhost:3000/login',
-					json: {
-						'email': 'daniel@payparrot.com',
-		       			'password': '123'
-					},
-					followRedirect: false
-				},
-				function (e, r, body) {
-					assert.equal(302, r.statusCode);
-					assert.equal('http://localhost:3000/logged', r.headers.location);
-					done();
-				}
-			);
-		});
+		test_utils.create_and_login(self.account, request, done);
 	});
 	after(function(done){
 		require('../../tear_down').remove_all(done);
