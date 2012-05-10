@@ -37,6 +37,8 @@ describe('POST /accounts/:id/messages', function(){
 		 			.end(function(message1_response){
 						assert.equal(201, message1_response.statusCode);
 						self.messages[0].id = message1_response.body.id;
+						self.messages[0].status = 0;
+						self.messages[0].active = 1;
 						request
 							.post('http://localhost:3000/accounts/'+self.account.id+'/messages')
 							.set('Content-Type', 'application/json')
@@ -44,6 +46,8 @@ describe('POST /accounts/:id/messages', function(){
 				 			.end(function(message2_response){
 								assert.equal(201, message2_response.statusCode);
 								self.messages[1].id = message2_response.body.id;
+								self.messages[1].status = 0;
+								self.messages[1].active = 1;
 								done();
 							});					
 					});
