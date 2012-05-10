@@ -1,4 +1,4 @@
-<div class="well">
+<div class="alert alert-<% if (status == 1 && active==1) { print ("success");} %><% if (status == 1 && active==0) { print ("error");} %><% if (status == 0 && active==1) { print ("info");} %><% if (status == 0 && active==0) { print ("error");} %>">
 	<div class="row">
 		<div class="span1">
 			<% if (status == 1) { %>
@@ -17,6 +17,13 @@
 		</div>
 		<div class="span9">
 			<h4><%= text %><br><small><%= url %></small></h4>
+			<p>
+				<small>
+					<a href="#">Delete</a> - 
+					<a href="#">Analytics results</a> - 
+					<a href="#">Quality check</a>
+				</small>	
+			</p>	
 		</div>
 		<div class="span1">
 			<% if (active==1) { %>

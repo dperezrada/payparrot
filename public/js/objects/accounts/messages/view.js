@@ -12,7 +12,7 @@ define([
 
 ], function($, _, Backbone, messagesTemplate, messagesTemplateNew, messageView, messagesCollection, messageModel){
   var accountListView = Backbone.View.extend({
-    el: $("#account-pane"),
+    tagName: 'div',
     template: _.template(messagesTemplate),
     templateNew: _.template(messagesTemplateNew),
     initialize: function(model){
@@ -22,6 +22,7 @@ define([
       this.collection.bind('reset', this.render, this);
       this.collection.bind('add', this.render, this);
       this.collection.fetch();
+      $('#account-pane .pane-content').html(this.el);
       // this.render();
     },
     events: {
@@ -34,13 +35,15 @@ define([
       $('.messages-list',this.el).append(view.render().el);
     },
     render: function(){
-      $('.pane-content',this.el).html(this.template());
+      $(this.el).html(this.template());
       this.collection.each(this.addOne);
     },
     newMessage: function() {
-      $('.pane-content',this.el).html(this.templateNew());
+      $(this.el).html(this.templateNew());
+      //$('#account-pane .pane-content> div').html(this.el);
     },
     saveMessage: function(event) {
+      console.log("holi");
       event.preventDefault();
       var data = $('#message-form-data').toJSON();
       var filled = true;
@@ -50,10 +53,9 @@ define([
         }
       }
       if (!filled) {
-        $('.pane-content .alert',this.el).show();
+        $('.alert', this.el).show();
       } else {
-        var new_message = new messageModel(data);
-        this.collection.create(new_message);
+        this.collection.create(data,{wait:true});
       }
     }
   });
