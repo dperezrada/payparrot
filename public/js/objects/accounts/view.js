@@ -7,9 +7,10 @@ define([
   'libs/text!./template.html',
   'libs/text!./templateEdit.html',
   './messages/view',
+  './notifications/view',
   './credentialsModel'
 
-], function($, _, Backbone, accountTemplate, accountTemplateEdit,messagesView,CredentialsModel){
+], function($, _, Backbone, accountTemplate, accountTemplateEdit,messagesView, NotificationsView, CredentialsModel){
   var accountListView = Backbone.View.extend({
     el: $("#account-pane"),
     template: _.template(accountTemplate),
@@ -55,7 +56,7 @@ define([
       console.log("holi");
     },
     notifications: function() {
-      console.log("holi");
+      new NotificationsView(this.model);
     }
   });
   return accountListView;

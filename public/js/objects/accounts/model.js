@@ -13,7 +13,9 @@ define([
     	startup: '',
     	name: '',
     	url: '',
-    	id: ''
+    	id: '',
+      callback_url: '',
+      notification_url: ''
     },
     url: '/accounts/me'
     
