@@ -46,5 +46,5 @@ exports.logged = function(req, res){
 };
 
 exports.login = function(req, res){
-	res.render('login.jade');
+	res.render('login.ejs');
 };
