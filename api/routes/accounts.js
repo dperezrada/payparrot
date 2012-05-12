@@ -1,9 +1,9 @@
 var mongoose = require('mongoose');
-var Accounts = require('../models/accounts.js');
+var Accounts = require('payparrot_models/objects/accounts.js');
 var _ = require('underscore');
 var crypto = require('crypto');
 
-exports.create = function(req, res){
+exports.create = function(req, res){;
 	var account = new Accounts(req.body);
 	var current_date = (new Date()).valueOf().toString();
 	var random = Math.random().toString();

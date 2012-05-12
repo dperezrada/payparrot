@@ -1,8 +1,8 @@
 var mongoose = require('mongoose'),
-	mongo_url = require('../../libs/mongodb').mongo_url({}),
+	mongo_url = require('payparrot_models/libs/mongodb').mongo_url({}),
 	db = mongoose.connect(mongo_url),
 	assert = require('assert'),
-	Accounts = require('../../models/accounts');
+	Accounts = require('payparrot_models/objects/accounts');
 
 suite('Accounts', function(){
 	var self;

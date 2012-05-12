@@ -1,8 +1,8 @@
 var mongoose = require('mongoose'),
-	Accounts = require('../models/accounts.js'),
-	Parrots = require('../models/parrots.js'),
-	Sessions = require('../models/sessions.js'),
-	Suscriptions = require('../models/suscriptions.js'),
+	Accounts = require('payparrot_models/objects/accounts.js'),
+	Parrots = require('payparrot_models/objects/parrots.js'),
+	Sessions = require('payparrot_models/objects/sessions.js'),
+	Suscriptions = require('payparrot_models/objects/suscriptions.js'),
 	_ = require('underscore'),
 	OAuth= require('oauth').OAuth;
 
@@ -94,7 +94,7 @@ exports.finish = function(req, res){
 											suscription.account_id = account._id;
 											suscription.active = true;
 											suscription.save(function(){
-												// encolar notificacion
+												// encolar notificacio
 												// TODO: add parameters
 												res.redirect(account.callback_url);
 											});

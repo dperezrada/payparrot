@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
-var Messages = require('../models/messages');
-var Accounts = require('../models/accounts');
+var Messages = require('payparrot_models/objects/messages');
+var Accounts = require('payparrot_models/objects/accounts');
 
 exports.create = function(req, res){
 	Accounts.findOne({_id: req.params.account_id}, {}, function (err, account){
