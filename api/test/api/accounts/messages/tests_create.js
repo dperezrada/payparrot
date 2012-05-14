@@ -47,6 +47,8 @@ describe('POST /accounts/:id/messages', function(){
 						function (e, r, body) {
 							assert.equal(201, r.statusCode);
 							self.messages[0].id = r.body.id;
+							self.messages[0].status = 0;
+							self.messages[0].active = 1;
 							request.post(
 							{
 								url: 'http://localhost:3000/accounts/'+self.account.id+'/messages',
@@ -55,6 +57,8 @@ describe('POST /accounts/:id/messages', function(){
 							function (e, r, body) {
 								assert.equal(201, r.statusCode);
 								self.messages[1].id = r.body.id;
+								self.messages[1].status = 0;
+								self.messages[1].active = 1;
 								done();
 							});
 						}

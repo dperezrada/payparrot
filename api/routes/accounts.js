@@ -48,3 +48,8 @@ exports.logged = function(req, res){
 exports.login = function(req, res){
 	res.render('login.ejs');
 };
+
+exports.get_parrots = function(req, res){
+	var user = req.user.returnJSON();
+	//Accounts.find({'_id:'}).sort('_id', 1).skip(from).limit(to)
+};

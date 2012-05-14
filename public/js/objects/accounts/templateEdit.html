@@ -1,7 +1,7 @@
 <h3>Your personal settings</h3>
 <div class="row">
 	<div class="span6">
-		<form id='account-data'>
+		<form id='account-form-data'>
 			<table class="table">
 				<tr>
 					<td>Name: </td>
@@ -13,7 +13,7 @@
 				</tr>
 				<tr>
 					<td>Company: </td>
-					<td><%= startup %></td>
+					<td><input name='startup' value='<%= startup %>'></td>
 				</tr>
 				<tr>
 					<td>Unique identifier: </td>
@@ -21,7 +21,7 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td><button class="edit btn btn-primary">Edit</button></td>
+					<td><button class="save btn btn-success">Save</button></td>
 				</tr>
 			</table>
 		</form>
