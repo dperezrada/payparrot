@@ -1,0 +1,19 @@
+<div class="parrot-container">
+	<div class="photo" style="background:url(<%= twitter_info.avatar_url %>)"></div>
+	<div class="name">
+		<h5><%= twitter_info.name %></h5>
+		<p>
+			<small>
+				<%= twitter_info.screen_name %>
+			</small>
+		</p>
+	</div>
+	<% _.each(payments, function(payment, key) { %>
+		<div class="divider <% if (key>=1) { print("hidden")}%>"></div>
+		<div class="info <% if (key>=1) { print("hidden")}%>"><%= payment %></div>
+	<% }) %>
+	<% if(payments.length > 1) { %>
+		<div class="divider show_all"></div>
+		<div class="info show_all"><a href='javascript:void(0)'>Show all</a></div>
+	<% } %>
+</div>	

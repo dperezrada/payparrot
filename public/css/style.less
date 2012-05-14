@@ -1,0 +1,45 @@
+@import "bootstrap/bootstrap.less";
+.box {
+	.box-shadow(0px 0px 2px rgba(0,0,0,0.5));
+}
+
+.parrot {
+	.parrot-container {
+		padding: 10px 0 0 0;
+		.box;
+	}
+	margin-bottom:20px;
+	.photo {
+		height:150px;
+		margin:0 10px 10px 10px;
+	}
+	.name {
+		padding:0 10px;
+	}
+	.info {
+		background: #f5f5f5;
+		padding:10px;
+		font-size: 0.8em;
+		color: #777;
+	}
+	.divider {
+		border-bottom:1px solid #fff;
+		border-top:1px solid #ccc;
+		heiht:2px;
+	}
+	.hidden {
+		display:none;
+	}
+}
+
+.parrot::after {
+	clear: both;
+	content: " ";
+	display: block;
+	bottom: -14px;
+	width: 224px;
+	height: 14px;
+	background: url(/img/shadow.png);
+	visibility: visible;
+	opacity: .5;
+}

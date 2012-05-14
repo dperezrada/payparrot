@@ -27,12 +27,22 @@ module.exports = function(app) {
 		res.redirect('/');
 	});
 	app.get('/logged', req_auth, accounts.logged);
-	app.get('/accounts/:account_id/credentials', req_auth, accounts.get_credentials);
-	app.post('/accounts/:account_id/messages', req_auth, messages.create);
-	app.get('/accounts/:account_id/messages/:message_id', req_auth, messages.get);
+	
+	app.put('/accounts/:account_id/password', accounts.update_password);
+	app.get('/accounts/:account_id/credentials', accounts.get_credentials);
+	
+	app.get('/accounts/:account_id/parrots/:from',req_auth, accounts.get_parrots);
+	app.get('/accounts/:account_id/parrots',req_auth, accounts.get_parrots);
+	
+	app.post('/accounts/:account_id/messages', messages.create);
+	app.get('/accounts/:account_id/messages', messages.list);
+	app.get('/accounts/:account_id/messages/:message_id', messages.get);
+	app.put('/accounts/:account_id/messages/:message_id', messages.update);
+	
 	app.post('/accounts', accounts.create);
 	app.get('/accounts/:account_id', req_auth, accounts.get);
 	app.put('/accounts/:account_id', req_auth, accounts.update);
+	
 	app.get('/parrots/start', parrots.start);
 	app.get('/parrots/finish', parrots.finish);
 }
