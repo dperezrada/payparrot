@@ -1,8 +1,10 @@
-var mongoose = require('mongoose');
-var Accounts = require('../models/accounts.js');
-var Parrots = require('../models/parrots.js');
-var _ = require('underscore');
-var OAuth= require('oauth').OAuth;
+var mongoose = require('mongoose'),
+	Accounts = require('../models/accounts.js'),
+	Parrots = require('../models/parrots.js'),
+	Sessions = require('../models/sessions.js'),
+	Suscriptions = require('../models/suscriptions.js'),
+	_ = require('underscore'),
+	OAuth= require('oauth').OAuth;
 
 var oauth_session = function(){
 	twitter_config = {
@@ -37,16 +39,16 @@ exports.start = function(req, res){
 					res.send("Problem ocurred")
 				}
 				else {
-					var parrot = new Parrots({
+					var session = new Sessions({
 						'account_id': account._id,
 						'oauth_token': oauth_token,
 						'oauth_token_secret': oauth_token_secret,
-						'oauth_results': results,
+						'oauth_results': results
 					});
 					if(req.query.external_id){
-						parrot.external_id = req.query.external_id;
+						session.external_id = req.query.external_id;
 					}
-					parrot.save(function(){
+					session.save(function(){
 						res.redirect(twitter_config.authorize_url+'?oauth_token='+oauth_token);
 					});
 				}
@@ -59,10 +61,10 @@ exports.start = function(req, res){
 };
 
 exports.finish = function(req, res){
-	Parrots.findOne({'oauth_token': req.query.oauth_token}, {}, function (err, parrot){
-		Accounts.findOne({'_id': parrot.account_id}, {}, function (err, account){
+	Sessions.findOne({'oauth_token': req.query.oauth_token}, {}, function (err, session){
+		Accounts.findOne({'_id': session.account_id}, {}, function (err, account){
 			var oauth_twitter = oauth_session();
-			oauth_twitter.getOAuthAccessToken(parrot.oauth_token,parrot.oauth_token_secret, req.query.oauth_verifier, 
+			oauth_twitter.getOAuthAccessToken(session.oauth_token,session.oauth_token_secret, req.query.oauth_verifier, 
 				function(error, oauth_access_token, oauth_access_token_secret, results){
 					if (error){
 						console.log(error);
@@ -73,10 +75,31 @@ exports.finish = function(req, res){
 								console.log(error);
 								res.send("Not authorized");
 							} else {
-								parrot.twitter_info = JSON.parse(data);
-								parrot.active = true;
-								parrot.save(function(){
-									res.redirect(account.callback_url);
+								var twitter_info = JSON.parse(data);
+								Parrots.findOne({'twitter_id': twitter_info.id_str}, {}, function (err, parrot){
+									if(!parrot){
+										parrot = new Parrots({});
+									}
+									parrot.twitter_id = twitter_info.id_str;
+									parrot.account_id = account._id;
+									parrot.oauth_token = oauth_access_token;
+									parrot.oauth_token_secret = oauth_access_token_secret;
+									parrot.twitter_info = twitter_info;
+									parrot.save(function(){
+										Suscriptions.findOne({'account_id': account._id, 'parrot_id': parrot._id}, {}, function (err, suscription){
+											if(!suscription){
+												suscription = new Suscriptions();
+											}
+											suscription.parrot_id = parrot._id;
+											suscription.account_id = account._id;
+											suscription.active = true;
+											suscription.save(function(){
+												// encolar notificacion
+												// TODO: add parameters
+												res.redirect(account.callback_url);
+											});
+										});
+									});
 								});
 							}
 						});

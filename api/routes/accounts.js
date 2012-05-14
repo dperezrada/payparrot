@@ -1,9 +1,13 @@
 var mongoose = require('mongoose');
 var Accounts = require('../models/accounts.js');
 var _ = require('underscore');
+var crypto = require('crypto');
 
 exports.create = function(req, res){
 	var account = new Accounts(req.body);
+	var current_date = (new Date()).valueOf().toString();
+	var random = Math.random().toString();
+	account.credentials = {'public_token': crypto.createHash('sha1').update(current_date + random).digest('hex')};
 	account.save(function(){
 		res.statusCode = 201;
 		res.send({id: account._id});
@@ -19,13 +23,6 @@ exports.get = function(req, res){
 		});
 	}
 };
-
-// exports.update = function(req, res){
-// 	var account = Accounts.update({_id: req.params.account_id},req.body,{safe:true},function(err,account){
-// 		res.statusCode = 204;
-// 		res.send();	
-// 	});
-// };
 
 exports.update = function(req, res){
 	Accounts.findOne({_id: req.params.account_id}, {}, function (err, account){
@@ -50,4 +47,9 @@ exports.logged = function(req, res){
 
 exports.login = function(req, res){
 	res.render('login.ejs');
+};
+
+exports.get_parrots = function(req, res){
+	var user = req.user.returnJSON();
+	//Accounts.find({'_id:'}).sort('_id', 1).skip(from).limit(to)
 };

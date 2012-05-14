@@ -1,6 +1,7 @@
-var request = require('superagent'),
+var request = require('request'),
 	assert = require('assert'),
-	_ = require('underscore');
+	_ = require('underscore'),
+	test_utils = require('../utils.js');
 
 describe('POST /accounts', function(){
 	var self;
@@ -14,33 +15,32 @@ describe('POST /accounts', function(){
 	        'url': 'http://payparrot.com/',
 			'callback_url': 'http://www.epistemonikos.org'
 		}
-		request
-			.post('http://localhost:3000/accounts')
-			.set('Content-Type', 'application/json')
-			.send(self.account)
-			.end(function(post_response){
-				assert.equal(201, post_response.statusCode);
-				self.account.id = post_response.body.id;
-				delete self.account.password;
-				done();
-			});
+		test_utils.create_and_login(self.account, request, done);
 	});
 	after(function(done){
 		require('../../tear_down').remove_all(done);
 	});
    	it('should create a new account', function(done){
-		request.get('http://localhost:3000/accounts/'+self.account.id).end(function(response){
-			assert.equal(200, response.statusCode);
-			assert.deepEqual(self.account, response.body);
-			done();
-		});
+		request.get({
+						url: 'http://localhost:3000/accounts/'+self.account.id 
+					}, 
+					function (e, r, body){
+						assert.equal(200, r.statusCode);
+						assert.deepEqual(self.account, JSON.parse(r.body));
+						done();
+					}
+				);
 	});
 	it('should generate API credentials', function(done){
-		request.get('http://localhost:3000/accounts/'+self.account.id+'/credentials')
-			.end(function(response){
-				assert.equal(200,response.statusCode);
-				assert.ok(response.body.public_token.length >= 40)
-				done();
-			});
+		request.get({
+						url: 'http://localhost:3000/accounts/'+self.account.id+'/credentials'
+					}, 
+					function (e, r, body){
+						assert.equal(200, r.statusCode);
+						var received = JSON.parse(body);
+						assert.ok(received.public_token.length >= 40);
+						done();
+					}
+				);
 	});
 });

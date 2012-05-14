@@ -1,6 +1,7 @@
-var request = require('superagent'),
+var request = require('request'),
 	assert = require('assert'),
-	_ = require('underscore');
+	_ = require('underscore'),
+	test_utils = require('../utils.js');
 
 describe('PUT /accounts/:account_id', function(){
 	var self;
@@ -13,40 +14,35 @@ describe('PUT /accounts/:account_id', function(){
 	        'startup': 'Payparrot',
 	        'url': 'http://payparrot.com/',
 		}
-		this.account_to_modify = {
+		self.account_to_modify = {
 	        'email': 'daniel@payparroting.com',
-	        'password': '34',
+	        'name': 'Guillermo',
 	        'startup': 'PayparrotIng',
-	        'url': 'http://payparroting.com/',
+	        'url': 'http://payparroting.com/'
 		}
-		request
-			.post('http://localhost:3000/accounts')
-			.set('Content-Type', 'application/json')
-			.send(self.account)
-			.end(function(post_response){
-				assert.equal(201, post_response.statusCode);
-				self.account.id = post_response.body.id;
-								
-				request
-					.put('http://localhost:3000/accounts/'+self.account.id)
-					.set('Content-Type', 'application/json')
-					.send(self.account_to_modify)
-					.end(function(put_response){
-						assert.equal(204, put_response.statusCode);
-						self.account = _.extend(self.account, self.account_to_modify);
-						delete self.account.password;
-						done();
-					});
-			
-			});
+		test_utils.create_and_login(self.account, request, done);
 	});
 	after(function(done){
 		require('../../tear_down').remove_all(done);
 	});
 	it('should allow to modify the account', function(done){
-		request.get('http://localhost:3000/accounts/'+self.account.id).end(function(response){
-			assert.deepEqual(self.account, response.body);
-			done();
-		});
+		request.put(
+			{
+				url: 'http://localhost:3000/accounts/'+self.account.id,
+				json: self.account_to_modify
+			},
+			function (e, r, body) {
+				assert.equal(204, r.statusCode);
+				request.get({
+						url: 'http://localhost:3000/accounts/'+self.account.id 
+					}, 
+					function(e, r, body){
+						assert.equal(200, r.statusCode);
+						var account_saved = JSON.parse(body);
+						delete account_saved.id;
+						assert.deepEqual(self.account_to_modify, account_saved);
+						done();
+				});
+			});
 	});
 });
