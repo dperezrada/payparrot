@@ -1,5 +1,4 @@
-var mongoose = require('mongoose'),
-	Accounts = require('payparrot_models/objects/accounts.js'),
+var Accounts = require('payparrot_models/objects/accounts.js'),
 	Parrots = require('payparrot_models/objects/parrots.js'),
 	Sessions = require('payparrot_models/objects/sessions.js'),
 	Suscriptions = require('payparrot_models/objects/suscriptions.js'),

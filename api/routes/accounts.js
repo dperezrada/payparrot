@@ -1,4 +1,3 @@
-var mongoose = require('mongoose');
 var Accounts = require('payparrot_models/objects/accounts.js');
 var _ = require('underscore');
 var crypto = require('crypto');

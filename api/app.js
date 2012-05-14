@@ -36,9 +36,7 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
-var mongoose = require('mongoose');
-var mongo_url = require('payparrot_models/libs/mongodb').mongo_url({});
-var db = mongoose.connect(mongo_url);
+var db = require('payparrot_models/libs/mongodb').connect();
 
 // Configuration
 app.configure(function(){

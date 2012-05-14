@@ -1,4 +1,3 @@
-var mongoose = require('mongoose');
 var Messages = require('payparrot_models/objects/messages');
 var Accounts = require('payparrot_models/objects/accounts');
 var _ = require('underscore');

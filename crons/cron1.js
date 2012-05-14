@@ -1,5 +1,4 @@
-var	mongo_url = require('payparrot_models/libs/mongodb').mongo_url({});
-	Suscriptions = require('payparrot_models/objects/suscriptions'),
+var	Suscriptions = require('payparrot_models/objects/suscriptions'),
  	mongoose = require('mongoose'),
 	_ = require('underscore'),
 	async = require('async'),
@@ -41,10 +40,9 @@ var send_notification = function(suscription, callback){
 	);
 };
 
-mongoose.connect(mongo_url, function(){
-	Suscriptions.find({'active': true, 'notified': false}, {}, function (err, suscriptions){
-		async.forEach(suscriptions, send_notification, function(err){
-			mongoose.connection.close();
-		});
+var db = require('payparrot_models/libs/mongodb').connect({});
+Suscriptions.find({'active': true, 'notified': false}, {}, function (err, suscriptions){
+	async.forEach(suscriptions, send_notification, function(err){
+		db.connection.close();
 	});
 });

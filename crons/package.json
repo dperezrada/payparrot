@@ -3,7 +3,6 @@
     "version": "0.0.1",
   	"private": true,
     "dependencies": {
-		"mongoose":">=2.6.3",
 		"underscore":">=0.0.1",
         "async": ">=0.0.1"
   	}
