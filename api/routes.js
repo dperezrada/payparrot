@@ -7,7 +7,17 @@ var messages    = require('./routes/messages')
 
 function req_auth(req, res, next) {
   if ( req.isAuthenticated() ) { 
-  	return next(); 
+  	console.log(req.user._id);
+  	console.log(req.params);
+  	if(req.params.length > 0){
+		if(req.user._id == req.params.account_id){
+			return next();
+		}else{
+			res.redirect('/forbidden');
+		}
+	}else{
+		return next();
+	} 
   }else{
   	res.redirect('/login');
   }
@@ -31,8 +41,7 @@ module.exports = function(app) {
 	app.put('/accounts/:account_id/password', accounts.update_password);
 	app.get('/accounts/:account_id/credentials', accounts.get_credentials);
 	
-	app.get('/accounts/:account_id/parrots/:from',req_auth, accounts.get_parrots);
-	app.get('/accounts/:account_id/parrots',req_auth, accounts.get_parrots);
+	app.get('/accounts/:account_id/parrots', req_auth, parrots.get_parrots);
 	
 	app.post('/accounts/:account_id/messages', messages.create);
 	app.get('/accounts/:account_id/messages', messages.list);
