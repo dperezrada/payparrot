@@ -7,8 +7,6 @@ var messages    = require('./routes/messages')
 
 function req_auth(req, res, next) {
   if ( req.isAuthenticated() ) { 
-  	console.log(req.user._id);
-  	console.log(req.params);
   	if(req.params.length > 0){
 		if(req.user._id == req.params.account_id){
 			return next();
