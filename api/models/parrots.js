@@ -9,7 +9,8 @@ var parrots_schema = new Schema({
 	oauth_token_secret: String,
 	created_on: Date,
 	twitter_info: {},
-	tweets: {}
+	tweets: {},
+	id: String
 });
 
 mongoose.model('Parrots', parrots_schema);

@@ -137,6 +137,7 @@ exports.get_parrots = function(req, res){
 								return _.indexOf(suscriptions_parrot_id_array,parrot._id.toString()) >= 0 
 							}
 						);
+						parrots_account = _.map(parrots_account, function (num, key){num.id = num._id.toString(); delete num._id; return num});
 						res.send(parrots_account);
 					});
 			});
@@ -152,6 +153,7 @@ exports.get_parrots = function(req, res){
 			.run(function (err, suscriptions){
 				var suscriptions_parrot_id_array = _.map(suscriptions, function (num, key){return num.parrot_id.toString();});
 				Parrots.find().where('_id').in(suscriptions_parrot_id_array).run(function (err, parrots){
+					parrots = _.map(parrots, function (num, key){num.id = num._id.toString(); delete num._id; return num});
 					res.send(parrots);
 				});
 			});
@@ -164,6 +166,7 @@ exports.get_parrots = function(req, res){
 			.run( function (err, suscriptions){
 				suscriptions = _.map(suscriptions, function (num, key){return num.parrot_id;});
 				Parrots.find().where('_id').in(suscriptions).run(function (err, parrots){
+					parrots = _.map(parrots, function (num, key){num.id = num._id.toString(); delete num._id; return num});
 					res.send(parrots);
 				});
 			});

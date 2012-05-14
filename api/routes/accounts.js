@@ -42,7 +42,8 @@ exports.get_credentials = function(req, res){
 };
 
 exports.logged = function(req, res){
-	res.send(req.user);
+	// res.redirect('/app.html');
+	res.render('redirect_app.ejs');
 };
 
 exports.login = function(req, res){

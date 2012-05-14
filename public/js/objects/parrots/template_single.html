@@ -1,12 +1,19 @@
 <div class="parrot-container">
-	<div class="photo" style="background:url(<%= twitter_info.avatar_url %>)"></div>
+<!-- 	<div class="photo" style="background-size:100%;background:url(https://api.twitter.com/1/users/profile_image?screen_name=<%= twitter_info.screen_name %>&size=original) no-repeat"></div> -->
 	<div class="name">
-		<h5><%= twitter_info.name %></h5>
+		<div class="pull-left" style='width:48px;height:48px;margin-right:10px;background:url(https://api.twitter.com/1/users/profile_image?screen_name=<%= twitter_info.screen_name %>&size=normal);margin-bottom:10px;'>
+		</div>
+		<div>
+			<h5><%= twitter_info.name %></h5>
+			<p>
+				<small>
+					@<%= twitter_info.screen_name %>
+				</small>
+			</p>
+		</div>
+		<div style="clear:both"></div>
 		<p>
-			<small>
-				<%= twitter_info.screen_name %>
-			</small>
-		</p>
+		<small><%= twitter_info.description %></small>
 	</div>
 	<% _.each(payments, function(payment, key) { %>
 		<div class="divider <% if (key>=1) { print("hidden")}%>"></div>
@@ -16,4 +23,8 @@
 		<div class="divider show_all"></div>
 		<div class="info show_all"><a href='javascript:void(0)'>Show all</a></div>
 	<% } %>
+	<% if(payments.length == 0) { %>
+		<div class="divider"></div>
+		<div class="info show_all"><a href='javascript:void(0)'>The first payment of this user is still scheduled and hasn't been executed yet</a></div>
+	<% } %>	
 </div>	

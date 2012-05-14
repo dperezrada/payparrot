@@ -15,8 +15,10 @@ define([
       // Infinite scroll
       var self = this;
       $(window).scroll(function(){  
-        if ($(window).scrollTop() == $(document).height() - $(window).height()){  
-              self.collection._fetch();
+        if ($(window).scrollTop() == $(document).height() - $(window).height()){
+              var length = $('.parrot').length;
+              self.collection.setParams({from: length});
+              self.collection._fetch({add: true});
         }
       }); 
       this.collection = collection;
