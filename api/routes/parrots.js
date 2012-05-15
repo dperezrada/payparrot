@@ -122,7 +122,7 @@ exports.get_parrots = function(req, res){
 			.find({'twitter_info.screen_name':screen_name})
 			.sort('_id', 1)
 			.skip(querystring.from)
-			.limit(querystring.limit)
+			.limit(querystring.to)
 			.run(function (err, parrots){		
 				var parrots_id_array = _.map(parrots, function (num, key){return num._id;});				
 				Suscriptions

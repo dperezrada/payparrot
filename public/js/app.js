@@ -47,7 +47,7 @@ define([
                 $("#navbar a[href='#/account']").parent().addClass('active');
 
                 // accountView is bind to model:change -> render();
-                Models.accountModel.fetch({});
+                Models.accountModel.fetch({async:false});
               },
               showParrots: function() {
                 $('.pane').hide();

@@ -21,13 +21,17 @@ define([
               self.collection._fetch({add: true});
         }
       }); 
+      this.render();      
       this.collection = collection;
       this.collection._fetch();
-      this.collection.bind('reset', this.render, this);
-      this.collection.bind('add', this.render, this);
-      this.render();
+      this.collection.bind('reset', this.render_columns, this);
+      this.collection.bind('add', this.render_columns, this);
     },
     events: {
+      "keyup .search": "search",
+      "click .filter-all": "filter_all",
+      "click .filter-today": "filter_today",
+      "click .filter-thisweek": "filter_thisweek",
     },
     addOne: function(model) {
       var view = new ViewSingle({model: model});
@@ -45,9 +49,55 @@ define([
     render: function(){
       var self = this;
       this.i = 0;
+      // this.reset_columns();
       $('.pane-content',this.el).html(this.template());
+      // this.collection.each(this.addOne);
+    },
+    render_columns: function() {
+      this.reset_columns();
+      // $('.pane-content',this.el).html(this.template());
       this.collection.each(this.addOne);
-    }
+    },
+    reset_columns: function() {
+      $('.parrots-column:eq(0)',this.el).html("");
+      $('.parrots-column:eq(1)',this.el).html("");
+      $('.parrots-column:eq(2)',this.el).html("");
+    },
+    filter_all: function(event) {
+      $('ul li.active',this.el).removeClass("active");
+      $('ul li.filter-all').addClass("active");
+      this.collection.query_params = {};
+      this.collection._fetch({});
+    },
+    filter_today: function(event) {
+      $('ul li.active',this.el).removeClass("active");
+      $('ul li.filter-today').addClass("active");
+      console.log("holi");
+      var today_ = new Date();
+      var today = today_.getFullYear()+"-"+today_.getMonth()+"-"+today_.getDate();
+      var tomorrow_ = new Date(today_.getFullYear(),today_.getMonth(),today_.getDate()+1);
+      var tomorrow = tomorrow_.getFullYear()+"-"+tomorrow_.getMonth()+"-"+tomorrow_.getDate();
+      this.collection.query_params = {};
+      this.collection.setParams({
+        suscription_start: today,
+        suscription_end: tomorrow,
+      });
+      this.collection._fetch({});      
+    },
+    filter_thisweek: function(event) {
+      $('ul li.active',this.el).removeClass("active");
+      $('ul li.filter-thisweek').addClass("active");
+    },
+    search: function(event) {
+      var input_ = $(".search", this.el)
+      var text = input_.val();
+      console.log(text);
+      $('ul li.active',this.el).removeClass("active");
+      if (!text || event.keyCode != 13) return;
+      this.collection.query_params = {};
+      this.collection.setParams({screen_name: text});
+      this.collection._fetch({});
+    }    
   });
   return ParrotsView;
 });
