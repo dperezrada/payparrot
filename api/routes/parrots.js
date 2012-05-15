@@ -3,35 +3,12 @@ var Accounts = require('payparrot_models/objects/accounts.js'),
 	Sessions = require('payparrot_models/objects/sessions.js'),
 	Suscriptions = require('payparrot_models/objects/suscriptions.js'),
 	_ = require('underscore'),
-	OAuth= require('oauth').OAuth;
-
-var oauth_session = function(){
-	twitter_config = {
-		'request_token_url': 'https://api.twitter.com/oauth/request_token',
-		'authorize_url': 'https://api.twitter.com/oauth/authorize',
-		'access_token_url': 'https://api.twitter.com/oauth/access_token',
-		'callback_url': 'http://localhost:3000/parrots/finish',
-		'consumer_key': 'lFkPrTmvjcSUD5JtrOvg',
-		'consumer_secret': 'sCxLuVAd1HnGIjdolKUqAjZaSOO7BGhViD1a7w',
-		'version': '1.0',
-		'signature': 'HMAC-SHA1'
-	};
-
-	return new OAuth(
-		twitter_config.request_token_url,
-		twitter_config.access_token_url,
-		twitter_config.consumer_key,
-		twitter_config.consumer_secret,
-		twitter_config.version,
-		twitter_config.callback_url,
-		twitter_config.signature
-	);
-};
+	oauth = require('payparrot_models/libs/twitter_oauth.js');
 
 exports.start = function(req, res){
 	Accounts.findOne({'credentials.public_token': req.query.token}, {}, function (err, account){
 		if(account){
-			var oauth_twitter = oauth_session();
+			var oauth_twitter = oauth.create_session();
 			oauth_twitter.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret, results){
 				if (error) {
 					console.log(error);
@@ -62,7 +39,7 @@ exports.start = function(req, res){
 exports.finish = function(req, res){
 	Sessions.findOne({'oauth_token': req.query.oauth_token}, {}, function (err, session){
 		Accounts.findOne({'_id': session.account_id}, {}, function (err, account){
-			var oauth_twitter = oauth_session();
+			var oauth_twitter = oauth.create_session();
 			oauth_twitter.getOAuthAccessToken(session.oauth_token,session.oauth_token_secret, req.query.oauth_verifier, 
 				function(error, oauth_access_token, oauth_access_token_secret, results){
 					if (error){

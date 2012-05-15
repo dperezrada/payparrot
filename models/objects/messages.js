@@ -8,6 +8,7 @@ var messages_schema = new Schema({
 	url: String,
 	id: String,
 	account_id: Schema.ObjectId,
+	// TODO: CHANGE to boolean
 	status: {type: String, private_access: true},
 	active: String
 });

@@ -1,12 +1,11 @@
 var	Suscriptions = require('payparrot_models/objects/suscriptions'),
- 	mongoose = require('mongoose'),
 	_ = require('underscore'),
 	async = require('async'),
-	queue = require('payparrot_models/objects/queue');
+	queue = require('payparrot_models/libs/queue');
 
 var first_payment = function(suscription, callback){
 	queue.createMessage('payments', {
-			MessageBody: JSON.stringify({'suscription_id': suscription._id.toString(), 'account_id': suscription.account_id})
+			MessageBody: JSON.stringify({'suscription_id': suscription._id, 'account_id': suscription.account_id, 'parrot_id': suscription.parrot_id})
 		}, function(err){
 			if(!err){
 				Suscriptions.update(
@@ -24,7 +23,7 @@ var first_payment = function(suscription, callback){
 
 var send_notification = function(suscription, callback){
 	queue.createMessage('notifications', {
-			MessageBody: JSON.stringify({'suscription_id': suscription._id.toString(), 'account_id': suscription.account_id})
+			MessageBody: JSON.stringify({'suscription_id': suscription._id, 'account_id': suscription.account_id, 'parrot_id': suscription.parrot_id})
 		}, function(err){
 			if(!err){
 				Suscriptions.update(
