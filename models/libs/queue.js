@@ -43,7 +43,7 @@ exports.deleteMessage = function(queue, receipt_handle, callback){
 	});
 }
 
-sqs.call ( "DeleteMessage", {'ReceiptHandle': message.ReceiveMessageResult.Message.ReceiptHandle}, function (err, deleted_message) {
-	console.log('\nMensaje borrado\n');
-	console.log(deleted_message);
-});
+// sqs.call ( "DeleteMessage", {'ReceiptHandle': message.ReceiveMessageResult.Message.ReceiptHandle}, function (err, deleted_message) {
+// 	console.log('\nMensaje borrado\n');
+// 	console.log(deleted_message);
+// });

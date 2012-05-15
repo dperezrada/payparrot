@@ -21,9 +21,17 @@ var first_payment = function(suscription, callback){
 	);
 };
 
-var send_notification = function(suscription, callback){
+
+// TO DO: Notification type
+// {
+// 	subscription_activated,
+// 	payment_success,
+// 	payment_failed,
+// 	subscription_deactivated
+// }
+var send_notification = function(suscription, notification_type, callback){
 	queue.createMessage('notifications', {
-			MessageBody: JSON.stringify({'suscription_id': suscription._id, 'account_id': suscription.account_id, 'parrot_id': suscription.parrot_id})
+			MessageBody: JSON.stringify({'suscription_id': suscription._id, 'account_id': suscription.account_id, 'parrot_id': suscription.parrot_id, 'type': notification_type})
 		}, function(err){
 			if(!err){
 				Suscriptions.update(
@@ -41,7 +49,7 @@ var send_notification = function(suscription, callback){
 
 var db = require('payparrot_models/libs/mongodb').connect({});
 Suscriptions.find({'active': true, 'notified': false}, {}, function (err, suscriptions){
-	async.forEach(suscriptions, send_notification, function(err){
+	async.forEach(suscriptions, function(item, callback){send_notification(item,'suscription_activated',callback)}, function(err){
 		db.connection.close();
 	});
 });
