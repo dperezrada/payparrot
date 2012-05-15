@@ -15,7 +15,8 @@ define([
       // TODO: Filtrar la modificacion de status=1 en la API
     },
     events: {
-      "click .show_all": "expand"
+      "click .show_all": "expand",
+      "click .not-twitted": "not_twitted_message"
     },
     render: function(){
       $(this.el).html(this.template(this.model.toJSON()));
@@ -24,6 +25,9 @@ define([
     expand: function(){
       $('.hidden', this.el).show();
       $('.show_all', this.el).hide();
+    },
+    not_twitted_message: function() {
+      $('#not-twitted').modal();
     }
   });
   return SingleView;

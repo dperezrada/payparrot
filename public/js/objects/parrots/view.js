@@ -72,7 +72,6 @@ define([
     filter_today: function(event) {
       $('ul li.active',this.el).removeClass("active");
       $('ul li.filter-today').addClass("active");
-      console.log("holi");
       var today_ = new Date();
       var today = today_.getFullYear()+"-"+today_.getMonth()+"-"+today_.getDate();
       var tomorrow_ = new Date(today_.getFullYear(),today_.getMonth(),today_.getDate()+1);
@@ -87,16 +86,33 @@ define([
     filter_thisweek: function(event) {
       $('ul li.active',this.el).removeClass("active");
       $('ul li.filter-thisweek').addClass("active");
+      var today_ = new Date();
+      var start_ = new Date(today_.getFullYear(),today_.getMonth(),today_.getDate()-(today_.getDay()-1));
+      var start = start_.getFullYear()+"-"+start_.getMonth()+"-"+start_.getDate();
+      var end_ = new Date(start_.getFullYear(),start_.getMonth(),start_.getDate()+7);
+      var end = end_.getFullYear()+"-"+end_.getMonth()+"-"+end_.getDate();
+      this.collection.query_params = {};
+      this.collection.setParams({
+        suscription_start: start,
+        suscription_end: end,
+      });
+      this.collection._fetch({});       
     },
     search: function(event) {
       var input_ = $(".search", this.el)
       var text = input_.val();
-      console.log(text);
-      $('ul li.active',this.el).removeClass("active");
-      if (!text || event.keyCode != 13) return;
-      this.collection.query_params = {};
-      this.collection.setParams({screen_name: text});
-      this.collection._fetch({});
+      if (!text || (event.keyCode != 13 && event.keyCode != 27)) return;
+      if (event.keyCode == 13) {
+        console.log(text);
+        $('ul li.active',this.el).removeClass("active");
+        this.collection.query_params = {};
+        this.collection.setParams({screen_name: text});
+        this.collection._fetch({});
+      }
+      if (event.keyCode == 27) {
+        this.filter_all();
+        input_.val("");
+      }
     }    
   });
   return ParrotsView;
