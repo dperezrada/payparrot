@@ -25,7 +25,7 @@ var send_notification = function(payment, notification_type, callback){
 };
 
 var create_next_payment = function(last_payment, callback){
-	var last_date = new Date(last_payment.action_date);
+	var last_date = new Date(last_payment.created_at);
 	var next_action_date = new Date(last_date.getFullYear(),last_date.getMonth()+1,last_date.getDate());
 	var next_payment = new NextPayments({
 		account_id: last_payment.account_id,
@@ -41,46 +41,51 @@ var create_next_payment = function(last_payment, callback){
 // TODO: Manage errors
 process_payment = function(payment_message, callback){
 	Parrots.findOne({_id: payment_message.Body.parrot_id}, {account_id: 0}, function (err, parrot){
-		Messages.findOne({account_id: payment_message.Body.account_id}, {account_id: 0}, function (err, message){
-			oauth_twitter = oauth.create_session();
-			oauth_twitter.post(
-				"https://api.twitter.com/1/statuses/update.json",
-				parrot.oauth_token, 
-				parrot.oauth_token_secret, 
-				{"status": message.text+" "+message.url}, 
-				function(err, response){
-					var payment_entry = {
-						twitter_response: JSON.parse(response),
-						action_date: new Date(),
-						account_id: payment_message.Body.account_id,
-						parrot_id: payment_message.Body.parrot_id
-					}
-					if(!err){
-						payment_entry.success = true;
-					}else{
-						payment_entry.success = false;
-					}
-					var payment = new Payments(payment_entry);
-					payment.save(function (err) {
-						queue.deleteMessage('payments', message.ReceiptHandle, function(err){
-							async.parallel([
-							    function(callback_1){
-							    	//Create notification
-									send_notification(payment,'payment_success',callback_1);
-							    },
-							    function(callback_2){
-							    	//Create next payment
-							    	create_next_payment(payment,callback_2);
-							    },
-							], function(err){
-								db.connection.close();
-								callback();
+		if(parrot){
+			console.log({_id: payment_message.Body.parrot_id});
+			Messages.findOne({account_id: payment_message.Body.account_id}, {account_id: 0}, function (err, message){
+				oauth_twitter = oauth.create_session();
+				console.log(parrot);
+				oauth_twitter.post(
+					"https://api.twitter.com/1/statuses/update.json",
+					parrot.oauth_token, 
+					parrot.oauth_token_secret, 
+					{"status": message.text+" "+message.url}, 
+					function(err, response){
+						var payment_entry = {
+							twitter_response: JSON.parse(response),
+							action_date: new Date(),
+							account_id: payment_message.Body.account_id,
+							parrot_id: payment_message.Body.parrot_id
+						}
+						if(!err){
+							payment_entry.success = true;
+						}else{
+							payment_entry.success = false;
+						}
+						var payment = new Payments(payment_entry);
+						payment.save(function (err) {
+							queue.deleteMessage('payments', payment_message.ReceiptHandle, function(err){
+								async.parallel([
+								    function(callback_1){
+								    	//Create notification
+										send_notification(payment,'payment_success',callback_1);
+								    },
+								    function(callback_2){
+								    	//Create next payment
+								    	create_next_payment(payment,callback_2);
+								    },
+								], function(err){
+									callback();
+								});
 							});
 						});
-					});
-				}
-			);
-		});
+					}
+				);
+			});
+		}else{
+			callback();
+		}
 	});
 };
 

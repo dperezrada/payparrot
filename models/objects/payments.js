@@ -4,7 +4,7 @@ var mongoose = require('mongoose'),
 var payments_schema = new Schema({
 	success: Boolean,
 	twitter_response: String,
-	action_date: Date,
+	created_at: {type: Date, default: Date.now},
 	account_id: String,
 	parrot_id: String
 });

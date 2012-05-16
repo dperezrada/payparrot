@@ -39,7 +39,8 @@ module.exports = function(app) {
 	app.put('/accounts/:account_id/password', accounts.update_password);
 	app.get('/accounts/:account_id/credentials', accounts.get_credentials);
 	
-	app.get('/accounts/:account_id/parrots', req_auth, parrots.get_parrots);
+	//app.get('/accounts/:account_id/parrots', req_auth, parrots.get_parrots);
+	app.get('/accounts/:account_id/parrots', parrots.get_parrots);
 	
 	app.post('/accounts/:account_id/messages', messages.create);
 	app.get('/accounts/:account_id/messages', messages.list);

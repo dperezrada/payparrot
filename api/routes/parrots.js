@@ -97,7 +97,7 @@ exports.get_parrots = function(req, res){
 		var screen_name = new RegExp(querystring.screen_name,'gi'); 
 		Parrots
 			.find({'twitter_info.screen_name':screen_name})
-			.sort('_id', 1)
+			.sort('_id', 'descending')
 			.skip(querystring.from)
 			.limit(querystring.to)
 			.run(function (err, parrots){		
@@ -106,7 +106,6 @@ exports.get_parrots = function(req, res){
 					.find({'account_id':account_id})
 					.where('parrot_id').in(parrots_id_array)
 					.run( function (err, suscriptions ){
-						console.log(suscriptions);
 						var suscriptions_parrot_id_array = _.map(suscriptions, function (num, key){return num.parrot_id.toString();});
 						parrots_account = _.filter(
 							parrots, 
@@ -119,12 +118,14 @@ exports.get_parrots = function(req, res){
 					});
 			});
 	} else if( querystring.suscription_start && querystring.suscription_end ){
+		console.log(new Date(querystring.suscription_start));
+		console.log(new Date(querystring.suscription_end))
 		Suscriptions
 			.find({'account_id':account_id},{'parrot_id':1,'_id':0})
-			.sort('_id', 1)
-			.where('created_on')
-			.gte(querystring.suscription_start)
-			.lte(querystring.suscription_end)
+			.sort('_id', 'descending')
+			.where('created_at')
+			.gte(new Date(querystring.suscription_start))
+			.lte(new Date(querystring.suscription_end))
 			.skip(querystring.from)
 			.limit(querystring.to)
 			.run(function (err, suscriptions){
@@ -137,7 +138,7 @@ exports.get_parrots = function(req, res){
 	} else {
 		Suscriptions
 			.find({'account_id':account_id},{'parrot_id':1,'_id':0})
-			.sort('_id', 1)
+			.sort('_id', 'descending')
 			.skip(querystring.from)
 			.limit(querystring.to)
 			.run( function (err, suscriptions){
@@ -148,4 +149,5 @@ exports.get_parrots = function(req, res){
 				});
 			});
 	}
+
 };

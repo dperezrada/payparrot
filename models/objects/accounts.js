@@ -15,7 +15,9 @@ var accounts_schema = new Schema({
 	id: String,
 	callback_url: String,
 	notification_url: String,
-	credentials: {type: Schema.Types.Mixed, private: true}
+	credentials: {type: Schema.Types.Mixed, private: true},
+	created_at: {type: Date, default: Date.now, private: true},
+	stats: {type: Schema.Types.Mixed}
 }, {strict:true});
 
 accounts_schema.method('verify_password', function(password, callback) {

@@ -45,6 +45,9 @@ define([
       $('.pane-content',this.el).html(this.templateEdit(this.model.toJSON()));
       var a = $('#account-data').toJSON();
     },
+    render_stats: function() {
+
+    },
     saveAccount: function(event) {
       event.preventDefault();
       var data = $('#account-form-data').toJSON();

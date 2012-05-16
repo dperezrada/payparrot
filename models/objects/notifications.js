@@ -13,7 +13,8 @@ var Notifications_schema = new Schema({
 	response_headers: String,
 	response_body: String,
 	status: String,
-	type: String
+	type: String,
+	created_at: {type: Date, default: Date.now}
 });
 
 mongoose.model('Notifications', Notifications_schema);

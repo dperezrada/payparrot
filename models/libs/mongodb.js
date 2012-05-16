@@ -3,7 +3,7 @@ var mongo_url = exports.mongo_url = function(){
 	var obj = {}
 	obj.hostname = (process.env.PARROT_DB_HOST || 'localhost');
 	obj.port = (process.env.PARROT_DB_PORT || 27017);
-	obj.db = (process.env.PARROT_DB_NAME || 'payparrot_test');
+	obj.db = (process.env.PARROT_DB_NAME || 'payparrot_1');
 
 	if(process.env.PARROT_DB_USER && process.env.PARROT_DB_PASS){
 		obj.username = process.env.PARROT_DB_USER;

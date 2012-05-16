@@ -15,7 +15,7 @@ define([
     initialize: function(model){
       this.model = model;
       this.model.bind('change', this.render, this);
-      $('#account-pane .pane-content').html(this.el);
+      $('#account-pane .sub-pane').html(this.el);
       this.render();
     },
     events: {

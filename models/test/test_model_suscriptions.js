@@ -12,6 +12,7 @@ suite('Suscriptions', function(){
 
 	suite('returnJSON', function(){
 		test('getOne ', function(done){
+			var suscription = new Suscription();
 			Suscription.findOne({}, {}, function(err, result){
 				done();
 			});

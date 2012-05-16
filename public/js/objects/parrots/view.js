@@ -73,9 +73,9 @@ define([
       $('ul li.active',this.el).removeClass("active");
       $('ul li.filter-today').addClass("active");
       var today_ = new Date();
-      var today = today_.getFullYear()+"-"+today_.getMonth()+"-"+today_.getDate();
-      var tomorrow_ = new Date(today_.getFullYear(),today_.getMonth(),today_.getDate()+1);
-      var tomorrow = tomorrow_.getFullYear()+"-"+tomorrow_.getMonth()+"-"+tomorrow_.getDate();
+      var today = today_.getFullYear()+"-"+(today_.getMonth()+1)+"-"+today_.getDate();
+      var tomorrow_ = new Date(today_.getFullYear(),today_.getMonth(),(today_.getDate()+1));
+      var tomorrow = tomorrow_.getFullYear()+"-"+(tomorrow_.getMonth()+1)+"-"+tomorrow_.getDate();
       this.collection.query_params = {};
       this.collection.setParams({
         suscription_start: today,
@@ -88,9 +88,9 @@ define([
       $('ul li.filter-thisweek').addClass("active");
       var today_ = new Date();
       var start_ = new Date(today_.getFullYear(),today_.getMonth(),today_.getDate()-(today_.getDay()-1));
-      var start = start_.getFullYear()+"-"+start_.getMonth()+"-"+start_.getDate();
+      var start = start_.getFullYear()+"-"+(start_.getMonth()+1)+"-"+start_.getDate();
       var end_ = new Date(start_.getFullYear(),start_.getMonth(),start_.getDate()+7);
-      var end = end_.getFullYear()+"-"+end_.getMonth()+"-"+end_.getDate();
+      var end = end_.getFullYear()+"-"+(end_.getMonth()+1)+"-"+end_.getDate();
       this.collection.query_params = {};
       this.collection.setParams({
         suscription_start: start,

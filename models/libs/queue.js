@@ -35,10 +35,10 @@ exports.getMessage = function(queue, callback){
 exports.deleteMessage = function(queue, receipt_handle, callback){
 	sqs = aws.createSQSClient(awsKey, awsPrivateKey, {'path': queues_urls[queue]});
 	sqs.call ( "DeleteMessage", {'ReceiptHandle': receipt_handle}, function (err, message) {
-		if(!err){
-			callback(null);
+		if(err || message.Error){
+			callback(message.Error);
 		}else{
-			callback(err);
+			callback(null);
 		}
 	});
 }
