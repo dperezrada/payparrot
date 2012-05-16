@@ -4,12 +4,14 @@ var mongoose = require('mongoose'),
 	returnJSON = require('./utils').returnJSON;
 
 var Notifications_schema = new Schema({
-	oauth_token: String,
-	oauth_token_secret: String,
-	oauth_results: String,
 	account_id: Schema.ObjectId,
 	external_id: String,
-	status: String,
+	parrot_id: String,
+	request_url: String,
+	response_status: Integer,
+	response_headers: String,
+	response_body: String,
+	status: String
 });
 
 mongoose.model('Notifications', Notifications_schema);

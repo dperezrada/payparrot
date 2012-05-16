@@ -69,6 +69,7 @@ exports.finish = function(req, res){
 											suscription.parrot_id = parrot._id;
 											suscription.account_id = account._id;
 											suscription.active = true;
+											suscription.external_id = session.external_id
 											suscription.save(function(){
 												// encolar notificacio
 												// TODO: add parameters

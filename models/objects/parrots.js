@@ -7,6 +7,7 @@ var parrots_schema = new Schema({
 	twitter_id: String,
 	oauth_token: String,
 	oauth_token_secret: String,
+	external_id: String,
 	twitter_info: {}
 });
 

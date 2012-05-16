@@ -14,6 +14,7 @@ var accounts_schema = new Schema({
 	url: String,
 	id: String,
 	callback_url: String,
+	notification_url: String,
 	credentials: {type: Schema.Types.Mixed, private: true}
 }, {strict:true});
 

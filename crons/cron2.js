@@ -8,8 +8,6 @@ var	_ = require('underscore'),
 	oauth = require('payparrot_models/libs/twitter_oauth.js'),
 	db = require('payparrot_models/libs/mongodb').connect();
 	
-var has_messages = true;
-
 var send_notification = function(payment, notification_type, callback){
 	console.log("Sending notification");
 	queue.createMessage('notifications', {
@@ -78,7 +76,6 @@ process_payment = function(payment_message, callback){
 								db.connection.close();
 								callback();
 							});
-							//callback();
 						});
 					});
 				}
@@ -86,6 +83,8 @@ process_payment = function(payment_message, callback){
 		});
 	});
 };
+
+var has_messages = true;
 
 async.whilst(
     function () { return has_messages; },
