@@ -6,11 +6,11 @@ define([
     defaults: {
     	twitter_info: {
        screen_name: '',
-       picture_url: '',
-       avatar_url: '',
+       profile_image_url: '',
+       name: '',
+       description: '',
       },
     	id: '',
-      subscription_date: '',
       payments: []
     },
   });

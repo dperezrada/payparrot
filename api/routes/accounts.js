@@ -7,6 +7,7 @@ exports.create = function(req, res){;
 	var current_date = (new Date()).valueOf().toString();
 	var random = Math.random().toString();
 	account.credentials = {'public_token': crypto.createHash('sha1').update(current_date + random).digest('hex')};
+	account.create_password(req.body.password); 
 	account.save(function(){
 		res.statusCode = 201;
 		res.send({id: account._id});
@@ -26,6 +27,9 @@ exports.get = function(req, res){
 exports.update = function(req, res){
 	Accounts.findOne({_id: req.params.account_id}, {}, function (err, account){
 		_.extend(account,req.body);
+		if(req.body.password){
+			account.create_password(req.body.password);
+		}
 		account.save(function(){
 			res.statusCode = 204;
 			res.send();
@@ -41,14 +45,10 @@ exports.get_credentials = function(req, res){
 };
 
 exports.logged = function(req, res){
-	res.send(req.user);
+	// res.redirect('/app.html');
+	res.render('redirect_app.ejs');
 };
 
 exports.login = function(req, res){
 	res.render('login.ejs');
-};
-
-exports.get_parrots = function(req, res){
-	var user = req.user.returnJSON();
-	//Accounts.find({'_id:'}).sort('_id', 1).skip(from).limit(to)
 };

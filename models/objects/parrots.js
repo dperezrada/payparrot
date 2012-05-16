@@ -7,14 +7,17 @@ var parrots_schema = new Schema({
 	twitter_id: String,
 	oauth_token: String,
 	oauth_token_secret: String,
-	external_id: String,
-	twitter_info: {}
+	created_on: Date,
+	twitter_info: {},
+	tweets: {},
+	id: String
 });
 
 mongoose.model('Parrots', parrots_schema);
 module.exports = Parrots = mongoose.model('Parrots');
 
 Parrots.prototype.returnJSON = returnJSON;
+
 
 
 // doc = { twitter_id:  '27193612', oauth_token: 'lalalala', oauth_token_secret: 'lelelele' };

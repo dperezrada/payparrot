@@ -46,7 +46,7 @@
             <ul id='navbar' class="nav">
               <li class="active"><a href="#/account">Dashboard</a></li>
 				      <li><a href="#/parrots">Parrots</a></li>
-				      <li><a href="#/analytics">Analytics</a></li>
+				      <li><a data-toggle="modal" href="#analytics">Analytics</a></li>
 				      <li class="dropdown">
 				        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Help <b class="caret"></b></a>
 			          <ul class="dropdown-menu">
@@ -57,10 +57,10 @@
             </ul>
           	<ul class="nav pull-right">
 	            <li class="dropdown">
-	              <a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account <b class="caret"></b></a>
+	              <a href="#" class="dropdown-toggle" data-toggle="dropdown">My account <b class="caret"></b></a>
 	              <ul class="dropdown-menu">
-	                <li><a href="#">Billing</a></li>
-	                <li><a href="#">Logout</a></li>
+	                <!-- <li><a href="javascript:void(0);" class="muted">Billing</a></li> -->
+	                <li><a href="/logout">Logout</a></li>
 	              </ul>
 	            </li>
           	</ul>
@@ -109,7 +109,21 @@
       <div id='parrots-pane' class='pane'>
         <div class="pane-content">asdasd</div>
 
-      </div>      
+      </div>
+
+      
+      <div id='analytics' class='modal fade' style="display:none">
+        <div class="modal-header">
+          <button class="close" data-dismiss="modal">×</button>
+          <h3>Coming soon!</h3>
+        </div>
+        <div class="modal-body">
+          <p>Analytics and performance for your messages are coming soon. We are working hard to bring this feature to life in the next weeks.</p>
+        </div>
+        <div class="modal-footer">
+          <a href="#" class="btn" data-dismiss="modal">Close</a>
+        </div>
+      </div>
 
 	<footer>
     	<hr>

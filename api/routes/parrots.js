@@ -84,4 +84,68 @@ exports.finish = function(req, res){
 				});
 		});
 	});
-}
+};
+
+exports.get_parrots = function(req, res){
+	var account_id = req.params.account_id;
+	var querystring = req.query;
+	
+	if( !querystring.from ) { querystring.from = 0; }
+	if( !querystring.to ) { querystring.to = querystring.from+9}
+	
+	if ( querystring.screen_name ){
+		var screen_name = new RegExp(querystring.screen_name,'gi'); 
+		Parrots
+			.find({'twitter_info.screen_name':screen_name})
+			.sort('_id', 1)
+			.skip(querystring.from)
+			.limit(querystring.to)
+			.run(function (err, parrots){		
+				var parrots_id_array = _.map(parrots, function (num, key){return num._id;});				
+				Suscriptions
+					.find({'account_id':account_id})
+					.where('parrot_id').in(parrots_id_array)
+					.run( function (err, suscriptions ){
+						console.log(suscriptions);
+						var suscriptions_parrot_id_array = _.map(suscriptions, function (num, key){return num.parrot_id.toString();});
+						parrots_account = _.filter(
+							parrots, 
+							function (parrot){
+								return _.indexOf(suscriptions_parrot_id_array,parrot._id.toString()) >= 0 
+							}
+						);
+						parrots_account = _.map(parrots_account, function (num, key){num.id = num._id.toString(); delete num._id; return num});
+						res.send(parrots_account);
+					});
+			});
+	} else if( querystring.suscription_start && querystring.suscription_end ){
+		Suscriptions
+			.find({'account_id':account_id},{'parrot_id':1,'_id':0})
+			.sort('_id', 1)
+			.where('created_on')
+			.gte(querystring.suscription_start)
+			.lte(querystring.suscription_end)
+			.skip(querystring.from)
+			.limit(querystring.to)
+			.run(function (err, suscriptions){
+				var suscriptions_parrot_id_array = _.map(suscriptions, function (num, key){return num.parrot_id.toString();});
+				Parrots.find().where('_id').in(suscriptions_parrot_id_array).run(function (err, parrots){
+					parrots = _.map(parrots, function (num, key){num.id = num._id.toString(); delete num._id; return num});
+					res.send(parrots);
+				});
+			});
+	} else {
+		Suscriptions
+			.find({'account_id':account_id},{'parrot_id':1,'_id':0})
+			.sort('_id', 1)
+			.skip(querystring.from)
+			.limit(querystring.to)
+			.run( function (err, suscriptions){
+				suscriptions = _.map(suscriptions, function (num, key){return num.parrot_id;});
+				Parrots.find().where('_id').in(suscriptions).run(function (err, parrots){
+					parrots = _.map(parrots, function (num, key){num.id = num._id.toString(); delete num._id; return num});
+					res.send(parrots);
+				});
+			});
+	}
+};

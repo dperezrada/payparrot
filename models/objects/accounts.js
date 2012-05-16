@@ -27,27 +27,22 @@ accounts_schema.method('verify_password', function(password, callback) {
   }
 });
 
+accounts_schema.method('create_password', function(password, callback) {
+	this.salt = Math.random().toString();
+  	this.password = crypto.createHash('sha1').update(this.salt + password).digest('hex');
+});
+	
+
 accounts_schema.static('authenticate', function(email, password, callback) {
 	this.findOne({ email: email }, function(err, account) {
   		if (err) { return callback(err); }
   		if (!account) { return callback(null, false); }
-  		account.verify_password(password, function(err, passwordCorrect) {
-  			if (err) { return callback(err); }
+		account.verify_password(password, function(err, passwordCorrect) {
+			if (err) { return callback(err); }
   			if (!passwordCorrect) { return callback(null, false); }
-  			return callback(null, account);
+  				return callback(null, account);
   		});
   	});
-});
-
-// TODO: Check problem with redefine
-accounts_schema.pre('save', function(next){
-	var current_date = (new Date()).valueOf().toString();
-	var random = Math.random().toString();
-	if(this.password){
-		this.salt = random;
-  		this.password = crypto.createHash('sha1').update(this.salt + this.password).digest('hex');
-  	}
-	next();
 });
 
 mongoose.model('Accounts', accounts_schema);

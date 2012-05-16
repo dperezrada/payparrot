@@ -47,7 +47,14 @@ define([
                 $("#navbar a[href='#/account']").parent().addClass('active');
 
                 // accountView is bind to model:change -> render();
-                Models.accountModel.fetch({});
+                Models.accountModel.fetch({
+                  async:false,
+                  success: function(modele, response) {
+                  },
+                  error: function(modele, response) {
+                    window.location='/login';
+                  }                  
+                });
               },
               showParrots: function() {
                 $('.pane').hide();
@@ -57,7 +64,8 @@ define([
                 $("#navbar a[href='#/parrots']").parent().addClass('active');
 
                 if (typeof Collections.parrots != "undefined") {
-                  Collections.parrots.fetch({});                             
+                  Collections.parrots.query_params = {};
+                  Collections.parrots._fetch();
                 } else {
                   Collections.parrots = new ParrotsCollection([],Models.accountModel);
                   Views.parrots = new ParrotsView(Collections.parrots);
