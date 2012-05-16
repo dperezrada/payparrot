@@ -8,10 +8,12 @@ var Notifications_schema = new Schema({
 	external_id: String,
 	parrot_id: String,
 	request_url: String,
-	response_status: Integer,
+	// Integer doesn't exists. Needs to be forced as integer? Or just a Number?
+	response_status: Number,
 	response_headers: String,
 	response_body: String,
-	status: String
+	status: String,
+	type: String
 });
 
 mongoose.model('Notifications', Notifications_schema);
