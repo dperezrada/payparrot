@@ -120,7 +120,7 @@ exports.get_parrots = function(req, res){
 		var screen_name = new RegExp(querystring.screen_name,'gi'); 
 		Parrots
 			.find({'twitter_info.screen_name':screen_name})
-			.sort('_id', 1)
+			.sort('_id', 'descending')
 			.skip(querystring.from)
 			.limit(querystring.limit)
 			.run(function (err, parrots){		
@@ -143,7 +143,7 @@ exports.get_parrots = function(req, res){
 	} else if( querystring.suscription_start && querystring.suscription_end ){
 		Suscriptions
 			.find({'account_id':account_id},{'parrot_id':1,'_id':0})
-			.sort('_id', 1)
+			.sort('_id', 'descending')
 			.where('created_on')
 			.gte(querystring.suscription_start)
 			.lte(querystring.suscription_end)
@@ -158,7 +158,7 @@ exports.get_parrots = function(req, res){
 	} else {
 		Suscriptions
 			.find({'account_id':account_id},{'parrot_id':1,'_id':0})
-			.sort('_id', 1)
+			.sort('_id', 'descending')
 			.skip(querystring.from)
 			.limit(querystring.to)
 			.run( function (err, suscriptions){
@@ -168,4 +168,5 @@ exports.get_parrots = function(req, res){
 				});
 			});
 	}
+
 };

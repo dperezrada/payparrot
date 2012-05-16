@@ -8,7 +8,8 @@ var suscriptions_schema = new Schema({
 	account_id: Schema.ObjectId,
 	active: {type: Boolean, default: false},
 	notified: {type: Boolean, default: false},
-	first_tweet: {type: Boolean, default: false}
+	first_tweet: {type: Boolean, default: false},
+	created_on: Date
 });
 
 mongoose.model('Suscriptions', suscriptions_schema);

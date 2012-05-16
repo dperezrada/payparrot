@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
-var Accounts = require('../models/accounts.js');
+var Accounts = require('../models/accounts.js'),
+	Parrots = require('../models/parrots.js'),
+	Suscriptions = require('../models/suscriptions.js');
 var _ = require('underscore');
 var crypto = require('crypto');
 
@@ -14,14 +16,58 @@ exports.create = function(req, res){
 	});
 };
 
+// var today_parrots_array = _.map(suscriptions, 
+// 										function (num, key){
+// 											var created_on = new Date(num.created_on.getFullYear(), num.created_on.getMonth(), num.created_on.getDate());
+// 											var today = new Date();
+// 											today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+// 											if((today - created_on) == 0){
+// 												return num;
+// 											} 
+// 										});
+// 				var today_parrots = today_parrots_array.length();
+// 				var parrots_id_array = _.map(suscriptions, function (num, key){ return num.parrot_id });
+// 				Tweets.find().where('parrot_id').in(parrots_id_array).run(function (err, tweets){
+					
+// 				});
+
 exports.get = function(req, res){
-	if(req.params.account_id == 'me'){
-		res.send(req.user.returnJSON());
-	}else{
-		Accounts.findOne({_id: req.params.account_id}, {}, function (err, account){
-			res.send(account.returnJSON());
-		});
+	var account_id = req.params.account_id;
+	if(account_id == 'me'){
+		var user = req.user.returnJSON();
+		var account_id = user.id;
 	}
+	Accounts.findOne({'_id': account_id}, {}, function (err, account){
+			account.stats = {};
+			Suscriptions
+			.count({'account_id':account._id,'active':1})
+			.run(function (err, suscriptions){
+				account.stats.parrots_total = suscriptions;
+				var date_start = new Date();
+				date_start = new Date(date_start.getFullYear(), date_start.getMonth(), date_start.getDate());
+				var date_end = new Date(date_start.getFullYear(), date_start.getMonth(), date_start.getDate()+1); 
+				Suscriptions
+				.count({'account_id':account._id,'active':1})
+				.where('created_on')
+				.gte(date_start)
+				.lte(date_end)
+				.run(function (err, suscriptions_today){
+					account.stats.parrots_today = suscriptions_today;
+					Tweets
+					.count({'account_id':account._id})
+					.run(function (err, tweets_total){
+						account.stats.tweets_total = tweets_total;
+						Tweets
+						.count({'account_id':account._id})
+						.where('created_on')
+						.gte(date_start)
+						.lte(date_end)
+					})
+				});
+ 			});
+			
+		}
+	);
 };
 
 exports.update = function(req, res){
