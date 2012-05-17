@@ -4,6 +4,7 @@ var	_ = require('underscore'),
 	Parrots = require('payparrot_models/objects/parrots.js'),
 	Messages = require('payparrot_models/objects/messages.js'),
 	Payments = require('payparrot_models/objects/payments.js'),
+	Suscriptions = require('payparrot_models/objects/suscriptions.js')
 	NextPayments = require('payparrot_models/objects/next_payments.js'),
 	oauth = require('payparrot_models/libs/twitter_oauth.js'),
 	db = require('payparrot_models/libs/mongodb').connect();
@@ -42,10 +43,10 @@ var create_next_payment = function(last_payment, callback){
 process_payment = function(payment_message, callback){
 	Parrots.findOne({_id: payment_message.Body.parrot_id}, {account_id: 0}, function (err, parrot){
 		if(parrot){
-			console.log({_id: payment_message.Body.parrot_id});
+			//console.log({_id: payment_message.Body.parrot_id});
 			Messages.findOne({account_id: payment_message.Body.account_id}, {account_id: 0}, function (err, message){
 				oauth_twitter = oauth.create_session();
-				console.log(parrot);
+				//console.log(parrot);
 				oauth_twitter.post(
 					"https://api.twitter.com/1/statuses/update.json",
 					parrot.oauth_token, 
@@ -56,7 +57,8 @@ process_payment = function(payment_message, callback){
 							twitter_response: JSON.parse(response),
 							action_date: new Date(),
 							account_id: payment_message.Body.account_id,
-							parrot_id: payment_message.Body.parrot_id
+							parrot_id: payment_message.Body.parrot_id,
+							MessageId: payment_message.MessageId
 						}
 						if(!err){
 							payment_entry.success = true;
@@ -65,20 +67,48 @@ process_payment = function(payment_message, callback){
 						}
 						var payment = new Payments(payment_entry);
 						payment.save(function (err) {
-							queue.deleteMessage('payments', payment_message.ReceiptHandle, function(err){
-								async.parallel([
-								    function(callback_1){
-								    	//Create notification
-										send_notification(payment,'payment_success',callback_1);
-								    },
-								    function(callback_2){
-								    	//Create next payment
-								    	create_next_payment(payment,callback_2);
-								    },
-								], function(err){
-									callback();
+							if(payment_entry.success){
+								queue.deleteMessage('payments', payment_message.ReceiptHandle, function (err){
+									console.log("Payment succeeded");
+									async.parallel([
+									    function(callback_1){
+									    	//Create notification
+											send_notification(payment,'payment_success',callback_1);
+									    },
+									    function(callback_2){
+									    	//Create next payment
+									    	create_next_payment(payment,callback_2);
+									    },
+									], function(err){
+										callback();
+									});
 								});
-							});
+							}else{
+								// callback();
+								// Get attempt from DB
+								console.log("Failed");
+								Payments.count({MessageId: payment_message.MessageId},function(err,count) {
+									Suscriptions.findOne({account_id: payment.account_id, parrot_id: payment.parrot_id},function(err,suscription){
+										if (suscription) {
+											if(count >= 3){
+												console.log("Attempt "+count);
+												suscription.active = 0;
+												suscription.save(function() {
+													//TODO send_notification failed
+													queue.deleteMessage('payments', payment_message.ReceiptHandle, function (err){
+														send_notification(payment,'suscription_deactivated',function(){
+															callback();
+														});														
+													});													
+												});
+											} else {
+												console.log("Attempt "+count);
+											 	callback();
+											}
+										}
+									});
+								});
+							}
 						});
 					}
 				);

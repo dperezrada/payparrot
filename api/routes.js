@@ -9,8 +9,8 @@ var messages    = require('./routes/messages')
 
 function req_auth(req, res, next) {
   if ( req.isAuthenticated() ) { 
-  	if(req.params.length > 0){
-		if(req.user._id == req.params.account_id){
+  	if(req.params && req.params.account_id){
+		if(req.user._id == req.params.account_id || req.params.account_id=='me'){
 			return next();
 		}else{
 			res.redirect('/forbidden');
