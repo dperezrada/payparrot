@@ -19,7 +19,6 @@ function req_auth(req, res, next) {
 		return next();
 	} 
   }else{
-  	console.log(req.query);
   	if(req.query.token && req.query.account_id){
   		console.log(req.query);
   		accounts.token_auth(req, res, next);
