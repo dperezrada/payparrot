@@ -8,7 +8,7 @@
     <meta name="author" content="">
 
     <!-- Le styles -->
-    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
     <script data-main="js/main" src="js/libs/require.min.js"></script>
     <style>
       body {
@@ -39,72 +39,61 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#">PayParrot</a>
+          <a class="brand" href="#" style="padding:5px 10px;">
+          	<img src="/img/logo.png">
+          </a>
           <div class="nav-collapse">
-            <ul class="nav">
-              <li class="active"><a href="#">My Account</a></li>
-              <li><a href="#about">Parrots</a></li>
-              <li><a href="#contact">Analytics</a></li>
+            <ul id='navbar' class="nav">
+              <li class="active"><a href="#/account">Dashboard</a></li>
+				      <li><a href="#/parrots">Parrots</a></li>
+				      <li><a data-toggle="modal" href="#analytics">Analytics</a></li>
+				      <li class="dropdown">
+				        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Help <b class="caret"></b></a>
+			          <ul class="dropdown-menu">
+			            <li><a href="#">Documentation</a></li>
+			            <li><a href="#">Support</a></li>
+			          </ul>
+				      </li>
             </ul>
+          	<ul class="nav pull-right">
+	            <li class="dropdown">
+	              <a href="#" class="dropdown-toggle" data-toggle="dropdown">My account <b class="caret"></b></a>
+	              <ul class="dropdown-menu">
+	                <!-- <li><a href="javascript:void(0);" class="muted">Billing</a></li> -->
+	                <li><a href="/logout">Logout</a></li>
+	              </ul>
+	            </li>
+          	</ul>
           </div><!--/.nav-collapse -->
         </div>
       </div>
     </div>
 
     <div class="container">
-  		<div class="alert">
-  			<div class="row">
-      			<div class="span12">
-      				<div class="row">
-		      			<div class="span5">
-		      				<strong>Warning!</strong> Your account is in test mode
-		      			</div>
-		      			<div class="span3 offset4" style="">
-		      				<div style="padding-left:20px;text-align:center">
-		      					<button class="btn btn-small">Move to production mode</button>
-		      				</div>
-		      			</div>
-	      			</div>
-      			</div>
-  			</div>
-  		</div>
     	<div id='account-pane' class='pane'>
-<!-- 	    <h1>Your account</h1>
-  		<p>Set up your personal information, payment messages, and billing information</p> -->
-      		<div class="row" style="text-align:center;">
-      			<div class="span3">
-      				<div class="well">
-	      				<h1>42</h1>
-	      				<h4>Total Parrots</h4>
-      				</div>
-      			</div>
-      			<div class="span3">
-      				<div class="well">
-	      				<h1>3</h1>
-	      				<h4>Parrots subscribed today</h4>
-      				</div>
-      			</div>
-      			<div class="span3">
-      				<div class="well">
-	      				<h1>156</h1>
-	      				<h4>Total tweets</h4>
-      				</div>
-      			</div>
-      			<div class="span3">
-      				<div class="well">
-	      				<h1>13</h1>
-	      				<h4>Tweets today</h4>
-      				</div>
-      			</div>
-      		</div>
-			<ul class="nav nav-tabs" id='account-tabs'>
-			  <li class="active"><a href="#profile" data-toggle="tab"><i class="icon-user"></i> Profile</a></li>
-			  <li><a href="#messages" data-toggle="tab"><i class="icon-envelope"></i> Messages</a></li>
-			  <li><a href="#pay-button" data-toggle="tab"><i class="icon-shopping-cart"></i> Pay Button</a></li>
-			  <li><a href="#notifications" data-toggle="tab"><i class="icon-signal"></i> Notifications</a></li>
-			</ul>
-			<div class='pane-content'></div>
+          <div class='pane-content'>
+
+          </div>
     	</div>
+
+      <div id='parrots-pane' class='pane'>
+        <div class="pane-content">asdasd</div>
+
+      </div>
+
+      
+      <div id='analytics' class='modal fade' style="display:none">
+        <div class="modal-header">
+          <button class="close" data-dismiss="modal">×</button>
+          <h3>Coming soon!</h3>
+        </div>
+        <div class="modal-body">
+          <p>Analytics and performance for your messages are coming soon. We are working hard to bring this feature to life in the next weeks.</p>
+        </div>
+        <div class="modal-footer">
+          <a href="#" class="btn" data-dismiss="modal">Close</a>
+        </div>
+      </div>
 
 	<footer>
     	<hr>

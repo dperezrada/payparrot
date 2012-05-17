@@ -1,6 +1,5 @@
-var mongoose = require('mongoose');
-var Messages = require('../models/messages');
-var Accounts = require('../models/accounts');
+var Messages = require('payparrot_models/objects/messages');
+var Accounts = require('payparrot_models/objects/accounts');
 var _ = require('underscore');
 
 exports.create = function(req, res){

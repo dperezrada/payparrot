@@ -22,7 +22,7 @@ define([
       this.collection.bind('reset', this.render, this);
       this.collection.bind('add', this.render, this);
       this.collection.fetch();
-      $('#account-pane .pane-content').html(this.el);
+      $('#account-pane .sub-pane').html(this.el);
       // this.render();
     },
     events: {

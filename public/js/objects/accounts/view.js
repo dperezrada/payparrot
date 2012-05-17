@@ -7,9 +7,11 @@ define([
   'libs/text!./template.html',
   'libs/text!./templateEdit.html',
   './messages/view',
-  './credentialsModel'
+  './notifications/view',
+  './credentialsModel',
+  './paybutton/view'
 
-], function($, _, Backbone, accountTemplate, accountTemplateEdit,messagesView,CredentialsModel){
+], function($, _, Backbone, accountTemplate, accountTemplateEdit,messagesView, NotificationsView, CredentialsModel,PaybuttonView){
   var accountListView = Backbone.View.extend({
     el: $("#account-pane"),
     template: _.template(accountTemplate),
@@ -43,6 +45,9 @@ define([
       $('.pane-content',this.el).html(this.templateEdit(this.model.toJSON()));
       var a = $('#account-data').toJSON();
     },
+    render_stats: function() {
+
+    },
     saveAccount: function(event) {
       event.preventDefault();
       var data = $('#account-form-data').toJSON();
@@ -52,10 +57,10 @@ define([
       new messagesView();
     },
     pay_button: function() {
-      console.log("holi");
+      new PaybuttonView(this.credentials_model);
     },
     notifications: function() {
-      console.log("holi");
+      new NotificationsView(this.model);
     }
   });
   return accountListView;

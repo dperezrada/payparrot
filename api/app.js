@@ -7,7 +7,7 @@ var express     = require('express')
   , accounts    = require('./routes/accounts');
 
 var app = module.exports = express.createServer();
-var Accounts = require('./models/accounts.js');
+var Accounts = require('payparrot_models/objects/accounts.js');
 //Authentication modules
 var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
@@ -28,6 +28,7 @@ passport.serializeUser(function(account, done) {
   done(null, account._id);
 });
 
+
 // deserialize account
 passport.deserializeUser(function(id, done) {
   Accounts.findOne({_id: id}, function (err, account) {
@@ -35,9 +36,7 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
-var mongoose = require('mongoose');
-var mongo_url = require('./libs/mongodb').mongo_url({});
-var db = mongoose.connect(mongo_url);
+var db = require('payparrot_models/libs/mongodb').connect();
 
 // Configuration
 app.configure(function(){

@@ -1,47 +1,76 @@
-<div class="row">
-	<div class="span6">
-		<h3>Company settings</h3><br>
-		<table class="table">
-			<tr>
-				<td>Name: </td>
-				<td><%= name %></td>
-			</tr>
-			<tr>
-				<td>E-mail: </td>
-				<td><%= email %></td>
-			</tr>
-			<tr>
-				<td>Company: </td>
-				<td><%= startup %></td>
-			</tr>
-			<tr>
-				<td>Unique identifier: </td>
-				<td><%= id %></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><button class="edit btn btn-primary">Edit</button></td>
-			</tr>
-		</table>
+<div class="row" style="text-align:center;">
+	<div class="span3">
+		<div class="well">
+			<h1 class="total-parrots"><%= stats.parrots_total %></h1>
+			<h4>Total Parrots</h4>
+		</div>
 	</div>
-	<div class="span6">
-		<h3>API Credentials</h3><br>
-		<table class="credentials table">
-			<tr>
-				<td>Public token: <br><small class="muted">For users payments actions</small> </td>
-				<td><p class="public-token muted"></p></td>
-			</tr>
-			<tr>
-				<td>Private token: <br><small class="muted">To use in your secret backend</small></br></td>
-				<td class="private-token"></td>
-			</tr>
-		</table>
+	<div class="span3">
+		<div class="well">
+			<h1 class="parrots-today"><%= stats.parrots_today %></h1>
+			<h4>Parrots subscribed today</h4>
+		</div>
+	</div>
+	<div class="span3">
+		<div class="well">
+			<h1 class="payments"><%= stats.payments_total %></h1>
+			<h4>Total payments</h4>
+		</div>
+	</div>
+	<div class="span3">
+		<div class="well">
+			<h1 class="payments-today"><%= stats.payments_today %></h1>
+			<h4>Payments today</h4>
+		</div>
 	</div>
 </div>
+<ul class="nav nav-tabs" id='account-tabs'>
+  <li class="active"><a href="#profile" data-toggle="tab"><i class="icon-user"></i> Profile</a></li>
+  <li><a href="#messages" data-toggle="tab"><i class="icon-envelope"></i> Messages</a></li>
+  <li><a href="#pay-button" data-toggle="tab"><i class="icon-shopping-cart"></i> Pay Button</a></li>
+  <li><a href="#notifications" data-toggle="tab"><i class="icon-signal"></i> Notifications</a></li>
+</ul>
 
 
-<div class="row">
-	<div class="span6">
-
+<div class="sub-pane">
+	<div class="row">
+		<div class="span6">
+			<h3>Company settings</h3><br>
+			<table class="table">
+				<tr>
+					<td>Name: </td>
+					<td><%= name %></td>
+				</tr>
+				<tr>
+					<td>E-mail: </td>
+					<td><%= email %></td>
+				</tr>
+				<tr>
+					<td>Company: </td>
+					<td><%= startup %></td>
+				</tr>
+				<tr>
+					<td>Unique identifier: </td>
+					<td><%= id %></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><button class="edit btn btn-primary">Edit</button></td>
+				</tr>
+			</table>
+		</div>
+		<div class="span6">
+			<h3>API Credentials</h3><br>
+			<table class="credentials table">
+				<tr>
+					<td>Public token:</td>
+					<td><span class="public-token"></span><br><small class="muted">For users payments actions</small> </td>
+				</tr>
+				<tr>
+					<td>Private token:</br></td>
+					<td class=""><span class="private-token"></span> <br><small class="muted">To use in your secret backend</small></td>
+				</tr>
+			</table>
+		</div>
 	</div>
 </div>
