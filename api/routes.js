@@ -5,6 +5,8 @@ var messages    = require('./routes/messages')
   , accounts    = require('./routes/accounts')
   , parrots     = require('./routes/parrots');
 
+
+
 function req_auth(req, res, next) {
   if ( req.isAuthenticated() ) { 
   	if(req.params.length > 0){
@@ -17,7 +19,12 @@ function req_auth(req, res, next) {
 		return next();
 	} 
   }else{
-  	res.redirect('/login');
+  	if(req.query.token && req.query.account_id){
+  		console.log(req.query);
+  		accounts.token_auth(req, res, next);
+  	}else{
+  		res.redirect('/login');
+  	}
   }
 }
 
@@ -37,7 +44,7 @@ module.exports = function(app) {
 	app.get('/logged', req_auth, accounts.logged);
 	
 	app.put('/accounts/:account_id/password', accounts.update_password);
-	app.get('/accounts/:account_id/credentials', accounts.get_credentials);
+	app.get('/accounts/:account_id/credentials', req_auth, accounts.get_credentials);
 	
 	//app.get('/accounts/:account_id/parrots', req_auth, parrots.get_parrots);
 	app.get('/accounts/:account_id/parrots', parrots.get_parrots);

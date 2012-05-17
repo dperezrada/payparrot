@@ -151,3 +151,21 @@ exports.logged = function(req, res){
 exports.login = function(req, res){
 	res.render('login.ejs');
 };
+
+exports.token_auth = function(req, res, next){
+	var token = req.query.token;
+	var account_id = req.query.account_id
+	Accounts.findOne({'_id':account_id,'credentials.public_token': req.query.token}, {}, function (err, account){
+		if(account){
+			if(account._id == req.params.account_id){
+				return next();
+			}else{
+				res.send({'status':'failed','message':'Trying to access to private account. This issue will be logged'});
+			}
+		}else{
+			res.send({'status':'failed','message':'invalid token or account id'})
+		}
+	});
+
+	
+}
