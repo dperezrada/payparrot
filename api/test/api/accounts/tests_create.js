@@ -16,6 +16,12 @@ describe('POST /accounts', function(){
 			'callback_url': 'http://www.epistemonikos.org'
 		}
 		test_utils.create_and_login(self.account, request, done);
+		self.account.stats = {
+			parrots_total: 0,
+			parrots_today: 0,
+			payments_total: 0,
+			payments_today: 0
+		}
 	});
 	after(function(done){
 		require('../../tear_down').remove_all(done);

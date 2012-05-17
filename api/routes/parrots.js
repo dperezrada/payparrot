@@ -1,38 +1,14 @@
-var mongoose = require('mongoose'),
-	Accounts = require('../models/accounts.js'),
-	Parrots = require('../models/parrots.js'),
-	Sessions = require('../models/sessions.js'),
-	Suscriptions = require('../models/suscriptions.js'),
+var Accounts = require('payparrot_models/objects/accounts.js'),
+	Parrots = require('payparrot_models/objects/parrots.js'),
+	Sessions = require('payparrot_models/objects/sessions.js'),
+	Suscriptions = require('payparrot_models/objects/suscriptions.js'),
 	_ = require('underscore'),
-	OAuth= require('oauth').OAuth;
-
-var oauth_session = function(){
-	twitter_config = {
-		'request_token_url': 'https://api.twitter.com/oauth/request_token',
-		'authorize_url': 'https://api.twitter.com/oauth/authorize',
-		'access_token_url': 'https://api.twitter.com/oauth/access_token',
-		'callback_url': 'http://localhost:3000/parrots/finish',
-		'consumer_key': 'lFkPrTmvjcSUD5JtrOvg',
-		'consumer_secret': 'sCxLuVAd1HnGIjdolKUqAjZaSOO7BGhViD1a7w',
-		'version': '1.0',
-		'signature': 'HMAC-SHA1'
-	};
-
-	return new OAuth(
-		twitter_config.request_token_url,
-		twitter_config.access_token_url,
-		twitter_config.consumer_key,
-		twitter_config.consumer_secret,
-		twitter_config.version,
-		twitter_config.callback_url,
-		twitter_config.signature
-	);
-};
+	oauth = require('payparrot_models/libs/twitter_oauth.js');
 
 exports.start = function(req, res){
 	Accounts.findOne({'credentials.public_token': req.query.token}, {}, function (err, account){
 		if(account){
-			var oauth_twitter = oauth_session();
+			var oauth_twitter = oauth.create_session();
 			oauth_twitter.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret, results){
 				if (error) {
 					console.log(error);
@@ -63,7 +39,7 @@ exports.start = function(req, res){
 exports.finish = function(req, res){
 	Sessions.findOne({'oauth_token': req.query.oauth_token}, {}, function (err, session){
 		Accounts.findOne({'_id': session.account_id}, {}, function (err, account){
-			var oauth_twitter = oauth_session();
+			var oauth_twitter = oauth.create_session();
 			oauth_twitter.getOAuthAccessToken(session.oauth_token,session.oauth_token_secret, req.query.oauth_verifier, 
 				function(error, oauth_access_token, oauth_access_token_secret, results){
 					if (error){
@@ -93,8 +69,9 @@ exports.finish = function(req, res){
 											suscription.parrot_id = parrot._id;
 											suscription.account_id = account._id;
 											suscription.active = true;
+											suscription.external_id = session.external_id
 											suscription.save(function(){
-												// encolar notificacion
+												// encolar notificacio
 												// TODO: add parameters
 												res.redirect(account.callback_url);
 											});
@@ -107,4 +84,70 @@ exports.finish = function(req, res){
 				});
 		});
 	});
-}
+};
+
+exports.get_parrots = function(req, res){
+	var account_id = req.params.account_id;
+	var querystring = req.query;
+	
+	if( !querystring.from ) { querystring.from = 0; }
+	if( !querystring.to ) { querystring.to = querystring.from+9}
+	
+	if ( querystring.screen_name ){
+		var screen_name = new RegExp(querystring.screen_name,'gi'); 
+		Parrots
+			.find({'twitter_info.screen_name':screen_name})
+			.sort('_id', 'descending')
+			.skip(querystring.from)
+			.limit(querystring.to)
+			.run(function (err, parrots){		
+				var parrots_id_array = _.map(parrots, function (num, key){return num._id;});				
+				Suscriptions
+					.find({'account_id':account_id})
+					.where('parrot_id').in(parrots_id_array)
+					.run( function (err, suscriptions ){
+						var suscriptions_parrot_id_array = _.map(suscriptions, function (num, key){return num.parrot_id.toString();});
+						parrots_account = _.filter(
+							parrots, 
+							function (parrot){
+								return _.indexOf(suscriptions_parrot_id_array,parrot._id.toString()) >= 0 
+							}
+						);
+						parrots_account = _.map(parrots_account, function (num, key){num.id = num._id.toString(); delete num._id; return num});
+						res.send(parrots_account);
+					});
+			});
+	} else if( querystring.suscription_start && querystring.suscription_end ){
+		console.log(new Date(querystring.suscription_start));
+		console.log(new Date(querystring.suscription_end))
+		Suscriptions
+			.find({'account_id':account_id},{'parrot_id':1,'_id':0})
+			.sort('_id', 'descending')
+			.where('created_at')
+			.gte(new Date(querystring.suscription_start))
+			.lte(new Date(querystring.suscription_end))
+			.skip(querystring.from)
+			.limit(querystring.to)
+			.run(function (err, suscriptions){
+				var suscriptions_parrot_id_array = _.map(suscriptions, function (num, key){return num.parrot_id.toString();});
+				Parrots.find().where('_id').in(suscriptions_parrot_id_array).run(function (err, parrots){
+					parrots = _.map(parrots, function (num, key){num.id = num._id.toString(); delete num._id; return num});
+					res.send(parrots);
+				});
+			});
+	} else {
+		Suscriptions
+			.find({'account_id':account_id},{'parrot_id':1,'_id':0})
+			.sort('_id', 'descending')
+			.skip(querystring.from)
+			.limit(querystring.to)
+			.run( function (err, suscriptions){
+				suscriptions = _.map(suscriptions, function (num, key){return num.parrot_id;});
+				Parrots.find().where('_id').in(suscriptions).run(function (err, parrots){
+					parrots = _.map(parrots, function (num, key){num.id = num._id.toString(); delete num._id; return num});
+					res.send(parrots);
+				});
+			});
+	}
+
+};
