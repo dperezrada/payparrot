@@ -29,7 +29,7 @@ accounts_schema.method('verify_password', function(password, callback) {
   }
 });
 
-accounts_schema.method('create_password', function(password, callback) {
+accounts_schema.method('create_password', function(password) {
 	this.salt = Math.random().toString();
   	this.password = crypto.createHash('sha1').update(this.salt + password).digest('hex');
 });

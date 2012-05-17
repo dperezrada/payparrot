@@ -10,11 +10,11 @@ exports.create = function(req, res){;
 	var current_date = (new Date()).valueOf().toString();
 	var random = Math.random().toString();
 	account.credentials = {'public_token': crypto.createHash('sha1').update(current_date + random).digest('hex')};
-	account.create_password(req.body.password); 
+	account.create_password(req.body.password);
 	account.save(function(){
-		res.statusCode = 201;
-		res.send({id: account._id});
-	});
+	res.statusCode = 201;
+	res.send({id: account._id});
+	}); 
 };
 
 // var today_parrots_array = _.map(suscriptions, 
