@@ -45,12 +45,6 @@ define([
     saveMessage: function(event) {
       event.preventDefault();
       var data = $('#message-form-data').toJSON();
-      var new_message = new messageModel(data);
-      console.log(new_message);
-      console.log(new_message.isValid('url'));
-      if (!new_message.isValid('url')) {
-        return;
-      }
       var filled = true;
       for (var param in data) {
         if (data[param]=="") {
