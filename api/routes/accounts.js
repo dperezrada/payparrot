@@ -53,9 +53,6 @@ function set_stats(account, callback) {
 			var date_start = new Date();
 			date_start = new Date(date_start.getFullYear(), date_start.getMonth(), date_start.getDate());
 			var date_end = new Date(date_start.getFullYear(), date_start.getMonth(), date_start.getDate()+1);
-			console.log(date_start);
-			console.log(date_end);
-			console.log({'account_id':account._id,'active':1});
 			Suscriptions
 			.count({'account_id':account._id,'active':1})
 			.where('created_at')
@@ -68,7 +65,7 @@ function set_stats(account, callback) {
 	    },
 		function(callback_){
 			Payments
-			.count({'account_id':account._id,'active':1})
+			.count({'account_id':account._id, 'success': true})
 			.run(function (err, payments){
 				account.stats.payments_total = payments;
 				callback_();
@@ -79,7 +76,7 @@ function set_stats(account, callback) {
 			date_start = new Date(date_start.getFullYear(), date_start.getMonth(), date_start.getDate());
 			var date_end = new Date(date_start.getFullYear(), date_start.getMonth(), date_start.getDate()+1); 
 			Payments
-			.count({'account_id':account._id,'active':1})
+			.count({'account_id':account._id, 'success': true})
 			.where('created_at')
 			.gte(date_start)
 			.lte(date_end)
