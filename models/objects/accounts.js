@@ -2,7 +2,6 @@ var mongoose = require('mongoose')
 	,Schema = mongoose.Schema
 	,_ = require('underscore')
 	,crypto = require('crypto')
-	,bcrypt = require('bcrypt')
 	,returnJSON = require('./utils').returnJSON;
 
 var accounts_schema = new Schema({
