@@ -125,8 +125,6 @@ exports.get_parrots = function(req, res){
 					});
 			});
 	} else if( querystring.suscription_start && querystring.suscription_end ){
-		console.log(new Date(querystring.suscription_start));
-		console.log(new Date(querystring.suscription_end))
 		Suscriptions
 			.find({'account_id':account_id},{'parrot_id':1,'_id':0})
 			.sort('_id', 'descending')

@@ -3,7 +3,8 @@ var passport 	= require('passport');
 
 var messages    = require('./routes/messages')
   , accounts    = require('./routes/accounts')
-  , parrots     = require('./routes/parrots');
+  , parrots     = require('./routes/parrots')
+  , potential_users     = require('./routes/potential_users');
 
 
 
@@ -62,4 +63,6 @@ module.exports = function(app) {
 	app.get('/parrots/finish', parrots.finish);
 
 	app.get('/r/:message_id_sqs', messages.route);
+	
+	app.post('/apply', potential_users.create);
 }
