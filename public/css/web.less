@@ -1,14 +1,28 @@
  @import "bootstrap/bootstrap.less";
 
 body {
-	background:#8ec8d8 url(/img/stripe_bg.png) repeat-x;
+	background:url(/img/back-1.png) repeat-x;
+	font-family: 'Duru Sans', sans-serif;
 }
 
 .header-info {
 	background:transparent;
 	text-align: center;
-	color:#fff;
-	text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+	color:#111;
+	//text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+	p {
+		font-size: 15px;
+	}
+}
+
+.fieldset {
+	border: 1px solid #ccc;
+	.box-shadow(~"1px 1px 1px rgba(255,255,255,.5)");
+	.border-radius(5px);
+	padding:30px;
+	text-align:center;
+	color:#888;
+	background: rgba(0, 0, 0, 0.1);
 }
 
 .divider {
@@ -17,3 +31,40 @@ body {
 	border-bottom:1px solid rgba(255,255,255,0.2);
 	margin: 10px 0;
 }
+
+.navbar-inner {
+  min-height: @navbarHeight;
+  padding-left:  20px;
+  padding-right: 20px;
+  #gradient > .vertical(@navbarBackgroundHighlight, @navbarBackground);
+  .box-shadow(~"0 0px 10px rgba(0,0,0,.5)");
+}
+
+.navbar .nav > li > a {
+	text-shadow: 0px 0px 0px transparent
+}
+
+@navbarHeight:                    78px;
+@navbarBackground:                #fff;
+@navbarBackgroundHighlight:       #fff;
+
+@navbarText:                      #888;
+@navbarLinkColor:                 #888;
+@navbarLinkColorHover:            red;
+@navbarLinkColorActive:           #888;
+@navbarLinkBackgroundHover:       transparent;
+@navbarLinkBackgroundActive:      #f0f0f0;
+
+@navbarSearchBackground:          lighten(@navbarBackground, 25%);
+@navbarSearchBackgroundFocus:     @white;
+@navbarSearchBorder:              darken(@navbarSearchBackground, 30%);
+@navbarSearchPlaceholderColor:    #ccc;
+
+@sansFontFamily:        "Helvetica Neue", Helvetica, Arial, sans-serif;
+@serifFontFamily:       Georgia, "Times New Roman", Times, serif;
+@monoFontFamily:        Menlo, Monaco, Consolas, "Courier New", monospace;
+@duruFontFamily:		"Duru Sans", sans-serif;
+
+@baseFontSize:          13px;
+@baseFontFamily:        @duruFontFamily;
+@baseLineHeight:        18px;
