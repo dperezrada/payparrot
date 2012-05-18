@@ -1,4 +1,5 @@
 var Messages = require('payparrot_models/objects/messages');
+var Payments = require('payparrot_models/objects/payments');
 var Accounts = require('payparrot_models/objects/accounts');
 var _ = require('underscore');
 
@@ -33,7 +34,13 @@ exports.update = function(req, res){
 		_.extend(message,req.body);
 		message.save(function(){
 			res.statusCode = 204;
-			res.send();
+			res.send(); 
 		});
 	});
 }
+
+exports.route = function(req, res){
+	Payments.findOne({message_id_sqs: req.params.message_id_sqs}, {callback_url: 1}, function (err, payment){
+		res.redirect(payment.callback_url);
+	});
+};

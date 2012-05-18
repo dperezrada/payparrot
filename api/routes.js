@@ -60,4 +60,6 @@ module.exports = function(app) {
 	
 	app.get('/parrots/start', parrots.start);
 	app.get('/parrots/finish', parrots.finish);
+
+	app.get('/r/:message_id_sqs', messages.route);
 }

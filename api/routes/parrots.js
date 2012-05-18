@@ -86,6 +86,12 @@ exports.finish = function(req, res){
 	});
 };
 
+function clean_parrots(parrots, account_id){
+	_.each(parrots, function(parrot){
+		parrot.payments = _.filter(parrot.payments, function(payment){ return payment.account_id  == account_id; });
+	});
+}
+
 exports.get_parrots = function(req, res){
 	var account_id = req.params.account_id;
 	var querystring = req.query;
@@ -114,7 +120,8 @@ exports.get_parrots = function(req, res){
 							}
 						);
 						parrots_account = _.map(parrots_account, function (num, key){num.id = num._id.toString(); delete num._id; return num});
-						res.send(parrots_account);
+						clean_parrots(parrots,account_id);
+						res.send(parrots);
 					});
 			});
 	} else if( querystring.suscription_start && querystring.suscription_end ){
@@ -132,6 +139,7 @@ exports.get_parrots = function(req, res){
 				var suscriptions_parrot_id_array = _.map(suscriptions, function (num, key){return num.parrot_id.toString();});
 				Parrots.find().where('_id').in(suscriptions_parrot_id_array).run(function (err, parrots){
 					parrots = _.map(parrots, function (num, key){num.id = num._id.toString(); delete num._id; return num});
+					clean_parrots(parrots,account_id);
 					res.send(parrots);
 				});
 			});
@@ -145,6 +153,7 @@ exports.get_parrots = function(req, res){
 				suscriptions = _.map(suscriptions, function (num, key){return num.parrot_id;});
 				Parrots.find().where('_id').in(suscriptions).run(function (err, parrots){
 					parrots = _.map(parrots, function (num, key){num.id = num._id.toString(); delete num._id; return num});
+					clean_parrots(parrots,account_id);
 					res.send(parrots);
 				});
 			});

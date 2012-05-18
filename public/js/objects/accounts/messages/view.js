@@ -8,7 +8,7 @@ define([
   'libs/text!./template_new.html',
   './view_single',
   './collection',
-  './model'
+  './model',
 
 ], function($, _, Backbone, messagesTemplate, messagesTemplateNew, messageView, messagesCollection, messageModel){
   var accountListView = Backbone.View.extend({
@@ -43,9 +43,14 @@ define([
       //$('#account-pane .pane-content> div').html(this.el);
     },
     saveMessage: function(event) {
-      console.log("holi");
       event.preventDefault();
       var data = $('#message-form-data').toJSON();
+      var new_message = new messageModel(data);
+      console.log(new_message);
+      console.log(new_message.isValid('url'));
+      if (!new_message.isValid('url')) {
+        return;
+      }
       var filled = true;
       for (var param in data) {
         if (data[param]=="") {

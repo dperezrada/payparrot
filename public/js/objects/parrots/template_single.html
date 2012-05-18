@@ -17,7 +17,7 @@
 	</div>
 	<% _.each(payments, function(payment, key) { %>
 		<div class="divider <% if (key>=1) { print("hidden")}%>"></div>
-		<div class="info <% if (key>=1) { print("hidden")}%>"><%= payment %></div>
+		<div class="info <% if (key>=1) { print("hidden")}%>"><%= payment.text %></div>
 	<% }) %>
 	<% if(payments.length > 1) { %>
 		<div class="divider show_all"></div>

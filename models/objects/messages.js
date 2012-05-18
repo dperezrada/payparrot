@@ -9,8 +9,8 @@ var messages_schema = new Schema({
 	id: String,
 	account_id: Schema.ObjectId,
 	// TODO: CHANGE to boolean
-	status: {type: String, private_access: true},
-	active: String
+	status: {type: Boolean, private_access: true},
+	active: Boolean
 });
 
 mongoose.model('Messages', messages_schema);

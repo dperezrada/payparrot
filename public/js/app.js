@@ -7,7 +7,7 @@ define([
     'objects/parrots/view',
     'objects/parrots/collection',    
     'tojson',
-    'bootstrap'
+    'bootstrap',
 ], function(_, Backbone, AccountView,AccountModel, ParrotsView, ParrotsCollection){
     return {
         initialize: function(){

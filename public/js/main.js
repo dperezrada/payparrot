@@ -4,6 +4,7 @@ require.config({
         'jquery': 'libs/jquery/jquery.min',
         'underscore': 'libs/underscore.min', // AMD support
         'backbone': 'libs/backbone.min', // AMD support
+        'backbone-validation': 'libs/backbone-validation.min', 
         'templates': '../templates',
         'bootstrap': 'libs/bootstrap.min',
         'tojson': 'libs/jquery/tojson',
