@@ -1,5 +1,5 @@
 {
-    "name": "payparrot_crons",
+    "name": "payparrot_scripts",
     "version": "0.0.1",
   	"private": true,
     "dependencies": {
