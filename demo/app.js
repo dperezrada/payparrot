@@ -4,6 +4,7 @@
  */
 var express     = require('express')
 var app = module.exports = express.createServer();
+var request = require('request');
 //Authentication modules
 var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
@@ -112,7 +113,6 @@ app.post('/login', function(req,res) {
         if (user) {
           //console.log(user);
           req.session.user = user;  
-          console.log(req.session.user);
           res.redirect('/app');
         } else {
           res.redirect('/login');
@@ -158,35 +158,48 @@ app.get('/app', req_auth, function(req,res){
 });
 
 app.get('/welcome', function(req,res){
-    var params = req.body;
+    var params = req.query;
     Users.findOne({_id: params.external_id}, function(err,user){
       if (!user) {
         res.send("Error ocurred");
       }
       user.paid = true;
+      user.external_id = params.external_id;
+      user.subscription_id = params.subscription_id;
       user.save(function(){
 
         // Logear al usuario siesque no estuviese logeado
         req.user = user;
         
         // Renderear mensaje de bienvenida
-        res.render("welcome.ejs");
+        res.render("app.ejs");
       });
     });
 });
 
 app.post('/new', function(req,res){
-  //var potential_user = new PotentialUsers();
-  var new_user = new Users();
-  new_user.name = req.body.name;
-  new_user.email = req.body.email;
-  new_user.password = req.body.password;
-  new_user.password = crypto.createHash('sha1').update(req.body.password).digest('hex');
-  new_user.paid = false;
-  new_user.save(function(){
-    res.statusCode = 201;
-    res.send({id: new_user._id});
-  });
+	//var potential_user = new PotentialUsers();
+	var new_user = new Users();
+	new_user.name = req.body.name;
+	new_user.email = req.body.email;
+	new_user.password = req.body.password;
+	new_user.password = crypto.createHash('sha1').update(req.body.password).digest('hex');
+	new_user.paid = false;
+	new_user.save(function(){
+
+        req.session.user = new_user; 
+        res.redirect('/app');
+		// request.post(
+		// 	{
+		// 		followRedirect: false,
+		// 		url: 'http://localhost:'+app.address().port+'/login',
+		// 		json: {'email': new_user.email, 'password': new_user.password}
+		// 	}, function(err, response, body){
+		// 		console.log(response);
+		//    		res.redirect(response.location);
+		// 	}
+		// );
+	});
 });
 
 app.listen(3001, function(){

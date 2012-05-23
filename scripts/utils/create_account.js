@@ -1,14 +1,14 @@
 var request = require('request');
 
-var host = 'www.payparrot.com';
+var host = 'localhost:3000';
 
 account = {
 	'email': 'demo@payparrot.com',
 	'password': 'payparrot',
 	'name': 'Demo',
 	'startup': 'Payparrot',
-	'url': 'http://demo.payparrot.com',
-	'callback_url': 'http://demo.payparrot.com/welcome'
+	'url': 'http://localhost:3001',
+	'callback_url': 'http://localhost:3001/welcome'
 }
 
 

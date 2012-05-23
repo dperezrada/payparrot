@@ -6,6 +6,7 @@ var Accounts = require('payparrot_models/objects/accounts.js'),
 	oauth = require('payparrot_models/libs/twitter_oauth.js');
 
 exports.start = function(req, res){
+	console.log({'credentials.public_token': req.query.token});
 	Accounts.findOne({'credentials.public_token': req.query.token}, {}, function (err, account){
 		if(account){
 			var oauth_twitter = oauth.create_session();
@@ -37,7 +38,9 @@ exports.start = function(req, res){
 };
 
 exports.finish = function(req, res){
+	console.log('hola');
 	Sessions.findOne({'oauth_token': req.query.oauth_token}, {}, function (err, session){
+		console.log(session);
 		Accounts.findOne({'_id': session.account_id}, {}, function (err, account){
 			var oauth_twitter = oauth.create_session();
 			oauth_twitter.getOAuthAccessToken(session.oauth_token,session.oauth_token_secret, req.query.oauth_verifier, 
@@ -73,7 +76,18 @@ exports.finish = function(req, res){
 											suscription.save(function(){
 												// encolar notificacio
 												// TODO: add parameters
-												res.redirect(account.callback_url);
+												var parameters = "";
+												var sep = "?";
+												if(account.callback_url.indexOf('?')>=0){
+													sep = "&";
+												}
+												if(session.external_id){
+													parameters = sep+"external_id="+session.external_id;
+												}
+												if(suscription._id){
+													parameters = parameters+"&subscription_id="+suscription._id.toString();
+												}
+												res.redirect(account.callback_url+parameters);
 											});
 										});
 									});
