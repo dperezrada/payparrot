@@ -6,34 +6,34 @@ var express     = require('express')
 var app = module.exports = express.createServer();
 var request = require('request');
 //Authentication modules
-var passport = require('passport')
-  , LocalStrategy = require('passport-local').Strategy;
+// var passport = require('passport')
+//   , LocalStrategy = require('passport-local').Strategy;
 
-//Defining the local strategy, may use more than one strategy, not sure how to accomplish that yet
-passport.use(new LocalStrategy({
-    usernameField: 'email'
-  },
-  function(email, password, done) {
-    // Users.authenticate(email, password, function(err, user) {
-    //   console.log(user);
-    //   return done(err, user);
-    // });
-    Users.findOne({email: email}, function(err, user) {
-      return done(err, user);
-    });
-  }
-));
+// //Defining the local strategy, may use more than one strategy, not sure how to accomplish that yet
+// passport.use(new LocalStrategy({
+//     usernameField: 'email'
+//   },
+//   function(email, password, done) {
+//     // Users.authenticate(email, password, function(err, user) {
+//     //   console.log(user);
+//     //   return done(err, user);
+//     // });
+//     Users.findOne({email: email}, function(err, user) {
+//       return done(err, user);
+//     });
+//   }
+// ));
 
-//serialize account on login
-passport.serializeUser(function(user, done) {
-  done(null, user._id);
-});
-// deserialize account
-passport.deserializeUser(function(id, done) {
-  Users.findOne({_id: id}, function (err, user) {
-    done(err, user);
-  });
-});
+// //serialize account on login
+// passport.serializeUser(function(user, done) {
+//   done(null, user._id);
+// });
+// // deserialize account
+// passport.deserializeUser(function(id, done) {
+//   Users.findOne({_id: id}, function (err, user) {
+//     done(err, user);
+//   });
+// });
 
 
 // Models
@@ -65,8 +65,6 @@ app.configure(function(){
   app.use(express.session({secret: 'payparrot FTW'}, function() {
     app.use(app.router);
   }));
-  app.use(passport.initialize());
-  app.use(passport.session());
 
   app.use(express.methodOverride());
   app.use(express.static(__dirname + '/public'));
