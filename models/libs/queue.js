@@ -1,12 +1,10 @@
 var aws = require ('aws-lib');
+var config = require('config');
 
-var awsKey = "AKIAIN47MW5VQ4RBN7TQ";
-var awsPrivateKey = "SThKjV6E8RMKNLdkHaeq4bj7QiDTu6NWGMSUOTCx";
 
-var queues_urls = {
-	'notifications': '/229116634218/notifications',
-	"payments" : "/229116634218/payments"	
-}
+var awsKey = config.aws_key;
+var awsPrivateKey = config.aws_private;
+var queues_urls = config.queues_urls;
 
 exports.createMessage = function(queue, message, callback){
 	sqs = aws.createSQSClient(awsKey, awsPrivateKey, {'path': queues_urls[queue]});

@@ -9,7 +9,10 @@ exports.create = function(req, res){;
 	var account = new Accounts(req.body);
 	var current_date = (new Date()).valueOf().toString();
 	var random = Math.random().toString();
-	account.credentials = {'public_token': crypto.createHash('sha1').update(current_date + random).digest('hex')};
+	account.credentials = {
+		'public_token': crypto.createHash('sha1').update(current_date + random).digest('hex'),
+		'private_token': crypto.createHash('sha1').update(current_date + random).digest('hex')
+	};
 	account.create_password(req.body.password);
 	account.save(function(){
 	res.statusCode = 201;
