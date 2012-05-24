@@ -5,7 +5,7 @@ exports.create_session = function(){
 		'request_token_url': 'https://api.twitter.com/oauth/request_token',
 		'authorize_url': 'https://api.twitter.com/oauth/authorize',
 		'access_token_url': 'https://api.twitter.com/oauth/access_token',
-		'callback_url': 'http://localhost:3000/parrots/finish',
+		'callback_url': 'https://payparrot.com/parrots/finish',
 		'consumer_key': 'lFkPrTmvjcSUD5JtrOvg',
 		'consumer_secret': 'sCxLuVAd1HnGIjdolKUqAjZaSOO7BGhViD1a7w',
 		'version': '1.0',
