@@ -4,8 +4,8 @@ var awsKey = "AKIAIN47MW5VQ4RBN7TQ";
 var awsPrivateKey = "SThKjV6E8RMKNLdkHaeq4bj7QiDTu6NWGMSUOTCx";
 
 var queues_urls = {
-	'notifications': '/229116634218/notifications_test',
-	"payments" : "/229116634218/payment_test"	
+	'notifications': '/229116634218/notifications',
+	"payments" : "/229116634218/payments"	
 }
 
 exports.createMessage = function(queue, message, callback){
