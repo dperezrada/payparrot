@@ -155,7 +155,7 @@ exports.login = function(req, res){
 exports.token_auth = function(req, res, next){
 	var token = req.query.token;
 	var account_id = req.query.account_id
-	Accounts.findOne({'_id':account_id,'credentials.public_token': req.query.token}, {}, function (err, account){
+	Accounts.findOne({'_id':account_id,'credentials.private_token': req.query.token}, {}, function (err, account){
 		if(account){
 			if(account._id == req.params.account_id){
 				return next();
