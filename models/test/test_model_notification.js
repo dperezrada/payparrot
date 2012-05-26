@@ -26,8 +26,10 @@ suite('Notifications', function(){
 
 	suite('Create queue message', function(){
 		test('A new message should exist in the queue ', function(){			
-			// console.log('hola');
-			// 		assert.ok(self.notification.queue_message_id);
+			assert.ok(self.notification.queue_message_id);
+		});
+		test('Status should be pending when created', function(){			
+			assert.equal('pending', self.notification.status);
 		});
 	});
 });

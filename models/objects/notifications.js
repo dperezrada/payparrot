@@ -17,7 +17,7 @@ var Notifications_schema = new Schema({
 	response_status: Number,
 	response_headers: String,
 	response_body: String,
-	status: String,
+	status: {type: String, default: 'pending'},
 	type: String,
 	created_at: {type: Date, default: Date.now},
 	queue_message_id: String
@@ -31,16 +31,16 @@ Notifications_schema.pre('save', function (next) {
 				queue.createMessage('notifications', {
 					MessageBody: JSON.stringify({'suscription_id': self.suscription_id, 'account_id': self.account_id, 'parrot_id': self.parrot_id, 'type': self.type})
 					}, function(err, result){
-						console.log(JSON.stringify({'suscription_id': self.suscription_id, 'account_id': self.account_id, 'parrot_id': self.parrot_id, 'type': self.type}));
-						console.log(err);
-						console.log(result);
+						var queue_message_id = result.SendMessageResult.MessageId;
+						if(queue_message_id){
+							self.queue_message_id = queue_message_id;
+						}
 						callback();
 					}
 				);
 			}
 		]
 		,function(err, results){
-			console.log('a')
 			next();
 		});
 	}else{
