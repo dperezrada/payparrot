@@ -1,19 +1,19 @@
 var aws = require ('aws-lib');
-var config = require('config');
+var config = require('payparrot_configs');
 
 
-var awsKey = config.aws_key;
-var awsPrivateKey = config.aws_private;
+var awsKey = config.AWS_KEY;
+var awsPrivateKey = config.AWS_PRIVATE;
 var queues_urls = config.queues_urls;
 
 exports.createMessage = function(queue, message, callback){
-	sqs = aws.createSQSClient(awsKey, awsPrivateKey, {'path': queues_urls[queue]});
+	var sqs = aws.createSQSClient(awsKey, awsPrivateKey, {'path': queues_urls[queue]});
 	sqs.call( "SendMessage", message, function (err, result) {
 		if(err || result['Error']){
-			callback('Couldnt send message');
+			callback('Couldnt send message', null);
 		}
 		else{
-			callback();
+			callback(null, result);
 		}
 	});
 };
@@ -40,8 +40,3 @@ exports.deleteMessage = function(queue, receipt_handle, callback){
 		}
 	});
 }
-
-// sqs.call ( "DeleteMessage", {'ReceiptHandle': message.ReceiveMessageResult.Message.ReceiptHandle}, function (err, deleted_message) {
-// 	console.log('\nMensaje borrado\n');
-// 	console.log(deleted_message);
-// });

@@ -21,7 +21,6 @@ describe('POST /accounts/:account_id/suscriptions', function(){
 		require('../../tear_down').remove_all(done);
 	});
 	it('should return correct suscription', function(done){
-		console.log(self.account);
 		self.suscription = {
 	        "account_id" : self.account.id, 
 	        "parrot_id" : "4fbe4b1e87812bc746000020", 

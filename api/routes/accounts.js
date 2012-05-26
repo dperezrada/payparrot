@@ -20,22 +20,6 @@ exports.create = function(req, res){;
 	}); 
 };
 
-// var today_parrots_array = _.map(suscriptions, 
-// 										function (num, key){
-// 											var created_on = new Date(num.created_on.getFullYear(), num.created_on.getMonth(), num.created_on.getDate());
-// 											var today = new Date();
-// 											today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-// 											if((today - created_on) == 0){
-// 												return num;
-// 											} 
-// 										});
-// 				var today_parrots = today_parrots_array.length();
-// 				var parrots_id_array = _.map(suscriptions, function (num, key){ return num.parrot_id });
-// 				Tweets.find().where('parrot_id').in(parrots_id_array).run(function (err, tweets){
-					
-// 				});
-
-
 function set_stats(account, callback) {
 	account.stats = {
 		parrots_total: 0,
@@ -91,22 +75,6 @@ function set_stats(account, callback) {
 	], function(err, results){
 		callback();
 	});
-
-
-
-	// 	account.stats.parrots_today = suscriptions_today;
-	// 	Tweets
-	// 	.count({'account_id':account._id})
-	// 	.run(function (err, tweets_total){
-	// 		account.stats.tweets_total = tweets_total;
-	// 		Tweets
-	// 		.count({'account_id':account._id})
-	// 		.where('created_on')
-	// 		.gte(date_start)
-	// 		.lte(date_end)
-	// 	})
-	// });
-	// });
 }
 
 exports.get = function(req, res){
