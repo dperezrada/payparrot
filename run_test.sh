@@ -21,7 +21,7 @@ sleep 1;
 echo "Running tests"
 API_TEST=`find api/test/api -name "*.js" -type f | sort`
 MODELS_TEST=`find models/test -name "*.js" -type f | sort`
-./api/node_modules/.bin/mocha --reporter spec -b -t 3500 $API_TEST
+./api/node_modules/.bin/mocha --reporter spec -b -t 35000 $API_TEST
 ./models/node_modules/.bin/mocha --ui tdd --reporter spec -b $MODELS_TEST
 
 PROCESS_ID=`ps -ef | grep "node" | grep "payparrot_test" | grep -v "grep" | awk '{print $2}'`;
