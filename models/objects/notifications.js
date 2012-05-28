@@ -29,7 +29,7 @@ Notifications_schema.pre('save', function (next) {
 		async.series([
 			function(callback){
 				queue.createMessage('notifications', {
-					MessageBody: JSON.stringify({'suscription_id': self.suscription_id, 'account_id': self.account_id, 'parrot_id': self.parrot_id, 'type': self.type})
+					MessageBody: JSON.stringify({'suscription_id': self.suscription_id, 'account_id': self.account_id, 'parrot_id': self.parrot_id, 'type': self.type, 'notification_id': self._id})
 					}, function(err, result){
 						var queue_message_id = result.SendMessageResult.MessageId;
 						if(queue_message_id){

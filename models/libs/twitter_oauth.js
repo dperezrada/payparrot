@@ -1,11 +1,12 @@
 OAuth= require('oauth').OAuth;
+var config = require('payparrot_configs');
 
 exports.create_session = function(){
 	twitter_config = {
 		'request_token_url': 'https://api.twitter.com/oauth/request_token',
 		'authorize_url': 'https://api.twitter.com/oauth/authorize',
 		'access_token_url': 'https://api.twitter.com/oauth/access_token',
-		'callback_url': 'https://payparrot.com/parrots/finish',
+		'callback_url': config.twitter_callback_url,
 		'consumer_key': 'lFkPrTmvjcSUD5JtrOvg',
 		'consumer_secret': 'sCxLuVAd1HnGIjdolKUqAjZaSOO7BGhViD1a7w',
 		'version': '1.0',

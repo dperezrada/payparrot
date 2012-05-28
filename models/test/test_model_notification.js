@@ -14,7 +14,7 @@ suite('Notifications', function(){
 			parrot_id: new mongoose.Types.ObjectId(),
 			request_url: 'localhost:3000',
 			status: 'pending',
-			type: 'subscription_activated'
+			type: 'suscription_activated'
 		};
 
 		this.notification = new Notification(this.notification_data);

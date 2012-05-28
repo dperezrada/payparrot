@@ -2,6 +2,7 @@ var Accounts = require('payparrot_models/objects/accounts.js'),
 	Parrots = require('payparrot_models/objects/parrots.js'),
 	Sessions = require('payparrot_models/objects/sessions.js'),
 	Suscriptions = require('payparrot_models/objects/suscriptions.js'),
+	Notifications = require('payparrot_models/objects/notifications.js'),
 	_ = require('underscore'),
 	oauth = require('payparrot_models/libs/twitter_oauth.js');
 
@@ -74,20 +75,31 @@ exports.finish = function(req, res){
 											suscription.active = true;
 											suscription.external_id = session.external_id
 											suscription.save(function(){
-												// encolar notificacio
-												// TODO: add parameters
-												var parameters = "";
-												var sep = "?";
-												if(account.callback_url.indexOf('?')>=0){
-													sep = "&";
-												}
-												if(session.external_id){
-													parameters = sep+"external_id="+session.external_id;
-												}
-												if(suscription._id){
-													parameters = parameters+"&subscription_id="+suscription._id.toString();
-												}
-												res.redirect(account.callback_url+parameters);
+												// encolar notificacion
+												var notification = new Notifications({
+													'account_id': account._id,
+													'parrot_id': parrot._id,
+													'type': 'suscription_activated',
+													'suscription_id': suscription._id,
+													'external_id': suscription.external_id,
+													'request_url': account.notification_url
+												});
+												notification.save(function(){
+													// TODO: add parameters
+													var parameters = "";
+													var sep = "?";
+													if(account.callback_url.indexOf('?')>=0){
+														sep = "&";
+													}
+													if(session.external_id){
+														parameters = sep+"external_id="+session.external_id;
+													}
+													if(suscription._id){
+														parameters = parameters+"&subscription_id="+suscription._id.toString();
+													}
+													parameters = parameters+"&notification_id="+notification._id;
+													res.redirect(account.callback_url+parameters);
+												});												
 											});
 										});
 									});

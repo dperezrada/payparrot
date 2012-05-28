@@ -7,6 +7,7 @@ if (process.env.PAYPARROT_ENV.toLowerCase() == "production") {
 		"notifications": "/229116634218/notifications",
 		"payments" : "/229116634218/payments"	
 	}
+	config.twitter_callback_url = 'https://payparrot.com/parrots/finish';
 } 
 
 if (process.env.PAYPARROT_ENV.toLowerCase() == "development" || !process.env.PAYPARROT_ENV) {
@@ -15,7 +16,8 @@ if (process.env.PAYPARROT_ENV.toLowerCase() == "development" || !process.env.PAY
 	config.queues_urls = {
 		"notifications": "/229116634218/notifications_test",
 		"payments" : "/229116634218/payment_test"	
-	}	
+	}
+	config.twitter_callback_url = 'http://localhost:3000/parrots/finish';	
 }
 
 if (process.env.PAYPARROT_ENV.toLowerCase() == "test") {
@@ -24,7 +26,8 @@ if (process.env.PAYPARROT_ENV.toLowerCase() == "test") {
 	config.queues_urls = {
 		"notifications": "/229116634218/notifications_test",
 		"payments" : "/229116634218/payment_test"	
-	}	
+	}
+	config.twitter_callback_url = 'http://localhost:3000/parrots/finish';		
 }
 
 module.exports = config;
