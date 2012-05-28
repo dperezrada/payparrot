@@ -160,6 +160,7 @@ app.get('/welcome', function(req,res){
     Users.findOne({_id: params.external_id}, function(err,user){
       if (!user) {
         res.send("Error ocurred");
+        return;
       }
       user.paid = true;
       user.external_id = params.external_id;
