@@ -1,0 +1,4 @@
+*.tmproj
+certs
+api/logs
+logs
