@@ -177,7 +177,6 @@ async.whilst(
 				async.forEach([message], process_payment, function(result){
 					callback();
 				});
-				// process_payment(message, callback);
 			}else{
 				console.log("no_message");
 				has_messages = false;

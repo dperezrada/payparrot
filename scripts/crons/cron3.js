@@ -57,15 +57,21 @@ notify = function(notification_message, callback){
 						json: query_data
 					}, 
 					function (error, response, body) {
-						notification.response_status = response.statusCode;
-						notification.response_headers = response.headers;
-						notification.response_body = response.body;
-						notification.status = "sent";
-						notification.save(function(){
-							queue.deleteMessage('notifications', notification_message.ReceiptHandle, function(err){
-								callback();
+						// If response start with 2XX we are ok
+						if(String(response.statusCode).indexOf("2") == 0){
+							notification.response_status = response.statusCode;
+							notification.response_headers = response.headers;
+							notification.response_body = response.body;
+							notification.status = "sent";
+							notification.save(function(){
+								queue.deleteMessage('notifications', notification_message.ReceiptHandle, function(err){
+									callback();
+								});
 							});
-						});
+						}
+						else{
+							callback();
+						}
 					}
 				);
 			} else {
