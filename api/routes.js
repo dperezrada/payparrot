@@ -5,6 +5,7 @@ var messages    = require('./routes/messages')
   , accounts    = require('./routes/accounts')
   , parrots     = require('./routes/parrots')
   , potential_users     = require('./routes/potential_users')
+  , notifications     = require('./routes/notifications')
   , suscriptions     = require('./routes/suscriptions');
 
 
@@ -68,5 +69,5 @@ module.exports = function(app) {
 	app.post('/apply', potential_users.create);
 
 
-	app.get('/suscriptions/:id_suscription/validate', suscriptions.validate);
+	app.get('/notifications/:notification_id/validate', notifications.validate);
 }

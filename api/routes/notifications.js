@@ -1,17 +1,19 @@
 Notifications = require('payparrot_models/objects/notifications.js'),
 
 exports.validate = function(req, res) {
- // 	var params = req.query
- // 	_id = 1
- // 	account_id = 2
-	// params['_id'] = req.params.id_suscription;
-	// params['account_id'] = req.params.account_id;
+	if (req.params.notification_id == "" || req.query.account_id == "") {
+		return;
+	}
 
- 	Notifications.findOne(params,function(err,suscription){
- 		if (suscription) {
+ 	Notifications.findOne({_id: req.params.notification_id, account_id: req.query.account_id},function(err,notification){
+ 		console.log(req.params.notification_id);
+ 		console.log(req.query.account_id);
+ 		if (notification) {
+ 			console.log("4");
  			res.statusCode = 200;
- 			res.send(suscription);
+ 			res.send(notification);
  		} else {
+ 			console.log("5");
  			res.statusCode = 404;
  			res.send({});
  		}
