@@ -42,7 +42,7 @@ define([
       $('#account-tabs a[href="#profile"]').tab('show'); // Select tab by name
     },
     renderEdit: function() {
-      $('.pane-content',this.el).html(this.templateEdit(this.model.toJSON()));
+      $('.sub-pane',this.el).html(this.templateEdit(this.model.toJSON()));
       var a = $('#account-data').toJSON();
     },
     render_stats: function() {

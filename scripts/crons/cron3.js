@@ -15,78 +15,73 @@ notify = function(notification_message, callback){
 		account_id:"",
 		parrot_id:"",
 		type:"",
-		external_id: ""
+		external_id: "",
+		twitter_info: "",
+		notification_id: ""
 	};
-	Suscriptions.findOne(
-		{
-			account_id: notification_message.Body.account_id,
-			parrot_id: notification_message.Body.parrot_id
-		}, {},function (err, suscription){
-			Accounts.findOne({_id: notification_message.Body.account_id}, {account_id: 0}, function (err, account){
+	// console.log(notification_message);
+	Notifications.findOne({_id: notification_message.Body.notification_id}, function (err, notification){
+		if (notification) {
+			console.log("Notificando...");
+			console.log(notification_message.Body.type);
+			switch(notification_message.Body.type){
+				case "payment_success":
+					console.log("payment_success");
+					query_data.type = "payment_success";
+					break;
+				case "payment_failed":
+					console.log("payment_failed");
+					query_data.type = "payment_failed";
+					break;
+				case "suscription_activated":
+					console.log("suscription_activated");
+					query_data.type = "suscription_activated";
+					break;
+				case "suscription_deactivated":
+					console.log("suscription_deactivated");
+					query_data.type = "suscription_deactivated";
+					break;
+				default:
+					console.log("default");
+			};
 
-				var notification = new Notifications();
-
-				switch(notification_message.Body.type){
-					case "payment_success":
-						console.log("payment_success");
-						query_data.type = "payment_success";
-						notification.type = query_data.notification_type;
-						break;
-					case "payment_failed":
-						console.log("payment_failed");
-						query_data.type = "payment_failed";
-						notification.type = query_data.notification_type;						
-						break;
-					case "suscription_activated":
-						console.log("suscription_activated");
-						query_data.type = "suscription_activated";
-						notification.type = query_data.notification_type;						
-						break;
-					case "suscription_deactivated":
-						console.log("suscription_deactivated");
-						query_data.type = "suscription_deactivated";
-						notification.type = query_data.notification_type;						
-						break;
-					default:
-						console.log("default");
-				};
-
-				if (account != null && typeof account.notification_url != "undefined") {
-					// request.post?
-
-					notification.account_id = account._id;
-					notification.external_id = suscription.external_id;
-					notification.parrot_id = suscription.parrot_id;
-					notification.request_url = account.notification_url;
-
-					query_data.suscription_id = suscription.id;
-					query_data.account_id = notification.account_id;
-					query_data.parrot_id = notification.parrot_id;
-					query_data.external_id = notification.external_id;
-
-					request.post(
-						{
-							url: account.notification_url,
-							json: query_data
-						}, 
-						function (error, response, body) {
+			if (notification_message.request_url != "") {
+				query_data.suscription_id = notification.suscription_id;
+				query_data.account_id = notification.account_id;
+				query_data.parrot_id = notification.parrot_id;
+				query_data.external_id = notification.external_id;
+				query_data.notification_id = notification._id;
+				request.post(
+					{
+						url: notification.request_url,
+						form: query_data
+					}, 
+					function (error, response, body) {
+						// If response start with 2XX we are ok
+						if(String(response.statusCode).indexOf("2") == 0){
 							notification.response_status = response.statusCode;
 							notification.response_headers = response.headers;
 							notification.response_body = response.body;
+							notification.status = "sent";
 							notification.save(function(){
 								queue.deleteMessage('notifications', notification_message.ReceiptHandle, function(err){
 									callback();
 								});
 							});
 						}
-					);					
-				} else {
-					console.log("Notification couldn't be sent");
-					callback();
-				}
-			});
+						else{
+							callback();
+						}
+					}
+				);
+			} else {
+				console.log("Notification couldn't be sent");
+				callback();
+			}
+		} else {
+			callback();
 		}
-	);
+	});
 };
 
 var has_messages = true;

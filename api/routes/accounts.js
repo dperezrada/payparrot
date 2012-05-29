@@ -20,22 +20,6 @@ exports.create = function(req, res){;
 	}); 
 };
 
-// var today_parrots_array = _.map(suscriptions, 
-// 										function (num, key){
-// 											var created_on = new Date(num.created_on.getFullYear(), num.created_on.getMonth(), num.created_on.getDate());
-// 											var today = new Date();
-// 											today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-// 											if((today - created_on) == 0){
-// 												return num;
-// 											} 
-// 										});
-// 				var today_parrots = today_parrots_array.length();
-// 				var parrots_id_array = _.map(suscriptions, function (num, key){ return num.parrot_id });
-// 				Tweets.find().where('parrot_id').in(parrots_id_array).run(function (err, tweets){
-					
-// 				});
-
-
 function set_stats(account, callback) {
 	account.stats = {
 		parrots_total: 0,
@@ -91,22 +75,6 @@ function set_stats(account, callback) {
 	], function(err, results){
 		callback();
 	});
-
-
-
-	// 	account.stats.parrots_today = suscriptions_today;
-	// 	Tweets
-	// 	.count({'account_id':account._id})
-	// 	.run(function (err, tweets_total){
-	// 		account.stats.tweets_total = tweets_total;
-	// 		Tweets
-	// 		.count({'account_id':account._id})
-	// 		.where('created_on')
-	// 		.gte(date_start)
-	// 		.lte(date_end)
-	// 	})
-	// });
-	// });
 }
 
 exports.get = function(req, res){
@@ -116,30 +84,60 @@ exports.get = function(req, res){
 		var account_id = user.id;
 	}
 	Accounts.findOne({'_id': account_id}, {}, function (err, account){
-			set_stats(account, function(){
-				res.send(account.returnJSON());
-			});
+		try {
+			if (account) {
+				set_stats(account, function(){
+					res.send(account.returnJSON());
+				});
+			} else {
+				res.statusCode = 404;
+				res.send("Not found");
+			}
+			a = account.hola;
+		} catch (err) {
+			res.statusCode = 503;
+			res.send("Error 503");
 		}
-	);
+	});
 };
 
 exports.update = function(req, res){
 	Accounts.findOne({_id: req.params.account_id}, {}, function (err, account){
-		_.extend(account,req.body);
-		if(req.body.password){
-			account.create_password(req.body.password);
+		try {
+			if (account) {
+				_.extend(account,req.body);
+				if(req.body.password){
+					account.create_password(req.body.password);
+				}
+				account.save(function(){
+					res.statusCode = 204;
+					res.send();
+				});
+			} else {
+				res.statusCode = 404;
+				res.send("Not found");
+			}
+			a = account.hola;
+		} catch (err) {
+			res.statusCode = 503;
+			res.send("Error 503");
 		}
-		account.save(function(){
-			res.statusCode = 204;
-			res.send();
-		});
 	});
 }
 
 exports.get_credentials = function(req, res){
 	Accounts.findOne({_id: req.params.account_id}, {credentials: 1}, function (err, account){								
-		res.statusCode = 200;
-		res.send(account.credentials);
+		try {
+			if (account) {
+				res.statusCode = 200;
+				res.send(account.credentials);
+			} else {
+				res.throw_error(err, 404);
+			}
+		} catch (err) {
+			res.throw_error(err, 503);
+		}
+
 	});
 };
 
@@ -156,14 +154,18 @@ exports.token_auth = function(req, res, next){
 	var token = req.query.token;
 	var account_id = req.query.account_id
 	Accounts.findOne({'_id':account_id,'credentials.private_token': req.query.token}, {}, function (err, account){
-		if(account){
-			if(account._id == req.params.account_id){
-				return next();
-			}else{
-				res.send({'status':'failed','message':'Trying to access to private account. This issue will be logged'});
+		try {
+			if (account) {
+				if(account._id == req.params.account_id){
+					return next();
+				}else{
+					res.send({'status':'failed','message':'Trying to access to private account. This issue will be logged'});
+				}
+			} else {
+				res.throw_error(err, 404);
 			}
-		}else{
-			res.send({'status':'failed','message':'invalid token or account id'})
+		} catch (err) {
+			res.throw_error(err, 503);
 		}
 	});
 

@@ -9,7 +9,8 @@ var suscriptions_schema = new Schema({
 	active: {type: Boolean, default: false},
 	notified: {type: Boolean, default: false},
 	first_tweet: {type: Boolean, default: false},
-	created_at: {type: Date, default: Date.now}
+	created_at: {type: Date, default: Date.now},
+	external_id: String
 });
 
 mongoose.model('Suscriptions', suscriptions_schema);

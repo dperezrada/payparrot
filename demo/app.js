@@ -158,20 +158,21 @@ app.get('/app', req_auth, function(req,res){
 app.get('/welcome', function(req,res){
     var params = req.query;
     Users.findOne({_id: params.external_id}, function(err,user){
-      if (!user) {
+      if (user) {
+        user.paid = true;
+        user.external_id = params.external_id;
+        user.subscription_id = params.subscription_id;
+        user.save(function(){
+
+          // Logear al usuario siesque no estuviese logeado
+          req.user = user;
+          
+          // Renderear mensaje de bienvenida
+          res.render("app.ejs");
+        });
+      } else {
         res.send("Error ocurred");
       }
-      user.paid = true;
-      user.external_id = params.external_id;
-      user.subscription_id = params.subscription_id;
-      user.save(function(){
-
-        // Logear al usuario siesque no estuviese logeado
-        req.user = user;
-        
-        // Renderear mensaje de bienvenida
-        res.render("app.ejs");
-      });
     });
 });
 
