@@ -84,30 +84,60 @@ exports.get = function(req, res){
 		var account_id = user.id;
 	}
 	Accounts.findOne({'_id': account_id}, {}, function (err, account){
-			set_stats(account, function(){
-				res.send(account.returnJSON());
-			});
+		try {
+			if (account) {
+				set_stats(account, function(){
+					res.send(account.returnJSON());
+				});
+			} else {
+				res.statusCode = 404;
+				res.send("Not found");
+			}
+			a = account.hola;
+		} catch (err) {
+			res.statusCode = 503;
+			res.send("Error 503");
 		}
-	);
+	});
 };
 
 exports.update = function(req, res){
 	Accounts.findOne({_id: req.params.account_id}, {}, function (err, account){
-		_.extend(account,req.body);
-		if(req.body.password){
-			account.create_password(req.body.password);
+		try {
+			if (account) {
+				_.extend(account,req.body);
+				if(req.body.password){
+					account.create_password(req.body.password);
+				}
+				account.save(function(){
+					res.statusCode = 204;
+					res.send();
+				});
+			} else {
+				res.statusCode = 404;
+				res.send("Not found");
+			}
+			a = account.hola;
+		} catch (err) {
+			res.statusCode = 503;
+			res.send("Error 503");
 		}
-		account.save(function(){
-			res.statusCode = 204;
-			res.send();
-		});
 	});
 }
 
 exports.get_credentials = function(req, res){
 	Accounts.findOne({_id: req.params.account_id}, {credentials: 1}, function (err, account){								
-		res.statusCode = 200;
-		res.send(account.credentials);
+		try {
+			if (account) {
+				res.statusCode = 200;
+				res.send(account.credentials);
+			} else {
+				res.throw_error(err, 404);
+			}
+		} catch (err) {
+			res.throw_error(err, 503);
+		}
+
 	});
 };
 
@@ -124,14 +154,18 @@ exports.token_auth = function(req, res, next){
 	var token = req.query.token;
 	var account_id = req.query.account_id
 	Accounts.findOne({'_id':account_id,'credentials.private_token': req.query.token}, {}, function (err, account){
-		if(account){
-			if(account._id == req.params.account_id){
-				return next();
-			}else{
-				res.send({'status':'failed','message':'Trying to access to private account. This issue will be logged'});
+		try {
+			if (account) {
+				if(account._id == req.params.account_id){
+					return next();
+				}else{
+					res.send({'status':'failed','message':'Trying to access to private account. This issue will be logged'});
+				}
+			} else {
+				res.throw_error(err, 404);
 			}
-		}else{
-			res.send({'status':'failed','message':'invalid token or account id'})
+		} catch (err) {
+			res.throw_error(err, 503);
 		}
 	});
 

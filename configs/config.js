@@ -1,4 +1,6 @@
-var config = {}
+var config = {
+	DB: {}
+}
 
 if (process.env.PAYPARROT_ENV.toLowerCase() == "production") {
 	config.AWS_KEY = "AKIAIN47MW5VQ4RBN7TQ";
@@ -8,6 +10,11 @@ if (process.env.PAYPARROT_ENV.toLowerCase() == "production") {
 		"payments" : "/229116634218/payments"	
 	}
 	config.twitter_callback_url = 'https://payparrot.com/parrots/finish';
+	config.DB.HOST = 'localhost';
+	config.DB.PORT = 27017;
+	config.DB.NAME = 'payparrot_1';
+	config.DB.USER = '';
+	config.DB.PASSWORD = '';
 } 
 
 if (process.env.PAYPARROT_ENV.toLowerCase() == "development" || !process.env.PAYPARROT_ENV) {
@@ -17,7 +24,12 @@ if (process.env.PAYPARROT_ENV.toLowerCase() == "development" || !process.env.PAY
 		"notifications": "/229116634218/notifications_test",
 		"payments" : "/229116634218/payment_test"	
 	}
-	config.twitter_callback_url = 'http://localhost:3000/parrots/finish';	
+	config.twitter_callback_url = 'http://localhost:3000/parrots/finish';
+	config.DB.HOST = 'localhost';
+	config.DB.PORT = 27017;
+	config.DB.NAME = 'payparrot_dev';
+	config.DB.USER = '';
+	config.DB.PASSWORD = '';
 }
 
 if (process.env.PAYPARROT_ENV.toLowerCase() == "test") {
@@ -27,7 +39,13 @@ if (process.env.PAYPARROT_ENV.toLowerCase() == "test") {
 		"notifications": "/229116634218/notifications_test",
 		"payments" : "/229116634218/payment_test"	
 	}
-	config.twitter_callback_url = 'http://localhost:3000/parrots/finish';		
+	config.twitter_callback_url = 'http://localhost:3000/parrots/finish';
+	config.twitter_callback_url = 'http://localhost:3000/parrots/finish';
+	config.DB.HOST = 'localhost';
+	config.DB.PORT = 27017;
+	config.DB.NAME = 'payparrot_test';
+	config.DB.USER = '';
+	config.DB.PASSWORD = '';	
 }
 
 module.exports = config;

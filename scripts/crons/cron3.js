@@ -54,7 +54,7 @@ notify = function(notification_message, callback){
 				request.post(
 					{
 						url: notification.request_url,
-						json: query_data
+						form: query_data
 					}, 
 					function (error, response, body) {
 						// If response start with 2XX we are ok
