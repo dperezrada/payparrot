@@ -4,25 +4,38 @@ var	_ = require('underscore'),
 	Parrots = require('payparrot_models/objects/parrots.js'),
 	Messages = require('payparrot_models/objects/messages.js'),
 	Payments = require('payparrot_models/objects/payments.js'),
-	Suscriptions = require('payparrot_models/objects/suscriptions.js')
+	Suscriptions = require('payparrot_models/objects/suscriptions.js'),
+	Notifications = require('payparrot_models/objects/notifications.js'),
+	Accounts = require('payparrot_models/objects/accounts.js'),
 	NextPayments = require('payparrot_models/objects/next_payments.js'),
 	oauth = require('payparrot_models/libs/twitter_oauth.js'),
 	db = require('payparrot_models/libs/mongodb').connect();
 	
 var send_notification = function(payment, notification_type, callback){
 	console.log("Sending notification");
-	queue.createMessage('notifications', {
-			MessageBody: JSON.stringify({'account_id': payment.account_id, 'parrot_id': payment.parrot_id, 'type': notification_type})
-		}, function(err){
-			if(!err){
-				callback();
-				console.log("Notification sent");
-			}else{
-				console.log("Notification error");
-				callback();
-			}
+	Suscriptions.findOne({account_id: payment.account_id, parrot_id: payment.parrot_id},function(err,suscription){
+		if (suscription) {
+			Accounts.findOne({_id: payment.account_id}, function (err, account){
+				if (account) {
+					var notification = new Notifications({
+						'account_id': payment.account_id, 
+						'parrot_id': payment.parrot_id, 
+						'type': notification_type,
+						'suscription_id': suscription._id,
+						'external_id': suscription.external_id,
+						'request_url': account.notification_url
+					});
+					notification.save(function(){
+						callback();
+					});
+				} else {
+					callback();
+				}
+			});
+		} else {
+			callback();
 		}
-	);
+	});	
 };
 
 var create_next_payment = function(last_payment, callback){
@@ -100,7 +113,7 @@ process_payment = function(payment_message, callback){
 									    	create_next_payment(payment,callback_);
 									    },
 										function(callback_){
-									    	//Create next payment
+									    	//Save current payment inside parrot object
 									    	console.log(payment.twitter_response.text);
 									    	console.log(payment.twitter_response.created_at);
 									    	parrot.payments.push({
@@ -111,7 +124,6 @@ process_payment = function(payment_message, callback){
 									    	parrot.save(function(){
 									    		callback_();	
 									    	});
-									    	//save_payment_in_parrot(payment,callback_);
 									    	
 									    },									    
 									], function(err){
@@ -165,7 +177,6 @@ async.whilst(
 				async.forEach([message], process_payment, function(result){
 					callback();
 				});
-				// process_payment(message, callback);
 			}else{
 				console.log("no_message");
 				has_messages = false;

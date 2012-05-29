@@ -4,6 +4,8 @@
  */
 var express     = require('express')
   , routes      = require('./routes')
+  , MongoStore  = require('connect-mongo')(express)
+  , config  = require('payparrot_configs')
   , accounts    = require('./routes/accounts');
 
 var app = module.exports = express.createServer();
@@ -12,6 +14,19 @@ var Accounts = require('payparrot_models/objects/accounts.js');
 var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
 
+var throw_error_middleware = function(req, res, next){
+  res.throw_error = function(error, status_code){
+    if(status_code == 503){
+      res.statusCode = 503;
+      res.send('Error 503');
+    }
+    if(status_code == 404){
+      res.statusCode = 404;
+      res.send('Error 404');
+    }    
+  }
+  next();
+}
 //Defining the local strategy, may use more than one strategy, not sure how to accomplish that yet
 passport.use(new LocalStrategy({
     usernameField: 'email'
@@ -36,7 +51,9 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
-var db = require('payparrot_models/libs/mongodb').connect();
+var mongo_lib = require('payparrot_models/libs/mongodb');
+var db = mongo_lib.connect();
+var mongo_url = mongo_lib.mongo_url;
 
 // Configuration
 app.configure(function(){
@@ -45,13 +62,25 @@ app.configure(function(){
   app.use(express.cookieParser());
   app.use(express.bodyParser());
 
-  app.use(express.session({secret: 'payparrot FTW'}, function() {
-    app.use(app.router);
-  }));
+  app.use(express.session(
+    {
+      secret: 'payparrot FTW',
+      store: new MongoStore({
+        db: config.DB.NAME,
+        collection: 'user_session_data',
+        host: config.DB.HOST,
+        port: config.DB.PORT
+      }) 
+    }, 
+    function() {
+      app.use(app.router);
+    }
+  ));
   app.use(passport.initialize());
   app.use(passport.session());
 
   app.use(express.methodOverride());
+  app.use(throw_error_middleware);
   app.use(express.static(__dirname + '/../public'));
 });
 

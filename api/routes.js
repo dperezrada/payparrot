@@ -5,6 +5,7 @@ var messages    = require('./routes/messages')
   , accounts    = require('./routes/accounts')
   , parrots     = require('./routes/parrots')
   , potential_users     = require('./routes/potential_users')
+  , notifications     = require('./routes/notifications')
   , suscriptions     = require('./routes/suscriptions');
 
 
@@ -45,16 +46,16 @@ module.exports = function(app) {
 	});
 	app.get('/logged', req_auth, accounts.logged);
 	
-	app.put('/accounts/:account_id/password', accounts.update_password);
+	app.put('/accounts/:account_id/password', req_auth, accounts.update_password);
 	app.get('/accounts/:account_id/credentials', req_auth, accounts.get_credentials);
 	
 	//app.get('/accounts/:account_id/parrots', req_auth, parrots.get_parrots);
 	app.get('/accounts/:account_id/parrots', parrots.get_parrots);
 	
-	app.post('/accounts/:account_id/messages', messages.create);
-	app.get('/accounts/:account_id/messages', messages.list);
-	app.get('/accounts/:account_id/messages/:message_id', messages.get);
-	app.put('/accounts/:account_id/messages/:message_id', messages.update);
+	app.post('/accounts/:account_id/messages', req_auth, messages.create);
+	app.get('/accounts/:account_id/messages', req_auth, messages.list);
+	app.get('/accounts/:account_id/messages/:message_id', req_auth, messages.get);
+	app.put('/accounts/:account_id/messages/:message_id', req_auth, messages.update);
 	
 	app.post('/accounts', accounts.create);
 	app.get('/accounts/:account_id', req_auth, accounts.get);
@@ -68,5 +69,5 @@ module.exports = function(app) {
 	app.post('/apply', potential_users.create);
 
 
-	app.get('/suscriptions/:id_suscription/validate', suscriptions.validate);
+	app.get('/notifications/:notification_id/validate', req_auth, notifications.validate);
 }
