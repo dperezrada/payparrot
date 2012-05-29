@@ -21,7 +21,7 @@ var queue_next_payment = function(payment, callback){
 };
 
 var get_suscription = function(payment, callback){
-	Suscriptions.findOne({'account_id': payment.account_id, 'parrot_id', payment.parrot_id}, {}, function (err, suscription){
+	Suscriptions.findOne({'account_id': payment.account_id, 'parrot_id': payment.parrot_id}, {}, function (err, suscription){
 		try{
 			if(!err && suscription){
 				payment.suscription_id = suscription._id;
@@ -41,6 +41,8 @@ NextPayments
 	.where('action_date')
 	.lte(new Date())
 	.run(function (err, next_payments){
+			console.log(next_payments);
+			console.log(new Date());
 			async.forEach(next_payments, function(item, callback){get_suscription(item, callback)}, function(err){
 				db.connection.close();
 			});

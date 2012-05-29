@@ -94,7 +94,7 @@ exports.finish = function(req, res){
 																if(account.callback_url.indexOf('?')>=0){
 																	sep = "&";
 																}
-																if(session.external_id){
+																if(typeof session.external_id != "undefined"){
 																	parameters = sep+"external_id="+session.external_id;
 																}
 																if(suscription._id){
