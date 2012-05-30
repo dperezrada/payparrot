@@ -21,7 +21,7 @@ var queue_next_payment = function(payment, callback){
 };
 
 var get_suscription = function(payment, callback){
-	Suscriptions.findOne({'account_id': payment.account_id, 'parrot_id', payment.parrot_id}, {}, function (err, suscription){
+	Suscriptions.findOne({'account_id': payment.account_id, 'parrot_id': payment.parrot_id}, {}, function (err, suscription){
 		try{
 			if(!err && suscription){
 				payment.suscription_id = suscription._id;
