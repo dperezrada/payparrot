@@ -4,7 +4,7 @@
 	Suscriptions = require('payparrot_models/objects/suscriptions.js'),
 	test_utils = require('../utils.js');
 
-describe('POST /accounts/:account_id/suscriptions', function(){
+describe('GET /accounts/:account_id/notifications/:suscription_id/validate', function(){
 	var self;
 	before(function(done){
 		self = this;
@@ -31,24 +31,29 @@ describe('POST /accounts/:account_id/suscriptions', function(){
 	// 	        "active" : true,
 	// 		}
 	// 		var suscription = new Suscriptions(self.suscription);
+	// 		
 	// 		suscription.save(function(){
 	// 			request.get({
 	// 					url: 'http://localhost:3000/accounts/'+self.account.id+'/credentials'
 	// 				}, 
 	// 				function (e, r, body){
 	// 					self.account.credentials = JSON.parse(body);
-	// 					console.log(self.account);
-	// 					var url='http://localhost:3000/suscriptions/'+suscription._id+'/validate?token='+self.account.credentials.private_token+'&account_id='+self.account.id;
-	// 					console.log(url);
 	// 					request.get({
-	// 							url: 'http://localhost:3000/suscriptions/'+suscription._id+'/validate?token='+self.account.credentials.private_token+'&account_id='+self.account.id
-	// 						}, 
+	// 							url: 'http://localhost:3000/logout'
+	// 						},
 	// 						function (e, r, body){
-	// 							assert.equal(200, r.statusCode);
-	// 							assert.deepEqual(self.suscription, JSON.parse(r.body));
-	// 							done();
+	// 							var url = 'http://localhost:3000/accounts/'+self.account.id+'/suscriptions/'+suscription._id+'/validate?token='+self.account.credentials.private_token;
+	// 							request.get({
+	// 									url: url
+	// 								}, 
+	// 								function (e, r, body){
+	// 									assert.equal(200, r.statusCode);
+	// 									assert.deepEqual(self.suscription, JSON.parse(r.body));
+	// 									done();
+	// 								}
+	// 							);					
 	// 						}
-	// 					);					
+	// 					)
 	// 				}
 	// 			);
 	// 		});

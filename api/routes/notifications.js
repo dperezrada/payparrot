@@ -6,19 +6,13 @@ exports.validate = function(req, res) {
 		return;
 	}
 	try {
-		Notifications.findOne({_id: req.params.notification_id, account_id: req.query.account_id},function(err,notification){
-			// try {
-			// 	if (notification) {
-		 			// res.statusCode = 200;
-		 			// res.send(notification);
-			// 	} else {
-			// 		res.throw_error(err, 404);
-			// 	}
-			// } catch (err) {
-			// 	res.throw_error(err, 503);
-			// }
-			res.statusCode = 200;
-		 	res.send(notification.type);		
+		Notifications.findOne({_id: req.params.notification_id, account_id: req.params.account_id},function(err,notification){
+			if (notification) {
+				res.statusCode = 200;
+	 			res.send(notification.returnJSON());
+			}else{
+				res.throw_error(err, 404);
+			}
 	 	});
 	} catch (err) {
 		res.throw_error(err, 503);

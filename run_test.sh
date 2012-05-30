@@ -38,7 +38,7 @@ if [[ $MANUAL == 1 ]]; then
 	./api/node_modules/.bin/mocha --reporter spec -b -t 50000 $MANUAL_TEST
 fi
 if [[ $API == 1 ]]; then
-	./api/node_modules/.bin/mocha --reporter spec -b -t 5000 $API_TEST
+	./api/node_modules/.bin/mocha --reporter spec -b -t 10000 $API_TEST
 fi
 if [[ $MODELS == 1 ]]; then
 	./models/node_modules/.bin/mocha --ui tdd --reporter spec -b -t 10000 $MODELS_TEST

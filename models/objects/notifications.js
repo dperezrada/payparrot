@@ -19,7 +19,7 @@ var Notifications_schema = new Schema({
 	response_body: String,
 	status: {type: String, default: 'pending'},
 	type: String,
-	created_at: {type: Date, default: Date.now},
+	created_at: {type: Date, default: Date.now, private: true},
 	queue_message_id: String
 });
 
