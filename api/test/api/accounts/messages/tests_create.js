@@ -72,7 +72,7 @@ describe('POST /accounts/:id/messages', function(){
 	});
 	it('should create a new message', function(done){
 		request.get({
-						url: 'http://localhost:3000/accounts/'+self.account_id+'/messages/'+self.messages[0].id
+						url: 'http://localhost:3000/accounts/'+self.account.id+'/messages/'+self.messages[0].id
 					}, 
 					function (e, r, body){
 						assert.equal(200,r.statusCode);
@@ -83,7 +83,7 @@ describe('POST /accounts/:id/messages', function(){
 	});
 	it('should get the correct message', function(done){
 		request.get({
-						url: 'http://localhost:3000/accounts/'+self.account_id+'/messages/'+self.messages[1].id
+						url: 'http://localhost:3000/accounts/'+self.account.id+'/messages/'+self.messages[1].id
 					}, 
 					function (e, r, body){
 						assert.equal(200,r.statusCode);

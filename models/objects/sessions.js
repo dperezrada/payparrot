@@ -13,6 +13,7 @@ var Sessions_schema = new Schema({
 });
 
 mongoose.model('Sessions', Sessions_schema);
-module.exports = Sessions = mongoose.model('Sessions');
+var Sessions = mongoose.model('Sessions');
+module.exports = Sessions;
 
 Sessions.prototype.returnJSON = returnJSON;

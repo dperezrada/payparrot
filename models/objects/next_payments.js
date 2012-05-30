@@ -8,6 +8,7 @@ var next_payments_schema = new Schema({
 });
 
 mongoose.model('NextPayments', next_payments_schema);
-module.exports = NextPayments = mongoose.model('NextPayments');
+var NextPayments = mongoose.model('NextPayments');
+module.exports = NextPayments;
 
 // payments.prototype.returnJSON = returnJSON;

@@ -9,6 +9,10 @@ suite('Suscriptions', function(){
 	setup(function(done){
 		done();
 	});
+	
+	teardown(function(done){
+		require('../../api/test/tear_down').remove_all(done);
+	});
 
 	suite('returnJSON', function(){
 		test('getOne ', function(done){

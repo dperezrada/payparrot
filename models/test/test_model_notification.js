@@ -23,9 +23,13 @@ suite('Notifications', function(){
 		});
 		self = this;
 	});
+	
+	teardown(function(done){
+		require('../../api/test/tear_down').remove_all(done);
+	});
 
 	suite('Create queue message', function(){
-		test('A new message should exist in the queue ', function(){			
+		test('A new message should exist in the queue ', function(){
 			assert.ok(self.notification.queue_message_id);
 		});
 		test('Status should be pending when created', function(){			

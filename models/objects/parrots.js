@@ -14,6 +14,7 @@ var parrots_schema = new Schema({
 });
 
 mongoose.model('Parrots', parrots_schema);
-module.exports = Parrots = mongoose.model('Parrots');
+var Parrots = mongoose.model('Parrots');
+module.exports = Parrots;
 
 Parrots.prototype.returnJSON = returnJSON;

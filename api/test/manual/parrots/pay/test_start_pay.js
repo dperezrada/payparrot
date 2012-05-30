@@ -4,7 +4,7 @@ var request = require('request'),
 
 var db = require('payparrot_models/libs/mongodb').connect();
 	Notifications = require('payparrot_models/objects/notifications.js'),
-	test_utils = require('../../utils.js');
+	test_utils = require('../../../api/utils.js');
 
 describe('GET /parrots/start', function(){
 	var self;
@@ -31,7 +31,7 @@ describe('GET /parrots/start', function(){
 							followRedirect: false
 						}, 
 						function (e, r, body){
-							console.log(r.headers.location);
+							console.log("TWITTER_URL: "+r.headers.location);
 							self.response = r;
 							self.body = body;
 							done()
@@ -40,6 +40,9 @@ describe('GET /parrots/start', function(){
 				}
 			)	
 		});
+	});
+	after(function(done){
+		require('../../../tear_down').remove_all(done);
 	});
 	
    	it('should be redirected to twitter', function(done){
@@ -54,9 +57,7 @@ describe('GET /parrots/start', function(){
 		var prompt = require('prompt');
 		prompt.start();
 		prompt.get(['notification_id'], function (err, result) {
-			console.log('notification_id: ' + result.notification_id);
 			Notifications.findOne({'_id': result.notification_id}, function(err, result){
-				console.log(result);
 				assert.ok(result.queue_message_id);
 				done();
 			});

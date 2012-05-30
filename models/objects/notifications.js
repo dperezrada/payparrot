@@ -49,7 +49,8 @@ Notifications_schema.pre('save', function (next) {
 });
 
 mongoose.model('Notifications', Notifications_schema);
-module.exports = Notifications = mongoose.model('Notifications');
+var Notifications = mongoose.model('Notifications');
+module.exports = Notifications;
 
 
 Notifications.prototype.returnJSON = returnJSON;

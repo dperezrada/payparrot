@@ -22,6 +22,10 @@ suite('Accounts', function(){
 		self = this;
 
 	});
+	
+	teardown(function(done){
+		require('../../api/test/tear_down').remove_all(done);
+	});
 
 	suite('returnJSON', function(){
 		test('Should return only public attributes ', function(){

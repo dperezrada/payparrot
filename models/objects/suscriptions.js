@@ -14,6 +14,7 @@ var suscriptions_schema = new Schema({
 });
 
 mongoose.model('Suscriptions', suscriptions_schema);
-module.exports = Suscriptions = mongoose.model('Suscriptions');
+var Suscriptions = mongoose.model('Suscriptions');
+module.exports = Suscriptions;
 
 // Suscriptions.prototype.returnJSON = returnJSON;
