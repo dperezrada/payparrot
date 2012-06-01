@@ -126,6 +126,43 @@ function clean_parrots(parrots, account_id){
 	});
 }
 
+exports.get_one = function(req,res) {
+	var account_id = req.params.account_id;
+	var parrot_id = req.params.parrot_id;
+
+	try {
+		Suscriptions.findOne({parrot_id: parrot_id, account_id: account_id}, function(err,suscription) {
+			if (suscription) {
+				res.send(suscription);
+			}
+			else {
+				res.throw_error(err, 404);		
+			}
+		});
+	} catch (err) {
+		res.throw_error(err, 503);
+	}
+}
+
+exports.remove = function(req,res) {
+	var account_id = req.params.account_id;
+	var parrot_id = req.params.parrot_id;
+
+	try {
+		Suscriptions.remove({parrot_id: parrot_id, account_id: account_id}, function(err,suscription) {
+			if (!err) {
+				res.statusCode=204;
+				res.send("");
+			}
+			else {
+				res.throw_error(err, 404);		
+			}
+		});
+	} catch (err) {
+		res.throw_error(err, 503);
+	}
+}
+
 exports.get_parrots = function(req, res){
 	var account_id = req.params.account_id;
 	var querystring = req.query;

@@ -53,13 +53,15 @@ module.exports = function(app) {
 	app.get('/accounts/:account_id/credentials', req_auth, accounts.get_credentials);
 	
 	//app.get('/accounts/:account_id/parrots', req_auth, parrots.get_parrots);
-	app.get('/accounts/:account_id/parrots', parrots.get_parrots);
+	app.get('/accounts/:account_id/parrots', req_auth, parrots.get_parrots);
+	app.get('/accounts/:account_id/parrots/:parrot_id', req_auth, parrots.get_one);	
+	app.delete('/accounts/:account_id/parrots/:parrot_id', req_auth, parrots.remove);	
 	
 	app.post('/accounts/:account_id/messages', req_auth, messages.create);
 	app.get('/accounts/:account_id/messages', req_auth, messages.list);
 	app.get('/accounts/:account_id/messages/:message_id', req_auth, messages.get);
 	app.put('/accounts/:account_id/messages/:message_id', req_auth, messages.update);
-	
+
 	app.post('/accounts', accounts.create);
 	app.get('/accounts/:account_id', req_auth, accounts.get);
 	app.put('/accounts/:account_id', req_auth, accounts.update);
