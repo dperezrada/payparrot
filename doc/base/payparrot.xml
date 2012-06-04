@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<api xmlns="http://www.ioexception.de/rest-api-doc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.ioexception.de/rest-api-doc ../xsd/rest-api-doc.xsd ">
+	<name>PayParrot API</name>
+	<version>v1</version>
+	<author>PayParrot Team</author>
+	<description>The following document describe the RESTful API of the PayParrot Service. </description>
+	<baseuri>http://payparrot.com</baseuri>
+	<authentication>
+		<type>Token</type>
+	</authentication>
+	<resources>
+		<resource>
+			<name>Parrot</name>
+			<description>This resource represents a user (parrot) which will be paying with a social network. </description>
+			<path>/accounts/<param description="account ID">account-id</param>/parrots/<param description="parrot ID">parrot-id</param></path>
+			<operation>
+				<name>List all parrots</name>
+				<description>List all parrots, you can filter them by date.</description>
+				<path omitResourcePath="true">/accounts/<param description="account ID">account-id</param>/parrots</path>
+				<formats><format>application/json</format></formats>
+				<request>
+					<method>GET</method>
+					<authentication mandatory="true" />
+					<query_string>
+						<parameter>
+							<name>from</name>
+							<require>false</require>
+							<description>Parrot with suscription date greater or equal to (from). Example format: 2011-11-4</description>
+						</parameter>
+						<parameter>
+							<name>to</name>
+							<require>false</require>
+							<description>Parrot with suscription date less or equal to (to). Example format: 2011-12-4</description>
+						</parameter>
+						<parameter>
+							<name><![CDATA[screen_name]]></name>
+							<require>false</require>
+							<description>Filter parrots by parrot twitter name</description>
+						</parameter>
+						<parameter>
+							<name>limit</name>
+							<require>false</require>
+							<description>Limit the number of results. Default to 10</description>
+						</parameter>
+						<parameter>
+							<name>skip</name>
+							<require>false</require>
+							<description>Skip results. Default to 0</description>
+						</parameter>
+					</query_string>
+					<entities/>
+				</request>
+				<response>
+					<responses>
+						<answer code="200">The data set is returned as the response entity.</answer>
+						<answer code="404">There is no account with that account ID.</answer>
+					</responses>
+					<entities >
+						<entity>
+							<code language="js">
+								<![CDATA[
+[{
+    "id": "4fbe4b1e87812bc746000020",
+    "_id": "4fbe4b1e87812bc746000020",
+    "oauth_token": "YYY",
+    "oauth_token_secret": "ZZZ",
+    "twitter_id": "572860329",
+    "twitter_info": {},
+    "payments": [{
+        "created_at": "Thu May 24 14:52:43 +0000 2012",
+        "text": "First message of fast clapping! http://t.co/ecXrNPKT",
+        "account_id": "4fbba86cb968d5c51a000002"
+    }],
+    "created_at": "2012-05-24T14:52:14.768Z"
+}]
+]]></code>
+							<description>The data returned when listing all parrots.</description>
+						</entity>
+					</entities>										
+				</response>
+			</operation>
+			<operation>
+				<name>Delete a Parrot</name>
+				<description>When you want to unsuscribe a parrot, you should send Delete a Parrot instruction.</description>
+				<path omitResourcePath="true">/accounts/<param description="account ID">account-id</param>/parrots/<param description="parrot ID">parrot-id</param></path>
+				<formats><format>application/json</format></formats>
+				<request>
+					<method>DELETE</method>
+					<authentication mandatory="true" />
+					<entities/>
+				</request>
+				<response>
+					<responses>
+						<answer code="204">The parrot was deleted, no data is returned.</answer>
+						<answer code="404">There is no parrot or account with that ID.</answer>
+					</responses>
+					<entities/>
+				</response>
+			</operation>				
+		</resource>
+		<resource>
+			<name>Notification</name>
+			<description>Each time an action is trigger in payparrot (new parrot, a payment is processed, etc) a notification is send to your servers. </description>
+			<path>/accounts/<param description="account ID">account-id</param>/notifications/<param description="notification ID">notification-id</param></path>
+
+			<operation>
+				<name>Get a notification</name>
+				<description>With your account-id and notification-id, you can get the notification, to validate if was send by PayParrot</description>
+				<path omitResourcePath="true">/accounts/<param description="account ID">account-id</param>/notifications/<param description="notification ID">notification-id</param></path>
+				<formats><format>application/json</format></formats>
+				<request>
+					<method>GET</method>
+					<authentication mandatory="true" />
+					<entities/>
+				</request>
+				<response>
+					<responses>
+						<answer code="200">The data set is returned as the response entity.</answer>
+						<answer code="404">There is no with this user ID.</answer>
+					</responses>
+					<entities >
+						<entity>
+							<code language="js">
+								<![CDATA[
+{ queue_message_id: '029a2778-0e88-4d17-8cf9-2791c762bd67',
+suscription_id: 4fccba33a5850b9403000001,
+account_id: 4fccba336b34ac8803000030,
+external_id: '4fccba33a5850b9403000002',
+parrot_id: '4fccba33a5850b9403000003',
+request_url: 'localhost:3000',
+type: 'suscription_activated',
+status: 'pending',
+id: 4fccba33615bc49403000002 }]]></code>
+							<description>The data returned from validating a notification.</description>
+						</entity>
+					</entities>										
+				</response>
+			</operation>					
+		</resource>
+	</resources>
+</api>

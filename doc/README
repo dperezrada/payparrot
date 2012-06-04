@@ -1,0 +1,4 @@
+cd libs
+git clone https://github.com/dperezrada/rest-doc-template.git
+./create_documentation.sh
+

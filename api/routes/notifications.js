@@ -1,6 +1,6 @@
 Notifications = require('payparrot_models/objects/notifications.js'),
 
-exports.validate = function(req, res) {
+exports.get = function(req, res) {
 	if (req.params.notification_id == "" || req.query.account_id == "") {
 		res.throw_error(err, 404);
 		return;
