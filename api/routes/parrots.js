@@ -167,16 +167,16 @@ exports.get_parrots = function(req, res){
 	var account_id = req.params.account_id;
 	var querystring = req.query;
 	
-	if( !querystring.from ) { querystring.from = 0; }
-	if( !querystring.to ) { querystring.to = querystring.from+9}
+	if( !querystring.skip ) { querystring.skip = 0; }
+	if( !querystring.limit ) { querystring.limit = querystring.skip+9}
 	
 	if ( querystring.screen_name ){
 		var screen_name = new RegExp(querystring.screen_name,'gi'); 
 		Parrots
 			.find({'twitter_info.screen_name':screen_name})
 			.sort('_id', 'descending')
-			.skip(querystring.from)
-			.limit(querystring.to)
+			.skip(querystring.skip)
+			.limit(querystring.limit)
 			.run(function (err, parrots){		
 				var parrots_id_array = _.map(parrots, function (num, key){return num._id;});				
 				Suscriptions
@@ -195,15 +195,15 @@ exports.get_parrots = function(req, res){
 						res.send(parrots);
 					});
 			});
-	} else if( querystring.suscription_start && querystring.suscription_end ){
+	} else if( querystring.from && querystring.to ){
 		Suscriptions
 			.find({'account_id':account_id},{'parrot_id':1,'_id':0})
 			.sort('_id', 'descending')
 			.where('created_at')
-			.gte(new Date(querystring.suscription_start))
-			.lte(new Date(querystring.suscription_end))
-			.skip(querystring.from)
-			.limit(querystring.to)
+			.gte(new Date(querystring.from))
+			.lte(new Date(querystring.to))
+			.skip(querystring.skip)
+			.limit(querystring.limit)
 			.run(function (err, suscriptions){
 				var suscriptions_parrot_id_array = _.map(suscriptions, function (num, key){return num.parrot_id.toString();});
 				Parrots.find().where('_id').in(suscriptions_parrot_id_array).run(function (err, parrots){
@@ -216,8 +216,8 @@ exports.get_parrots = function(req, res){
 		Suscriptions
 			.find({'account_id':account_id},{'parrot_id':1,'_id':0})
 			.sort('_id', 'descending')
-			.skip(querystring.from)
-			.limit(querystring.to)
+			.skip(querystring.skip)
+			.limit(querystring.limit)
 			.run( function (err, suscriptions){
 				suscriptions = _.map(suscriptions, function (num, key){return num.parrot_id;});
 				Parrots.find().where('_id').in(suscriptions).run(function (err, parrots){

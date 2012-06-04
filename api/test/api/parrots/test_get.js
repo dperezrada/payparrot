@@ -62,7 +62,7 @@ describe('POST /accounts/:id/parrots', function(){
    		var tomorrow= new Date(today.getFullYear(),today.getMonth(),today.getDate()+1);
    		var tomorrow_text = tomorrow.getFullYear()+"-"+(tomorrow.getMonth()+1)+"-"+tomorrow.getDate();
 		request.get({
-						url: 'http://localhost:3000/accounts/'+self.account2.id+'/parrots/?suscription_start='+today_text+'&suscription_end='+tomorrow_text 
+						url: 'http://localhost:3000/accounts/'+self.account2.id+'/parrots/?from='+today_text+'&to='+tomorrow_text 
 					}, 
 					function (e, r, body){
 						assert.equal(200, r.statusCode);
@@ -77,7 +77,7 @@ describe('POST /accounts/:id/parrots', function(){
    		var tomorrow= new Date(today.getFullYear(),today.getMonth(),today.getDate()+1);
    		var tomorrow_text = tomorrow.getFullYear()+"-"+(tomorrow.getMonth()+1)+"-"+tomorrow.getDate();
 		request.get({
-						url: 'http://localhost:3000/accounts/'+self.account2.id+'/parrots/?suscription_start='+today_text+'&suscription_end='+tomorrow_text 
+						url: 'http://localhost:3000/accounts/'+self.account2.id+'/parrots/?from='+today_text+'&to='+tomorrow_text 
 					}, 
 					function (e, r, body){
 						assert.equal(200, r.statusCode);
