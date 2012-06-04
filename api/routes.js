@@ -72,5 +72,5 @@ module.exports = function(app) {
 	app.post('/apply', potential_users.create);
 
 
-	app.get('/accounts/:account_id/notifications/:notification_id/validate', req_auth, notifications.validate);
+	app.get('/accounts/:account_id/notifications/:notification_id', req_auth, notifications.get);
 }

@@ -44,7 +44,7 @@ describe('GET /accounts/:account_id/notifications/:notification_id/validate', fu
 							url: 'http://localhost:3000/logout'
 						},
 						function (e, r, body){
-							var url = 'http://localhost:3000/accounts/'+self.account.id+'/notifications/'+self.notification._id+'/validate?token='+self.account.credentials.private_token;
+							var url = 'http://localhost:3000/accounts/'+self.account.id+'/notifications/'+self.notification._id+'?token='+self.account.credentials.private_token;
 							request.get({
 									url: url, followRedirect: false
 								}, 
