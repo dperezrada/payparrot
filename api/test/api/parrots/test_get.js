@@ -20,10 +20,10 @@ describe('POST /accounts/:id/parrots', function(){
 	        'url': 'http://payparrot.com/',
 			'callback_url': 'http://www.epistemonikos.org'
 		}
-		var account2 = {};
-		_.extend(account2, self.account);
+		self.account2 = {};
+		_.extend(self.account2, self.account);
 		test_utils.create_and_login(
-			account2,
+			self.account2,
 			request,
 			function(){
 				test_utils.create_and_login(
@@ -32,7 +32,7 @@ describe('POST /accounts/:id/parrots', function(){
 				function(){
 					self.parrot = new Parrots({ "twitter_info" : {"id" : 572860329 }, "oauth_token_secret" : "mvdm9JQ1kp1cn9SIm5XsaRfxfV6aC1zhKNyJv0t0", "oauth_token" : "572860329-ir0nWSEQx0H7yVbSEIMLpuIuIcYXmQg5f3z7GuQP", "twitter_id" : "572860329", "payments" : [
 						{
-							account_id: account2.id,
+							account_id: self.account2.id,
 							text: 'hola',
 							created_at: new Date()
 						},
@@ -43,8 +43,9 @@ describe('POST /accounts/:id/parrots', function(){
 						}
 					] });
 					self.parrot.save(function(){
-						var suscription = new Suscriptions({ "account_id" : self.account.id, "parrot_id" : self.parrot._id, "created_at" : Date.now(), "first_tweet" : false, "notified" : false, "active" : true });
+						var suscription = new Suscriptions({ "account_id" : self.account2.id, "parrot_id" : self.parrot._id, "created_at" : Date.now(), "first_tweet" : false, "notified" : false, "active" : true });
 						suscription.save(function(){
+							self.suscription = suscription;
 							done();
 						});
 					});
@@ -61,7 +62,7 @@ describe('POST /accounts/:id/parrots', function(){
    		var tomorrow= new Date(today.getFullYear(),today.getMonth(),today.getDate()+1);
    		var tomorrow_text = tomorrow.getFullYear()+"-"+(tomorrow.getMonth()+1)+"-"+tomorrow.getDate();
 		request.get({
-						url: 'http://localhost:3000/accounts/'+self.account.id+'/parrots/?suscription_start='+today_text+'&suscription_end='+tomorrow_text 
+						url: 'http://localhost:3000/accounts/'+self.account2.id+'/parrots/?suscription_start='+today_text+'&suscription_end='+tomorrow_text 
 					}, 
 					function (e, r, body){
 						assert.equal(200, r.statusCode);
@@ -76,7 +77,7 @@ describe('POST /accounts/:id/parrots', function(){
    		var tomorrow= new Date(today.getFullYear(),today.getMonth(),today.getDate()+1);
    		var tomorrow_text = tomorrow.getFullYear()+"-"+(tomorrow.getMonth()+1)+"-"+tomorrow.getDate();
 		request.get({
-						url: 'http://localhost:3000/accounts/'+self.account.id+'/parrots/?suscription_start='+today_text+'&suscription_end='+tomorrow_text 
+						url: 'http://localhost:3000/accounts/'+self.account2.id+'/parrots/?suscription_start='+today_text+'&suscription_end='+tomorrow_text 
 					}, 
 					function (e, r, body){
 						assert.equal(200, r.statusCode);
@@ -84,6 +85,40 @@ describe('POST /accounts/:id/parrots', function(){
 						done();
 					}
 				);
+	});
+   	it('should return one parrot', function(done){
+		request.get({
+						url: 'http://localhost:3000/accounts/'+self.account2.id+'/parrots/'+self.parrot._id
+					}, 
+					function (e, r, body){
+						assert.equal(200, r.statusCode);
+						//assert.deepEqual(self.suscription,JSON.parse(body));
+						done();
+					}
+				);
+	});
+
+   	it('should delete one parrot', function(done){
+		request({
+						url: 'http://localhost:3000/accounts/'+self.account2.id+'/parrots/'+self.parrot._id,
+						method: 'DELETE'
+					}, 
+					function (e, r, body){
+						assert.equal(204, r.statusCode);
+						//assert.deepEqual(self.suscription,JSON.parse(body));
+						request.get({
+										url: 'http://localhost:3000/accounts/'+self.account2.id+'/parrots/'+self.parrot._id
+									}, 
+									function (e, r, body){
+										assert.equal(404, r.statusCode);
+										//assert.deepEqual(self.suscription,JSON.parse(body));
+										done();
+									}
+								);
+					}
+				);
+
 	});	
+
 
 });
