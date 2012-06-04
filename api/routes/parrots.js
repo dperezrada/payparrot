@@ -168,7 +168,7 @@ exports.get_parrots = function(req, res){
 	var querystring = req.query;
 	
 	if( !querystring.skip ) { querystring.skip = 0; }
-	if( !querystring.limit ) { querystring.limit = querystring.skip+9}
+	if( !querystring.limit ) { querystring.limit = 10}
 	
 	if ( querystring.screen_name ){
 		var screen_name = new RegExp(querystring.screen_name,'gi'); 
