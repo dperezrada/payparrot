@@ -82,8 +82,6 @@ describe('POST /accounts/:id/messages', function(){
 					}, 
 					function (e, r, body){
 						assert.equal(200,r.statusCode);
-						console.log(r.body);
-						console.log(self.messages);
 						assert.deepEqual(self.messages, JSON.parse(r.body));
 						done();
 					}

@@ -63,8 +63,6 @@ process_payment = function(payment_message, callback){
 			console.log({account_id: payment_message.Body.account_id, status: 1, active: 1})
 			//console.log({_id: payment_message.Body.parrot_id});
 			Messages.find({account_id: payment_message.Body.account_id, status: true, active: true}, {account_id: 0}, function (err, messages){
-				console.log(messages);
-				console.log(payment_message.Body.account_id);
 				if (messages.length == 0) {
 					console.log("No active & validated messages available");
 					callback();

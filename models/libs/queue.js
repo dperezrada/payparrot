@@ -19,7 +19,7 @@ exports.createMessage = function(queue, message, callback){
 };
 
 exports.getMessage = function(queue, callback){
-	sqs = aws.createSQSClient(awsKey, awsPrivateKey, {'path': queues_urls[queue]});
+	var sqs = aws.createSQSClient(awsKey, awsPrivateKey, {'path': queues_urls[queue]});
 	sqs.call ( "ReceiveMessage", {}, function (err, message) {
 		if(!err && message && message.ReceiveMessageResult && message.ReceiveMessageResult.Message){
 			message.ReceiveMessageResult.Message.Body = JSON.parse(message.ReceiveMessageResult.Message.Body);
@@ -31,7 +31,7 @@ exports.getMessage = function(queue, callback){
 }
 
 exports.deleteMessage = function(queue, receipt_handle, callback){
-	sqs = aws.createSQSClient(awsKey, awsPrivateKey, {'path': queues_urls[queue]});
+	var sqs = aws.createSQSClient(awsKey, awsPrivateKey, {'path': queues_urls[queue]});
 	sqs.call ( "DeleteMessage", {'ReceiptHandle': receipt_handle}, function (err, message) {
 		if(err || message.Error){
 			callback(message.Error);

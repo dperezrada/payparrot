@@ -27,12 +27,15 @@ suite('Notifications', function(){
 		require('../../api/test/tear_down').remove_all(done);
 	});
 
-	suite('Create queue message', function(){
-		test('A new message should exist in the queue ', function(){
-			assert.ok(self.notification.queue_message_id);
-		});
-		test('Status should be pending when created', function(){			
-			assert.equal('pending', self.notification.status);
+	suite('Check post notification', function(){
+		test('response_headers should be object not a string', function(done){
+			var cron3 = require('../crons/cron3').main;
+			cron3(function(){
+				Notification.findOne({_id: self.notification._id}, {}, function(err, notification){
+					assert.equal(typeof({}), typeof(notification.response_headers));
+					done();					
+				});
+			});
 		});
 	});
 });

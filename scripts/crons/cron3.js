@@ -4,12 +4,11 @@ var	_ = require('underscore'),
 	Accounts = require('payparrot_models/objects/accounts.js'),
 	Suscriptions = require('payparrot_models/objects/suscriptions.js'),
 	Notifications = require('payparrot_models/objects/notifications.js'),
-	request = require('request'),
-	db = require('payparrot_models/libs/mongodb').connect();
+	request = require('request');
 
 
 // TODO: Manage errors
-notify = function(notification_message, callback){
+var notify = function(notification_message, callback){
 	var query_data = {
 		suscription_id:"",
 		account_id:"",
@@ -46,11 +45,12 @@ notify = function(notification_message, callback){
 			};
 
 			if (notification_message.request_url != "") {
-				query_data.suscription_id = notification.suscription_id;
-				query_data.account_id = notification.account_id;
-				query_data.parrot_id = notification.parrot_id;
-				query_data.external_id = notification.external_id;
-				query_data.notification_id = notification._id;
+				query_data.suscription_id = notification.suscription_id.toString();
+				query_data.account_id = notification.account_id.toString();
+				query_data.parrot_id = notification.parrot_id.toString();
+				query_data.external_id = notification.external_id.toString();
+				query_data.notification_id = notification._id.toString();
+
 				request.post(
 					{
 						url: notification.request_url,
@@ -86,27 +86,39 @@ notify = function(notification_message, callback){
 
 var has_messages = true;
 
-async.whilst(
-    function () { return has_messages; },
-    function(callback){
-		queue.getMessage('notifications', function(message){
-			if(message){
-				console.log("message");
-				async.forEach([message], notify, function(result){
+var main = function(callback){
+	async.whilst(
+	    function () { return has_messages; },
+	    function(callback){
+			queue.getMessage('notifications', function(message){
+				if(message){
+					console.log("message");
+					async.forEach([message], notify, function(result){
+						callback();
+					});
+				}else{
+					console.log("no_message");
+					has_messages = false;
 					callback();
-				});
-			}else{
-				console.log("no_message");
-				has_messages = false;
-				callback();
+				}
+			});
+		},
+	    function (err) {
+			if(err){
+				console.log("An error ocurred");
+				console.log(err);
 			}
-		});
-	},
-    function (err) {
-		if(err){
-			console.log("An error ocurred");
-			console.log(err);
-		}
+			if(callback){
+				callback(err);
+			}
+	    }
+	);
+};
+exports.main = main;
+
+if (!module.parent) {
+	var db = require('payparrot_models/libs/mongodb').connect();
+	main(function(){
 		db.connection.close();
-    }
-);
+	});
+}

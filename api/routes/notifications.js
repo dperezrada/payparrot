@@ -18,3 +18,9 @@ exports.get = function(req, res) {
 		res.throw_error(err, 503);
 	}
  }
+
+exports.echo = function(req, res) {
+	console.log("echo");
+	console.log(req.body);
+	res.send("OK");
+ }
