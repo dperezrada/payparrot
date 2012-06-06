@@ -6,6 +6,12 @@ var request = require('request'),
 	PotentialUsers = require('payparrot_models/objects/potential_users');
 
 describe('POST /apply', function(){
+	before(function(done){
+		done();
+	});
+	after(function(done){
+		require('../../tear_down').remove_all(done);
+	});
 	it('should be able to apply', function(done){
 		request.post(
 			{

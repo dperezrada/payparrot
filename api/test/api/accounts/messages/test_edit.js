@@ -71,12 +71,6 @@ describe('POST /accounts/:id/messages', function(){
 		require('../../../tear_down').remove_all(done);
 	});
 	it('should edit a message', function(done){
-		// request.put('http://localhost:3000/accounts/'+self.account_id+'/messages/'+self.messages[0].id)
-		// 	.send(self.messages[0])
-		// 	.end(function(response){
-		// 		assert.equal(204,response.statusCode);
-		// 		done();
-		// 	});
 		request.put(
 			{
 				url: 'http://localhost:3000/accounts/'+self.account.id+'/messages/'+self.messages[0].id, 
@@ -90,7 +84,7 @@ describe('POST /accounts/:id/messages', function(){
 	});
 	it('should get the edited message', function(done){
 		request.get({
-						url: 'http://localhost:3000/accounts/'+self.account_id+'/messages/'+self.messages[0].id
+						url: 'http://localhost:3000/accounts/'+self.account.id+'/messages/'+self.messages[0].id
 					}, 
 					function (e, r, body){
 						assert.equal(200,r.statusCode);

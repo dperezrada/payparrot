@@ -9,4 +9,5 @@ var PotentialUsers_schema = new Schema({
 });
 
 mongoose.model('PotentialUsers', PotentialUsers_schema);
-module.exports = PotentialUsers = mongoose.model('PotentialUsers');
+var PotentialUsers = mongoose.model('PotentialUsers');
+module.exports = PotentialUsers;

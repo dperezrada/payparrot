@@ -9,11 +9,11 @@ exports.create = function(req, res){
 			if (account) {
 				var message = new Messages(req.body);
 				message.account_id = account._id;
-				message.status = 0;
-				message.active = 1;
+				message.status = true;
+				message.active = true;
 				message.save(function(){
 					res.statusCode = 201;
-					res.send({id: message._id, status: 0, active: 1});
+					res.send({id: message._id, status: true, active: true});
 				});				
 			} else {
 				res.throw_error(err, 404);

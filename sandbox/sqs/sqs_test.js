@@ -32,10 +32,8 @@ sqs.call ( "SendMessage", outbound, function (err, create_message) {
 
 	console.log("\n\nrecibiendo mensaje\n");
 	sqs.call ( "ReceiveMessage", {}, function (err, message) {
-	    console.log(message);
 
 	    console.log("\n\nMensaje no debería ser visible para otro usuario, no debería haber nada\n");
-    	console.log(message);
 		sqs.call ( "ReceiveMessage", {}, function (err, empty_message) {
 	    	console.log(empty_message);
 			

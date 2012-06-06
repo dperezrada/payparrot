@@ -63,8 +63,6 @@ process_payment = function(payment_message, callback){
 			console.log({account_id: payment_message.Body.account_id, status: 1, active: 1})
 			//console.log({_id: payment_message.Body.parrot_id});
 			Messages.find({account_id: payment_message.Body.account_id, status: true, active: true}, {account_id: 0}, function (err, messages){
-				console.log(messages);
-				console.log(payment_message.Body.account_id);
 				if (messages.length == 0) {
 					console.log("No active & validated messages available");
 					callback();
@@ -119,7 +117,7 @@ process_payment = function(payment_message, callback){
 									    	parrot.payments.push({
 									    		'account_id': payment_message.Body.account_id,
 									    		'text': payment.twitter_response.text,
-									    		'created_at': payment.twitter_response.created_at,
+									    		'created_at': new Date(payment.twitter_response.created_at),
 									    	});
 									    	parrot.save(function(){
 									    		callback_();	

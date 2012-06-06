@@ -11,24 +11,27 @@ var messages    = require('./routes/messages')
 
 
 function req_auth(req, res, next) {
-  if ( req.isAuthenticated() ) { 
-  	if(req.params && req.params.account_id){
-		if(req.user._id == req.params.account_id || req.params.account_id=='me'){
-			return next();
+	var account_id = req.query.account_id;
+	if(req.params && req.params.account_id){
+		account_id = req.params.account_id;
+	}
+	if ( req.isAuthenticated() ) { 
+		if(account_id){
+			if(req.user._id == account_id || req.params.account_id=='me'){
+				return next();
+			}else{
+				res.redirect('/forbidden');
+			}
 		}else{
-			res.redirect('/forbidden');
-		}
+			return next();
+		} 
 	}else{
-		return next();
-	} 
-  }else{
-  	if(req.query.token && req.query.account_id){
-  		console.log(req.query);
-  		accounts.token_auth(req, res, next);
-  	}else{
-  		res.redirect('/login');
-  	}
-  }
+		if(req.query.token && account_id){
+			accounts.token_auth(req, res, next);
+		}else{
+			res.redirect('/login');
+		}
+	}
 }
 
 module.exports = function(app) {
@@ -50,13 +53,15 @@ module.exports = function(app) {
 	app.get('/accounts/:account_id/credentials', req_auth, accounts.get_credentials);
 	
 	//app.get('/accounts/:account_id/parrots', req_auth, parrots.get_parrots);
-	app.get('/accounts/:account_id/parrots', parrots.get_parrots);
+	app.get('/accounts/:account_id/parrots', req_auth, parrots.get_parrots);
+	app.get('/accounts/:account_id/parrots/:parrot_id', req_auth, parrots.get_one);	
+	app.delete('/accounts/:account_id/parrots/:parrot_id', req_auth, parrots.remove);	
 	
 	app.post('/accounts/:account_id/messages', req_auth, messages.create);
 	app.get('/accounts/:account_id/messages', req_auth, messages.list);
 	app.get('/accounts/:account_id/messages/:message_id', req_auth, messages.get);
 	app.put('/accounts/:account_id/messages/:message_id', req_auth, messages.update);
-	
+
 	app.post('/accounts', accounts.create);
 	app.get('/accounts/:account_id', req_auth, accounts.get);
 	app.put('/accounts/:account_id', req_auth, accounts.update);
@@ -67,7 +72,9 @@ module.exports = function(app) {
 	app.get('/r/:message_id_sqs', messages.route);
 	
 	app.post('/apply', potential_users.create);
-
-
-	app.get('/notifications/:notification_id/validate', req_auth, notifications.validate);
+	
+	app.get('/accounts/:account_id/notifications/:notification_id', req_auth, notifications.get);
+	
+	app.get('/notifications/echo', notifications.echo);
+	app.post('/notifications/echo', notifications.echo);
 }

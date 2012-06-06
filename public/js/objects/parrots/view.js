@@ -17,7 +17,7 @@ define([
       $(window).scroll(function(){  
         if ($(window).scrollTop() == $(document).height() - $(window).height()){
               var length = $('.parrot').length;
-              self.collection.setParams({from: length});
+              self.collection.setParams({skip: length});
               self.collection._fetch({add: true});
         }
       }); 

@@ -47,8 +47,8 @@ describe('POST /accounts/:id/messages', function(){
 						function (e, r, body) {
 							assert.equal(201, r.statusCode);
 							self.messages[0].id = r.body.id;
-							self.messages[0].status = 0;
-							self.messages[0].active = 1;
+							self.messages[0].status = true;
+							self.messages[0].active = true;
 							request.post(
 							{
 								url: 'http://localhost:3000/accounts/'+self.account.id+'/messages',
@@ -57,8 +57,8 @@ describe('POST /accounts/:id/messages', function(){
 							function (e, r, body) {
 								assert.equal(201, r.statusCode);
 								self.messages[1].id = r.body.id;
-								self.messages[1].status = 0;
-								self.messages[1].active = 1;
+								self.messages[1].status = true;
+								self.messages[1].active = true;
 								done();
 							});
 						}
@@ -72,7 +72,7 @@ describe('POST /accounts/:id/messages', function(){
 	});
 	it('should create a new message', function(done){
 		request.get({
-						url: 'http://localhost:3000/accounts/'+self.account_id+'/messages/'+self.messages[0].id
+						url: 'http://localhost:3000/accounts/'+self.account.id+'/messages/'+self.messages[0].id
 					}, 
 					function (e, r, body){
 						assert.equal(200,r.statusCode);
@@ -83,7 +83,7 @@ describe('POST /accounts/:id/messages', function(){
 	});
 	it('should get the correct message', function(done){
 		request.get({
-						url: 'http://localhost:3000/accounts/'+self.account_id+'/messages/'+self.messages[1].id
+						url: 'http://localhost:3000/accounts/'+self.account.id+'/messages/'+self.messages[1].id
 					}, 
 					function (e, r, body){
 						assert.equal(200,r.statusCode);

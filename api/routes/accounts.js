@@ -152,16 +152,16 @@ exports.login = function(req, res){
 
 exports.token_auth = function(req, res, next){
 	var token = req.query.token;
-	var account_id = req.query.account_id
+	var account_id = req.query.account_id;
+	if(!account_id){
+		account_id = req.params.account_id;
+	}
 	Accounts.findOne({'_id':account_id,'credentials.private_token': req.query.token}, {}, function (err, account){
 		try {
 			if (account) {
-				if(account._id == req.params.account_id){
-					return next();
-				}else{
-					res.send({'status':'failed','message':'Trying to access to private account. This issue will be logged'});
-				}
+				return next();
 			} else {
+				// TODO: CHANGE STATUS
 				res.throw_error(err, 404);
 			}
 		} catch (err) {

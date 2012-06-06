@@ -14,6 +14,7 @@ var messages_schema = new Schema({
 });
 
 mongoose.model('Messages', messages_schema);
-module.exports = Messages = mongoose.model('Messages');
+var Messages = mongoose.model('Messages');
+module.exports = Messages;
 
 Messages.prototype.returnJSON = returnJSON;

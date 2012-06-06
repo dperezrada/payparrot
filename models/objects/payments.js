@@ -13,6 +13,7 @@ var payments_schema = new Schema({
 });
 
 mongoose.model('Payments', payments_schema);
-module.exports = payments = mongoose.model('Payments');
+var payments = mongoose.model('Payments');
+module.exports = payments;
 
 // payments.prototype.returnJSON = returnJSON;

@@ -2,15 +2,9 @@ DIR=`dirname $0`
 cd $DIR
 
 # Saving previously setted variables
-PRE_MONGODB_DBNAME=$MONGODB_DBNAME
-PRE_MONGODB_HOST=$MONGODB_HOST
-PRE_MONGODB_PORT=$MONGODB_PORT
-PRE_ENV = $PAYPARROT_ENV
+PRE_PAYPARROT_ENV=$PAYPARROT_ENV;
 
 # Setting new variables
-export PARROT_DB_NAME=payparrot_test
-export PARROT_DB_HOST=localhost
-export PARROT_DB_PORT=27017
 export PAYPARROT_ENV=test
 
 mkdir -p logs
@@ -20,16 +14,49 @@ sleep 1;
 
 echo "Running tests"
 API_TEST=`find api/test/api -name "*.js" -type f | sort`
+MANUAL_TEST=`find api/test/manual -name "*.js" -type f | sort`
 MODELS_TEST=`find models/test -name "*.js" -type f | sort`
-./api/node_modules/.bin/mocha --reporter spec -b -t 35000 $API_TEST
-./models/node_modules/.bin/mocha --ui tdd --reporter spec -b $MODELS_TEST
+SCRIPTS_TEST=`find scripts/test -name "*.js" -type f | sort`
+
+#CHECK which test to run
+MANUAL=0
+API=0
+MODELS=0
+for arg in "$@"
+do
+	if [[ $arg == 'manual' || $arg == 'all' ]]; then
+		MANUAL=1;
+	fi
+	if [[ $arg == 'models' || $arg == 'all' ]]; then
+		MODELS=1;
+	fi
+	if [[ $arg == 'api' || $arg == 'all' ]]; then
+		API=1;
+	fi
+	if [[ $arg == 'scripts' || $arg == 'all' ]]; then
+		SCRIPTS=1;
+	fi
+done
+
+if [[ $MANUAL == 1 ]]; then
+	./api/node_modules/.bin/mocha --reporter spec -b -t 50000 $MANUAL_TEST
+fi
+if [[ $API == 1 ]]; then
+	./api/node_modules/.bin/mocha --reporter spec -b -t 10000 $API_TEST
+fi
+if [[ $MODELS == 1 ]]; then
+	./models/node_modules/.bin/mocha --ui tdd --reporter spec -b -t 10000 $MODELS_TEST
+fi
+if [[ $SCRIPTS == 1 ]]; then
+	./models/node_modules/.bin/mocha --ui tdd --reporter spec -b -t 60000 $SCRIPTS_TEST
+fi
+
+
+
 
 PROCESS_ID=`ps -ef | grep "node" | grep "payparrot_test" | grep -v "grep" | awk '{print $2}'`;
 echo "Stopping server, process_id: $PROCESS_ID"
 kill $PROCESS_ID;
 
 # Setting variables to their original value
-export PARROT_DB_NAME=$PRE_MONGODB_DBNAME
-export PARROT_DB_HOST=$PRE_MONGODB_HOST
-export PARROT_DB_PORT=$PRE_MONGODB_PORT
-export PAYPARROT_ENV=$PRE_ENV
+export PAYPARROT_ENV=$PRE_PAYPARROT_ENV
