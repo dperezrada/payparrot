@@ -1,6 +1,5 @@
 var mongoose = require('mongoose'),
-	mongo_url = require('payparrot_models/libs/mongodb').mongo_url({}),
-	db = mongoose.connect(mongo_url),
+	db = require('payparrot_models/libs/mongodb').connect(),
 	assert = require('assert'),
 	Accounts = require('payparrot_models/objects/accounts');
 

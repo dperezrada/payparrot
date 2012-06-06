@@ -16,6 +16,7 @@ echo "Running tests"
 API_TEST=`find api/test/api -name "*.js" -type f | sort`
 MANUAL_TEST=`find api/test/manual -name "*.js" -type f | sort`
 MODELS_TEST=`find models/test -name "*.js" -type f | sort`
+SCRIPTS_TEST=`find scripts/test -name "*.js" -type f | sort`
 
 #CHECK which test to run
 MANUAL=0
@@ -32,6 +33,9 @@ do
 	if [[ $arg == 'api' || $arg == 'all' ]]; then
 		API=1;
 	fi
+	if [[ $arg == 'scripts' || $arg == 'all' ]]; then
+		SCRIPTS=1;
+	fi
 done
 
 if [[ $MANUAL == 1 ]]; then
@@ -42,6 +46,9 @@ if [[ $API == 1 ]]; then
 fi
 if [[ $MODELS == 1 ]]; then
 	./models/node_modules/.bin/mocha --ui tdd --reporter spec -b -t 10000 $MODELS_TEST
+fi
+if [[ $SCRIPTS == 1 ]]; then
+	./models/node_modules/.bin/mocha --ui tdd --reporter spec -b -t 60000 $SCRIPTS_TEST
 fi
 
 

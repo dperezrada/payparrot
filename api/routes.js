@@ -72,7 +72,9 @@ module.exports = function(app) {
 	app.get('/r/:message_id_sqs', messages.route);
 	
 	app.post('/apply', potential_users.create);
-
-
+	
 	app.get('/accounts/:account_id/notifications/:notification_id', req_auth, notifications.get);
+	
+	app.get('/notifications/echo', notifications.echo);
+	app.post('/notifications/echo', notifications.echo);
 }

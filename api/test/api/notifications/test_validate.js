@@ -28,7 +28,7 @@ describe('GET /accounts/:account_id/notifications/:notification_id/validate', fu
 			account_id: self.account.id,
 			external_id: new mongoose.Types.ObjectId(),
 			parrot_id: new mongoose.Types.ObjectId(),
-			request_url: 'localhost:3000',
+			request_url: 'http://localhost:3000/notifications/echo',
 			status: 'pending',
 			type: 'suscription_activated'
 		};

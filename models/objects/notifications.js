@@ -15,7 +15,7 @@ var Notifications_schema = new Schema({
 	request_url: String,
 	// Integer doesn't exists. Needs to be forced as integer? Or just a Number?
 	response_status: Number,
-	response_headers: String,
+	response_headers: {type: Schema.Types.Mixed},
 	response_body: String,
 	status: {type: String, default: 'pending'},
 	type: String,
