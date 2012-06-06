@@ -78,8 +78,8 @@ define([
       var tomorrow = tomorrow_.getFullYear()+"-"+(tomorrow_.getMonth()+1)+"-"+tomorrow_.getDate();
       this.collection.query_params = {};
       this.collection.setParams({
-        suscription_start: today,
-        suscription_end: tomorrow,
+        from: today,
+        to: tomorrow,
       });
       this.collection._fetch({});      
     },
@@ -93,8 +93,8 @@ define([
       var end = end_.getFullYear()+"-"+(end_.getMonth()+1)+"-"+end_.getDate();
       this.collection.query_params = {};
       this.collection.setParams({
-        suscription_start: start,
-        suscription_end: end,
+        from: start,
+        to: end,
       });
       this.collection._fetch({});       
     },
