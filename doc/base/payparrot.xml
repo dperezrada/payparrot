@@ -8,7 +8,7 @@
 	<description>The following document describe the RESTful API of the PayParrot Service. </description>
 	<baseuri>http://payparrot.com</baseuri>
 	<authentication>
-		<type>Token</type>
+		<type>Private Token. This has to be sent as a "token" parameter of query string, with each API call. Example: ?token=XXX</type>
 	</authentication>
 	<resources>
 		<resource>

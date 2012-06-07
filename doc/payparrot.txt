@@ -4,7 +4,7 @@ API DOCUMENTATION: PayParrot API
 Author:		PayParrot Team
 Version:	v1
 Base URI:	http://payparrot.com
-Auth:		Token
+Auth:		Private Token. This has to be sent as a "token" parameter of query string, with each API call. Example: ?token=XXX
 
 
 Description
@@ -169,7 +169,7 @@ suscription_id: 4fccba33a5850b9403000001,
 account_id: 4fccba336b34ac8803000030,
 external_id: '4fccba33a5850b9403000002',
 parrot_id: '4fccba33a5850b9403000003',
-request_url: 'localhost:3000',
+request_url: 'http://localhost:3000',
 type: 'suscription_activated',
 status: 'pending',
 id: 4fccba33615bc49403000002 }
