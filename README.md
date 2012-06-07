@@ -1,6 +1,8 @@
 Payparrot
 =========
 BE SURE to have your NODE_PATH=/usr/local/lib/node_modules
+Set the enviroment variable PAYPARROT_ENV with:
+export PAYPARROT_ENV=development
 
 Install
 -------
@@ -9,7 +11,7 @@ npm link
 
 Run service for test
 --------------------
-PARROT_DB_NAME=payparrot_test supervisor app.js
+supervisor app.js
 
 
 Run tests

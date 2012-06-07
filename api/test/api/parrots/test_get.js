@@ -13,7 +13,7 @@ describe('POST /accounts/:id/parrots', function(){
 	before(function(done){
 		self = this;
 		self.account = {
-	        'email': 'daniel@payparrot.com',
+	        'email': 'daniel1@payparrot.com',
 	        'password': '123',
 	        'name': 'Daniel',
 	        'startup': 'Payparrot',
@@ -22,6 +22,7 @@ describe('POST /accounts/:id/parrots', function(){
 		}
 		self.account2 = {};
 		_.extend(self.account2, self.account);
+		self.account2.email = 'daniel2@payparrot.com';
 		test_utils.create_and_login(
 			self.account2,
 			request,
@@ -43,7 +44,7 @@ describe('POST /accounts/:id/parrots', function(){
 						}
 					] });
 					self.parrot.save(function(){
-						var suscription = new Suscriptions({ "account_id" : self.account2.id, "parrot_id" : self.parrot._id, "created_at" : Date.now(), "first_tweet" : false, "notified" : false, "active" : true });
+						var suscription = new Suscriptions({ "account_id" : self.account.id, "parrot_id" : self.parrot._id, "created_at" : Date.now(), "first_tweet" : false, "notified" : false, "active" : true });
 						suscription.save(function(){
 							self.suscription = suscription;
 							done();
@@ -55,6 +56,7 @@ describe('POST /accounts/:id/parrots', function(){
 	});
 	after(function(done){
 		require('../../tear_down').remove_all(done);
+		//done();
 	});
    	it('should get parrots from account', function(done){
    		var today = new Date();
@@ -62,7 +64,7 @@ describe('POST /accounts/:id/parrots', function(){
    		var tomorrow= new Date(today.getFullYear(),today.getMonth(),today.getDate()+1);
    		var tomorrow_text = tomorrow.getFullYear()+"-"+(tomorrow.getMonth()+1)+"-"+tomorrow.getDate();
 		request.get({
-						url: 'http://localhost:3000/accounts/'+self.account2.id+'/parrots/?suscription_start='+today_text+'&suscription_end='+tomorrow_text 
+						url: 'http://localhost:3000/accounts/'+self.account.id+'/parrots/?suscription_start='+today_text+'&suscription_end='+tomorrow_text 
 					}, 
 					function (e, r, body){
 						assert.equal(200, r.statusCode);
@@ -77,7 +79,7 @@ describe('POST /accounts/:id/parrots', function(){
    		var tomorrow= new Date(today.getFullYear(),today.getMonth(),today.getDate()+1);
    		var tomorrow_text = tomorrow.getFullYear()+"-"+(tomorrow.getMonth()+1)+"-"+tomorrow.getDate();
 		request.get({
-						url: 'http://localhost:3000/accounts/'+self.account2.id+'/parrots/?suscription_start='+today_text+'&suscription_end='+tomorrow_text 
+						url: 'http://localhost:3000/accounts/'+self.account.id+'/parrots/?suscription_start='+today_text+'&suscription_end='+tomorrow_text 
 					}, 
 					function (e, r, body){
 						assert.equal(200, r.statusCode);
@@ -88,7 +90,7 @@ describe('POST /accounts/:id/parrots', function(){
 	});
    	it('should return one parrot', function(done){
 		request.get({
-						url: 'http://localhost:3000/accounts/'+self.account2.id+'/parrots/'+self.parrot._id
+						url: 'http://localhost:3000/accounts/'+self.account.id+'/parrots/'+self.parrot._id
 					}, 
 					function (e, r, body){
 						assert.equal(200, r.statusCode);
@@ -100,14 +102,14 @@ describe('POST /accounts/:id/parrots', function(){
 
    	it('should delete one parrot', function(done){
 		request({
-						url: 'http://localhost:3000/accounts/'+self.account2.id+'/parrots/'+self.parrot._id,
+						url: 'http://localhost:3000/accounts/'+self.account.id+'/parrots/'+self.parrot._id,
 						method: 'DELETE'
 					}, 
 					function (e, r, body){
 						assert.equal(204, r.statusCode);
 						//assert.deepEqual(self.suscription,JSON.parse(body));
 						request.get({
-										url: 'http://localhost:3000/accounts/'+self.account2.id+'/parrots/'+self.parrot._id
+										url: 'http://localhost:3000/accounts/'+self.account.id+'/parrots/'+self.parrot._id
 									}, 
 									function (e, r, body){
 										assert.equal(404, r.statusCode);

@@ -2,6 +2,10 @@ var config = {
 	DB: {}
 }
 
+if(!process.env.PAYPARROT_ENV){
+	console.error('PAYPARROT_ENV VARIABLE is not defined');
+}
+
 if (process.env.PAYPARROT_ENV.toLowerCase() == "production") {
 	config.AWS_KEY = "AKIAIN47MW5VQ4RBN7TQ";
 	config.AWS_PRIVATE = "SThKjV6E8RMKNLdkHaeq4bj7QiDTu6NWGMSUOTCx";

@@ -49,4 +49,12 @@ describe('POST /accounts', function(){
 					}
 				);
 	});
+	it('should not create an account because the e-mail is already in use', function(done){
+		request.post({url: 'http://localhost:3000/accounts', json: self.account}, function (e, r, body) {
+			assert.equal(400, r.statusCode);
+			console.log(body);
+			done();
+
+		});
+	});
 });

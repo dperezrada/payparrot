@@ -9,15 +9,27 @@ exports.create = function(req, res){;
 	var account = new Accounts(req.body);
 	var current_date = (new Date()).valueOf().toString();
 	var random = Math.random().toString();
-	account.credentials = {
-		'public_token': crypto.createHash('sha1').update(current_date + random).digest('hex'),
-		'private_token': crypto.createHash('sha1').update(current_date + random).digest('hex')
-	};
-	account.create_password(req.body.password);
-	account.save(function(){
-	res.statusCode = 201;
-	res.send({id: account._id});
-	}); 
+	Accounts.findOne({'email': req.body.email}, {}, function (err, account_2){
+		try {
+			if (account_2) {
+				res.statusCode = 400;
+				res.send({message:'E-mail already in use'});
+			} else {
+				account.credentials = {
+					'public_token': crypto.createHash('sha1').update(current_date + random).digest('hex'),
+					'private_token': crypto.createHash('sha1').update(current_date + random).digest('hex')
+				};
+				account.create_password(req.body.password);
+				account.save(function(){
+					res.statusCode = 201;
+					res.send({id: account._id});
+				});
+			}
+		} catch (err) {
+			res.statusCode = 503;
+			res.send("Error 503");
+		}
+	});
 };
 
 function set_stats(account, callback) {
