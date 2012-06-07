@@ -1,0 +1,12 @@
+{
+    "name": "payparrot_scripts",
+    "version": "0.0.1",
+  	"private": true,
+    "dependencies": {
+		"underscore":">=0.0.1",
+        "async": ">=0.0.1",
+        "request": ">=0.0.1",
+        "mocha": ">=0.0.1"
+  	}
+}
+

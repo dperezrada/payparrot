@@ -1,0 +1,5 @@
+*.tmproj
+certs
+api/logs
+logs
+.DS_Store
