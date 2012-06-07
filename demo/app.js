@@ -201,6 +201,11 @@ app.post('/new', function(req,res){
 	});
 });
 
+app.all('/notifications', function(req,res){
+	console.log(req.body);
+	res.send('OK');
+});
+
 app.listen(3001, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
