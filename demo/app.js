@@ -5,36 +5,10 @@
 var express     = require('express')
 var app = module.exports = express.createServer();
 var request = require('request');
-//Authentication modules
-// var passport = require('passport')
-//   , LocalStrategy = require('passport-local').Strategy;
 
-// //Defining the local strategy, may use more than one strategy, not sure how to accomplish that yet
-// passport.use(new LocalStrategy({
-//     usernameField: 'email'
-//   },
-//   function(email, password, done) {
-//     // Users.authenticate(email, password, function(err, user) {
-//     //   console.log(user);
-//     //   return done(err, user);
-//     // });
-//     Users.findOne({email: email}, function(err, user) {
-//       return done(err, user);
-//     });
-//   }
-// ));
-
-// //serialize account on login
-// passport.serializeUser(function(user, done) {
-//   done(null, user._id);
-// });
-// // deserialize account
-// passport.deserializeUser(function(id, done) {
-//   Users.findOne({_id: id}, function (err, user) {
-//     done(err, user);
-//   });
-// });
-
+process.on('uncaughtException', function(err) {
+  console.log(err);
+});
 
 // Models
 var mongoose = require('mongoose');
@@ -73,7 +47,7 @@ app.configure(function(){
 
 //Routes
 function req_auth(req, res, next) {
-  if (req.session.user._id) { 
+  if (req.session.user && req.session.user._id) { 
     req.user = req.session.user;
     console.log("authenticated");
     if(req.params && req.params.account_id){
@@ -87,7 +61,6 @@ function req_auth(req, res, next) {
   } 
   }else{
     if(req.query.token && req.query.account_id){
-      console.log(req.query);
       accounts.token_auth(req, res, next);
     }else{
       res.redirect('/login');
@@ -105,11 +78,8 @@ app.get('/login', function(req,res){
 app.post('/login', function(req,res) {
   if (req.body.email && req.body.password) {
     var password = crypto.createHash('sha1').update(req.body.password).digest('hex');
-    console.log(password);
     Users.findOne({email: req.body.email, password: password}, function(err, user) {
-        //console.log("123");
         if (user) {
-          //console.log(user);
           req.session.user = user;  
           res.redirect('/app');
         } else {
@@ -128,17 +98,18 @@ app.get('/logout', function(req, res){
 });
 
 app.get('/loginfake', function(req, res){
-    Users.findOne({},function(err,user){
-      req.user = user;
-      if (req.isAuthenticated()) {
-        console.log("authenticated");
-        res.send("holi");
-      } else {
-        console.log("not");
-        res.send("noli");
-      }
-      //res.redirect('/app');
-    });
+	res.send('hola');
+    // Users.findOne({},function(err,user){
+    //   req.user = user;
+    //   if (req.isAuthenticated()) {
+    //     console.log("authenticated");
+    //     res.send("holi");
+    //   } else {
+    //     console.log("not");
+    //     res.send("noli");
+    //   }
+    //   //res.redirect('/app');
+    // });
 });
 
 app.get('/app', req_auth, function(req,res){
@@ -149,16 +120,15 @@ app.get('/app', req_auth, function(req,res){
         }
       });
     } else {
-      console.log(req.body);
       res.render("app.ejs");
       // res.render('app.ejs');
     }
 });
 
-app.get('/welcome', function(req,res){
+app.get('/welcome', req_auth,function(req,res){
     var params = req.query;
     Users.findOne({_id: params.external_id}, function(err,user){
-      if (user) {
+      if (user && req.session.user._id == params.external_id) {
         user.paid = true;
         user.external_id = params.external_id;
         user.subscription_id = params.subscription_id;
@@ -188,16 +158,6 @@ app.post('/new', function(req,res){
 
         req.session.user = new_user; 
         res.redirect('/app');
-		// request.post(
-		// 	{
-		// 		followRedirect: false,
-		// 		url: 'http://localhost:'+app.address().port+'/login',
-		// 		json: {'email': new_user.email, 'password': new_user.password}
-		// 	}, function(err, response, body){
-		// 		console.log(response);
-		//    		res.redirect(response.location);
-		// 	}
-		// );
 	});
 });
 
