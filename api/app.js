@@ -15,7 +15,10 @@ var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
 
 var throw_error_middleware = function(req, res, next){
-  res.throw_error = function(error, status_code){
+  res.throw_error = function(message, status_code){
+	if(message){
+		console.err(message);
+	}
     if(status_code == 503){
       res.statusCode = 503;
       res.send('Error 503');
@@ -23,7 +26,7 @@ var throw_error_middleware = function(req, res, next){
     if(status_code == 404){
       res.statusCode = 404;
       res.send('Error 404');
-    }    
+    }
   }
   next();
 }
