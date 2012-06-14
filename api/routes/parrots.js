@@ -8,34 +8,31 @@ var Accounts = require('payparrot_models/objects/accounts.js'),
 		
 exports.start = function(req, res){
 	Accounts.findOne({'credentials.public_token': req.query.token}, {}, function (err, account){
-		try {
-			if(account){
-				var oauth_twitter = oauth.create_session();
-				oauth_twitter.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret, results){
-					if (error) {
-						console.log(error);
-						res.send("Problem ocurred")
+		if(err) res.throw_error(err, 503);
+		if(account){
+			var oauth_twitter = oauth.create_session();
+			oauth_twitter.getOAuthRequestToken(function(err, oauth_token, oauth_token_secret, results){
+				if(err) res.throw_error(err, 503);
+				else {
+					var session = new Sessions({
+						'account_id': account._id,
+						'oauth_token': oauth_token,
+						'oauth_token_secret': oauth_token_secret,
+						'oauth_results': results
+					});
+					if(req.query.external_id){
+						session.external_id = req.query.external_id;
 					}
-					else {
-						var session = new Sessions({
-							'account_id': account._id,
-							'oauth_token': oauth_token,
-							'oauth_token_secret': oauth_token_secret,
-							'oauth_results': results
-						});
-						if(req.query.external_id){
-							session.external_id = req.query.external_id;
-						}
-						session.save(function(){
+					session.save(function(err){
+						if(err) res.throw_error(err, 503);
+						else{
 							res.redirect(twitter_config.authorize_url+'?oauth_token='+oauth_token);
-						});
-					}
-				});
-			}else{
-				res.throw_error(err, 404);
-			}
-		} catch (err) {
-			res.throw_error(err, 503);
+						}
+					});
+				}
+			});
+		}else{
+			res.throw_error(err, 404);
 		}
 	});
 };
