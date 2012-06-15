@@ -261,37 +261,26 @@ exports.get_parrots = function(req, res){
 						res.send(parrots);
 					});
 			});
-	} else if( querystring.from && querystring.to ){
-		Suscriptions
-			.find({'account_id':account_id},{'parrot_id':1,'_id':0})
-			.sort('_id', 'descending')
-			.where('created_at')
-			.gte(new Date(querystring.from))
-			.lte(new Date(querystring.to))
-			.skip(querystring.skip)
-			.limit(querystring.limit)
-			.run(function (err, suscriptions){
-				var suscriptions_parrot_id_array = _.map(suscriptions, function (num, key){return num.parrot_id.toString();});
-				Parrots.find().where('_id').in(suscriptions_parrot_id_array).run(function (err, parrots){
-					parrots = _.map(parrots, function (num, key){num.id = num._id.toString(); delete num._id; return num});
-					clean_parrots(parrots,account_id);
-					res.send(parrots);
-				});
-			});
 	} else {
-		Suscriptions
-			.find({'account_id':account_id},{'parrot_id':1,'_id':0})
-			.sort('_id', 'descending')
-			.skip(querystring.skip)
-			.limit(querystring.limit)
-			.run( function (err, suscriptions){
-				suscriptions = _.map(suscriptions, function (num, key){return num.parrot_id;});
-				Parrots.find().where('_id').in(suscriptions).run(function (err, parrots){
-					parrots = _.map(parrots, function (num, key){num.id = num._id.toString(); delete num._id; return num});
-					clean_parrots(parrots,account_id);
-					res.send(parrots);
-				});
-			});
-	}
+		var query = Suscriptions
+					.find({'account_id':account_id},{'parrot_id':1,'_id':0})
+					.sort('_id', 'descending')
+					.skip(querystring.skip)
+					.limit(querystring.limit);
 
+		if( querystring.from && querystring.to ){
+			query
+				.where('created_at')
+				.gte(new Date(querystring.from))
+				.lte(new Date(querystring.to));
+		}
+		query.run(function (err, suscriptions){
+			var suscriptions_parrot_id_array = _.map(suscriptions, function (num, key){return num.parrot_id.toString();});
+			Parrots.find().where('_id').in(suscriptions_parrot_id_array).run(function (err, parrots){
+				parrots = _.map(parrots, function (num, key){num.id = num._id.toString(); delete num._id; return num});
+				clean_parrots(parrots,account_id);
+				res.send(parrots);
+			});
+		});
+	}
 };
