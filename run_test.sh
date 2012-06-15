@@ -1,6 +1,12 @@
 DIR=`dirname $0`
 cd $DIR
 
+if [[ $# == 0 ]]; then
+	echo "Usage: $0 <options>";
+	echo "options (one or more): scripts, api, manual, models";
+	exit 1;
+fi
+
 # Saving previously setted variables
 PRE_PAYPARROT_ENV=$PAYPARROT_ENV;
 

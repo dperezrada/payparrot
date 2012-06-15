@@ -15,17 +15,24 @@ var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
 
 var throw_error_middleware = function(req, res, next){
-  res.throw_error = function(error, status_code){
-    if(status_code == 503){
-      res.statusCode = 503;
-      res.send('Error 503');
-    }
-    if(status_code == 404){
-      res.statusCode = 404;
-      res.send('Error 404');
-    }    
-  }
-  next();
+	res.throw_error = function(message, status_code){
+		if(message){
+			console.err(message);
+		}
+		if (status_code == 503) {
+			res.statusCode = 503;
+			res.send('Error 503');
+		}
+		else if (status_code == 404) {
+			res.statusCode = 404;
+			res.send('Error 404');
+		}
+		else if (status_code == 401) {
+			res.statusCode = 404;
+			res.send('Unauthorized 401');
+		}
+	}
+	next();
 }
 //Defining the local strategy, may use more than one strategy, not sure how to accomplish that yet
 passport.use(new LocalStrategy({

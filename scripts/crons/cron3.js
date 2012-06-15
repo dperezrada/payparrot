@@ -21,30 +21,26 @@ var notify = function(notification_message, callback){
 	// console.log(notification_message);
 	Notifications.findOne({_id: notification_message.Body.notification_id}, function (err, notification){
 		if (notification) {
-			console.log("Notificando...");
-			console.log(notification_message.Body.type);
+			console.log("Trying to Notify..."+notification_message.Body.type);
 			switch(notification_message.Body.type){
 				case "payment_success":
-					console.log("payment_success");
 					query_data.type = "payment_success";
 					break;
 				case "payment_failed":
-					console.log("payment_failed");
 					query_data.type = "payment_failed";
 					break;
 				case "suscription_activated":
-					console.log("suscription_activated");
 					query_data.type = "suscription_activated";
 					break;
 				case "suscription_deactivated":
-					console.log("suscription_deactivated");
 					query_data.type = "suscription_deactivated";
 					break;
 				default:
-					console.log("default");
+					console.log("Not know notification");
 			};
 
-			if (notification_message.request_url != "") {
+			console.log(notification.request_url);
+			if (notification.request_url) {
 				query_data.suscription_id = notification.suscription_id.toString();
 				query_data.account_id = notification.account_id.toString();
 				query_data.parrot_id = notification.parrot_id.toString();
@@ -70,15 +66,22 @@ var notify = function(notification_message, callback){
 							});
 						}
 						else{
+							console.error('Notification fail: Not 2XX Status Code');
+							console.error('\tReceived status code: '+response.statusCode);
+							console.error('\tFrom url: '+notification.request_url);
 							callback();
 						}
 					}
 				);
 			} else {
-				console.log("Notification couldn't be sent");
+				Accounts.findOne({_id: notification.account_id}, function(err, result){
+					console.log(result);
+				});
+				console.error("No request_url");
 				callback();
 			}
 		} else {
+			console.error("No notification found in db with id:" + notification_message.Body.notification_id);
 			callback();
 		}
 	});
@@ -92,7 +95,7 @@ var main = function(callback){
 	    function(callback){
 			queue.getMessage('notifications', function(message){
 				if(message){
-					console.log("message");
+					console.log("message sended");
 					async.forEach([message], notify, function(result){
 						callback();
 					});
