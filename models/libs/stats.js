@@ -34,7 +34,7 @@ exports.parrots_today = function(account, callback){
 	});	    	
 }
 
-exports.payments_total = function(callback){
+exports.payments_total = function(account, callback){
 	Payments
 	.count({'account_id':account._id, 'success': true})
 	.run(function (err, payments){
@@ -47,7 +47,7 @@ exports.payments_total = function(callback){
 	});	    	
 };
 
-exports.payments_today = function(callback){
+exports.payments_today = function(account, callback){
 	var date_start = new Date();
 	date_start = new Date(date_start.getFullYear(), date_start.getMonth(), date_start.getDate());
 	var date_end = new Date(date_start.getFullYear(), date_start.getMonth(), date_start.getDate()+1); 
