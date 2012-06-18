@@ -53,7 +53,7 @@ var create_next_payment = function(last_payment, callback){
 };
 
 var encode_url = function(message_id){
-	return 'http://payparrot.com/r/'+message_id;
+	return 'http://pprt.co/r/'+message_id;
 }
 
 // TODO: Manage errors
