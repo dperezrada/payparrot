@@ -150,6 +150,10 @@ exports.login = function(req, res){
 	res.render('login.ejs');
 };
 
+exports.signup1 = function(req, res){
+	res.render('signup.ejs');
+};
+
 exports.token_auth = function(req, res, next){
 	var token = req.query.token;
 	var account_id = req.query.account_id;
