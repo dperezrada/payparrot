@@ -43,6 +43,7 @@ module.exports = function(app) {
       		failureRedirect: '/login'
     	})
 	);
+	app.get('/signup', accounts.signup1);
 	app.get('/logout', function(req, res){
 	    req.logOut();
 		res.redirect('/');
@@ -77,4 +78,15 @@ module.exports = function(app) {
 	
 	app.get('/notifications/echo', notifications.echo);
 	app.post('/notifications/echo', notifications.echo);
+
+	// Errors
+
+	app.get('/errors/:error_id', function(req,res){
+		var available_errors = [404,504,503,500];
+		var error_id = parseInt(req.params.error_id);
+		if (available_errors.indexOf(error_id)==-1) {
+			error_id = 500;
+		}
+		res.render(error_id+'.ejs', {layout: true});
+	});
 }
