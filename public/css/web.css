@@ -4304,6 +4304,9 @@ body {
   -moz-border-radius: 0 0 4px 4px;
   border-radius: 0 0 4px 4px;
 }
+body > .container {
+  margin-top: 50px;
+}
 footer {
   margin-top: 100px;
 }

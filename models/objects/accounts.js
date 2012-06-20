@@ -16,7 +16,8 @@ var accounts_schema = new Schema({
 	notification_url: String,
 	credentials: {type: Schema.Types.Mixed, private: true},
 	created_at: {type: Date, default: Date.now, private: true},
-	stats: {type: Schema.Types.Mixed}
+	stats: {type: Schema.Types.Mixed},
+	setup: {type: Boolean, default: false},
 }, {strict:true});
 
 accounts_schema.method('verify_password', function(password, callback) {

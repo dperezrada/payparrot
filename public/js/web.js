@@ -10,7 +10,8 @@ require.config({
 
 require([
     'jquery',
-    'bootstrap'
+    'bootstrap',
+    'signup'
 ], function(domReady, $, app){
     $('#apply_btn').click(function(e){
 		e.preventDefault();

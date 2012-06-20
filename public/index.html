@@ -71,7 +71,7 @@
     <div class="container">
 
       <!-- Main hero unit for a primary marketing message or call to action -->
-      <div class="header-info" style="margin-bottom:-20px;margin-top:65px;">
+      <div class="header-info" style="margin-bottom:-20px;">
         <h1>Spread your brand</h1>
         <p></p>
         <p></p>
@@ -86,30 +86,30 @@
         <div class="span6"  style="text-align:left;margin-top:50px">
           <h4 style="text-align:center;">Create a new account</h4>
           <hr>
-          <form class="form-horizontal">
+          <form class="form-horizontal" action='/signup' method='POST' id='signup-form'>
             <fieldset>
               <div class="control-group">
                 <label class="control-label" for="input01">Company Name</label>
                 <div class="controls">
-                  <input type="text" class="input-xlarge" id="input01">
+                  <input type="text" class="input-xlarge" id="input01" name="company">
                 </div>
               </div>
               <div class="control-group">
                 <label class="control-label" for="input01">Personal Name</label>
                 <div class="controls">
-                  <input type="text" class="input-xlarge" id="input01">
+                  <input type="text" class="input-xlarge" id="input01" name="name">
                 </div>
               </div>
               <div class="control-group">
                 <label class="control-label" for="input01">E-Mail</label>
                 <div class="controls">
-                  <input type="text" class="input-xlarge" id="input01">
+                  <input type="text" class="input-xlarge" id="input01" name="email">
                 </div>
               </div>
               <div class="control-group">
                 <label class="control-label" for="input01">Password</label>
                 <div class="controls">
-                  <input type="password" class="input-xlarge" id="input01">
+                  <input type="password" class="input-xlarge" id="input01" name="password">
                 </div>
               </div>                                       
               <div class="form-actions">

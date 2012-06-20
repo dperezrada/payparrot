@@ -15,6 +15,7 @@ function req_auth(req, res, next) {
 	if(req.params && req.params.account_id){
 		account_id = req.params.account_id;
 	}
+
 	if ( req.isAuthenticated() ) { 
 		if(account_id){
 			if(req.user._id == account_id || req.params.account_id=='me'){
@@ -43,7 +44,8 @@ module.exports = function(app) {
       		failureRedirect: '/login'
     	})
 	);
-	app.get('/signup', accounts.signup1);
+	app.post('/signup', accounts.signup);
+
 	app.get('/logout', function(req, res){
 	    req.logOut();
 		res.redirect('/');
@@ -63,10 +65,15 @@ module.exports = function(app) {
 	app.get('/accounts/:account_id/messages/:message_id', req_auth, messages.get);
 	app.put('/accounts/:account_id/messages/:message_id', req_auth, messages.update);
 
+
+	app.get('/accounts/setup', req_auth, accounts.setup);
+
 	app.post('/accounts', accounts.create);
 	app.get('/accounts/:account_id', req_auth, accounts.get);
 	app.put('/accounts/:account_id', req_auth, accounts.update);
 	
+	
+
 	app.get('/parrots/start', parrots.start);
 	app.get('/parrots/finish', parrots.finish);
 

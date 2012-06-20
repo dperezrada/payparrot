@@ -101,17 +101,42 @@ exports.get_credentials = function(req, res){
 };
 
 exports.logged = function(req, res){
-	// res.redirect('/app.html');
-	res.render('redirect_app.ejs');
+	if(req.user.setup){
+		res.redirect('/app.html');
+	}
+	res.redirect('/accounts/setup');
 };
 
 exports.login = function(req, res){
 	res.render('login.ejs');
 };
 
-exports.signup1 = function(req, res){
-	res.render('signup.ejs');
+exports.signup = function(req, res){
+	Accounts.findOne({email: req.body.email},function(err,account){
+		if (account) {
+			res.render('signedup.ejs',{layout: true, status: false, params: req.body});
+		} else {
+			var account = new Accounts(req.body);
+			var current_date = (new Date()).valueOf().toString();
+			account.credentials = {
+				'public_token': crypto.createHash('sha1').update(current_date + Math.random().toString()).digest('hex'),
+				'private_token': crypto.createHash('sha1').update(current_date + Math.random().toString()).digest('hex')
+			};
+			account.create_password(req.body.password);
+			account.save(function(err){
+				if(err) res.throw_error(err, 503);
+				else{
+					res.render('signedup.ejs',{layout: true, status: true});
+				}
+			}); 	
+		}
+	});
+	//res.render('signup.ejs');
 };
+
+exports.setup = function(req,res) {
+	res.render('steps.ejs');
+}
 
 exports.token_auth = function(req, res, next){
 	var token = req.query.token;
