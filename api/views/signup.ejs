@@ -11,13 +11,19 @@
 
     <!-- Le styles -->
     <link href="/css/web.css" rel="stylesheet">
-    <link href='https://fonts.googleapis.com/css?family=Duru+Sans' rel='stylesheet' type='text/css'>
+    <!-- link href='https://fonts.googleapis.com/css?family=Duru+Sans' rel='stylesheet' type='text/css' -->
     <!-- <link href="/css/bootstrap-responsive.css" rel="stylesheet"> -->
     <style type="text/css">
       body {
         padding-top: 60px;
         padding-bottom: 40px;
       }
+      .pane{
+        display:none;
+      }
+      /*.pane::first-child{
+        display: block;
+      }*/
     </style>
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -34,11 +40,12 @@
       _gaq.push(['_setAllowLinker', true]);
       _gaq.push(['_trackPageview']);
 
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
+      // (function() {
+      //   var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      //   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      //   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      // })();
+
 
     </script>   
   </head>
@@ -81,84 +88,84 @@
         </ul>
       </div>
       <div class="progress progress-striped active" style='margin-top:10px;'>
-        <div class="bar" style="width: 50%;"></div>
+        <div class="bar" style="width: 25%;"></div>
       </div>
 
-      <div id='setup-messages' class="row pane" style="margin-bottom:0px;margin-top:00px;">
+      <div id='setup-messages' class="row pane" style="display:block;margin-bottom:0px;margin-top:00px;">
         <div class="span12">
           <h3>Set up your tweeting messages</h3>
           <p>Every time a user wants to get your service in exchange of a tweet, we will randomly pick one of your messages to send on his behalf. Select a couple of messages to start. You can edit them later.</p>
           <hr>
         </div>
-        <div class="span6"  style="text-align:left;margin-bottom:50px">
-          <form class="form-horizontal">
+        <div class="span12">
+          <form id='form-data-messages' class='form-inline' onSubmit='return false;'>
+            <label class="control-label" for="input01">Message 1</label>
             <fieldset>
-              <div class="control-group">
-                <label class="control-label" for="input01">Message 1</label>
-                <div class="controls">
-                  <input type="text" class="input-xlarge" id="input01">
-                  <p class="help-block">
-                    <span class="muted">Máx. 115 characters</span>
-                  </p>
-                </div>
-              </div>
-              <div class="control-group">
-                <label class="control-label" for="input01">Message 2</label>
-                <div class="controls">
-                  <input type="text" class="input-xlarge" id="input01">
-                  <p class="help-block">
-                    <span class="muted">Máx. 115 characters</span>
-                  </p>
-                </div>
-              </div>
-              <div class="control-group">
-                <label class="control-label" for="input01">Message 3</label>
-                <div class="controls">
-                  <input type="text" class="input-xlarge" id="input01">
-                  <p class="help-block">
-                    <span class="muted">Máx. 115 characters</span>
-                  </p>
-                </div>
-              </div>
-              <br>
-              <div class="control-group">
-                <label class="control-label" for="input01">Link URL</label>
-                <div class="controls">
-                  <input type="password" class="input-xlarge" id="input01">
-                  <p class="help-block muted">
-                    <span class="muted">i.e. http://payparrot.com/</span>
-                  </p>
-                </div>
-              </div>                                       
-              <div class="form-actions">
-                <button type="submit" class="btn btn-success">Next step</button>
-              </div>
+              <input type="text" class="span8 input-small" placeholder="Message (115 characters)" name="message1" maxlength=115>
+              <input type="text" class="span3 input-small" placeholder="URL" name="url1">
             </fieldset>
-          </form>          
+            <label class="control-label" for="input02">Message 2</label>
+            <fieldset>
+              <input type="text" class="span8 input-small" placeholder="Message (115 characters)" name="message2" maxlength=115>
+              <input type="text" class="span3 input-small" placeholder="URL" name="url2">
+            </fieldset>
+            <label class="control-label" for="input03">Message 3</label>
+            <fieldset>
+              <input type="text" class="span8 input-small" placeholder="Message (115 characters)" name="message3" maxlength=115>
+              <input type="text" class="span3 input-small" placeholder="URL" name="url3">
+            </fieldset>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success btn-next">Next step</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div id='setup-logo' class="row pane" style="margin-bottom:0px;margin-top:00px;">
+        <div class="span12">
+          <h3>Company logo</h3>
+          <p>We don't host your logo. Please provide us a link direct to your image</p>
+          <hr>
+        </div>
+        <div class="span12">
+          <form id='form-data-logo' class='form-inline' onSubmit='return false;'>
+            <label class="control-label" for="input01">Link to your image</label>
+            <fieldset>
+              <input type="text" class="span3 input-small" placeholder="URL" name="url">
+            </fieldset>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success btn-next">Next step</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div id='setup-notifications' class="row pane" style="margin-bottom:0px;margin-top:00px;">
+        <div class="span12">
+          <h3>Notification and Redirect URLs</h3>
+          <p>Redirect URL is where PayParrot redirects a user after a payment, with parameters about that payment</p>
+          <p>Notification URL is where PayParrot send POST requests with parameters, after every action related to your account (subscription created, payent executed, subscription cancelled, etc)</p>
+          <hr>
+        </div>
+        <div class="span12">
+          <form id='form-data-notifications' class='form-inline' onSubmit='return false;'>
+            <label class="control-label" for="input01">Redirect URL</label>
+            <fieldset>
+              <input type="text" class="span3 input-small" placeholder="URL" name="url1">
+            </fieldset>
+            <label class="control-label" for="input01">Notification URL</label>
+            <fieldset>
+              <input type="text" class="span3 input-small" placeholder="URL" name="url2">
+            </fieldset>            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success btn-finish">Create my account</button>
+            </div>
+          </form>
         </div>
       </div>
 
     
       <br>
-      <!-- Example row of columns -->
-      <!-- <div class="row">
-        <div class="span4">
-          <h3>Is a Payment method</h3>
-           <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="" href="#">View details &raquo;</a></p>
-        </div>
-        <div class="span4">
-          <h3>Acts as a Payment System</h3>
-           <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="" href="#">View details &raquo;</a></p>
-       </div>
-        <div class="span4">
-          <h3>Easy integration</h3>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-          <p><a class="" href="#">View details &raquo;</a></p>
-        </div>
-      </div> -->
-
       <div class="divider"></div>
 
       <footer>
@@ -170,7 +177,7 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script data-main="js/web" src="js/libs/require.min.js"></script>
+    <script data-main="js/signup" src="js/libs/require.min.js"></script>
 
   </body>
 </html>
