@@ -19,7 +19,7 @@ describe('PUT /accounts/:account_id/plan', function(){
 		}
 		test_utils.create_and_login(self.account, request,
 			function(){
-				var plan = new Plans({'name': 'social', 'price': 'tweet'});
+				var plan = new Plans({'name': 'social', 'price': 'tweet', 'parrots': 25});
 				plan.save(done);
 			}
 		);
@@ -35,14 +35,14 @@ describe('PUT /accounts/:account_id/plan', function(){
 					'name': 'social'
 				}
 			},
-			function (e, r, body) {
-				assert.equal(204, r.statusCode);
+			function (e, response_put, body) {
+				assert.equal(200, response_put.statusCode);
 				request.get({
 						url: 'http://localhost:3000/accounts/'+self.account.id+'/plan'
 					},
-					function(e, r, body){
-						assert.equal(200, r.statusCode);
-						assert.deepEqual({'name': 'social', 'price': 'tweet', 'parrots': '25'}, JSON.parse(body));
+					function(e, response_get, body){
+						assert.equal(200, response_get.statusCode);
+						assert.deepEqual({'name': 'social', 'price': 'tweet', 'parrots': '25', 'id': response_put.body.id}, JSON.parse(body));
 						done();
 				});
 			});

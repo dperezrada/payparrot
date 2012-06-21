@@ -65,6 +65,7 @@ module.exports = function(app) {
 	app.get('/accounts/:account_id/messages/:message_id', req_auth, messages.get);
 	app.put('/accounts/:account_id/messages/:message_id', req_auth, messages.update);
 
+	app.get('/accounts/:account_id/plan', req_auth, accounts.get_plan);
 	app.put('/accounts/:account_id/plan', req_auth, accounts.update_plan);
 
 
