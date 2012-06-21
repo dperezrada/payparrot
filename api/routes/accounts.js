@@ -192,31 +192,31 @@ exports.update_plan = function(req,res) {
 				new_account_plan.save(function(err){
 					if(err) callback(err);
 					else {
-						if (account_plan) {
-							account_plan.active = 0;
-							account_plan.save(function(err){
-								if (!err) {
-									callback(null, new_account_plan);
-								} else {
-									calback(err);
-								}
-							})
-						} else {
-							callback(null, new_account_plan);
-						}						
-						
+						callback(null, account_plan, new_account_plan);
 					}
 				});
 			}
 		});			
 	};
+	var update_account_plan = function(account_plan, new_account_plan, callback){
+		if (account_plan) {
+			account_plan.active = false;
+			account_plan.save(function(err){
+				if (!err) callback(null, new_account_plan);
+				else calback(err);
+			});
+		} else {
+			callback(null, new_account_plan);
+		}						
+	};
 	async.waterfall(
 		[
 			get_plan,
-			create_account_plan
+			create_account_plan,
+			update_account_plan
 		],
 		function(err,account_plan){
-
+			
 		}
 	);
 }
