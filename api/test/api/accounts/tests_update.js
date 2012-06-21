@@ -41,6 +41,7 @@ describe('PUT /accounts/:account_id', function(){
 						var account_saved = JSON.parse(body);
 						delete account_saved.id;
 						delete account_saved.stats;
+						delete account_saved.setup;
 						assert.deepEqual(self.account_to_modify, account_saved);
 						done();
 				});

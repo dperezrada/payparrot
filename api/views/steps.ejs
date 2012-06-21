@@ -10,7 +10,8 @@
     <meta name="author" content="">
 
     <!-- Le styles -->
-    <link href="/css/web.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <script data-main="/js/steps" src="/js/libs/require.min.js"></script>
     <!-- link href='https://fonts.googleapis.com/css?family=Duru+Sans' rel='stylesheet' type='text/css' -->
     <!-- <link href="/css/bootstrap-responsive.css" rel="stylesheet"> -->
     <style type="text/css">
@@ -45,7 +46,7 @@
       //   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
       //   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       // })();
-
+      window.account_id = "<%= account_id %>";
 
     </script>   
   </head>
@@ -61,14 +62,26 @@
             <span class="icon-bar"></span>
           </a>
           <a class="brand" href="#" style="padding:5px 10px;">
-			<img src="/img/logo.png">
+            <img src="/img/logo-mini.png">
           </a>
-          <div class="nav-collapse pull-right">
-            <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
-              <!-- <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li> -->
-              <li><a href="/login">Login</a></li>
+          <div class="nav-collapse">
+            <ul id='navbar' class="nav">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Help <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">Documentation</a></li>
+                  <li><a href="#">Support</a></li>
+                </ul>
+              </li>
+            </ul>
+            <ul class="nav pull-right">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">My account <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <!-- <li><a href="javascript:void(0);" class="muted">Billing</a></li> -->
+                  <li><a href="/logout">Logout</a></li>
+                </ul>
+              </li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -79,21 +92,23 @@
 
       <!-- Main hero unit for a primary marketing message or call to action -->
 
-      <div class="subnav" style='margin-top:0px'>
+      <div class="subnav steps" style='margin-top:0px'>
         <ul class='nav nav-pills'>
-          <li class='active'><a href=''> <span class="badge badge-default">1</span> Tweeting messages</a></li>
-          <li><a href=''> <span class="badge badge-info">2</span> Company picture</a></li>
-          <li><a href=''> <span class="badge badge-info">3</span> Notification URLs</a></li>          
+          <li class='active'><a href='javascript:void(0)'> <span class="badge badge-default">1</span> Tweeting messages</a></li>
+          <li><a href='javascript:void(0)'> <span class="badge badge-info">2</span> Company picture</a></li>
+          <li><a href='javascript:void(0)'> <span class="badge badge-info">3</span> Notification URLs</a></li>          
         </ul>
       </div>
       <div class="progress progress-striped active" style='margin-top:10px;'>
         <div class="bar" style="width: 25%;"></div>
       </div>
 
+      <div class="alert alert-error" style="display:none;"></div>
+
       <div id='setup-messages' class="row pane" style="display:block;margin-bottom:0px;margin-top:00px;">
         <div class="span12">
           <h3>Set up your tweeting messages</h3>
-          <p>Every time a user wants to get your service in exchange of a tweet, we will randomly pick one of your messages to send on his behalf. Select a couple of messages to start. You can edit them later.</p>
+          <p>Every time a user wants to get your service in exchange of a monthly tweet, we will randomly pick one of your messages to send on his behalf. Select a couple of messages to start. You can edit them later.</p>
           <hr>
         </div>
         <div class="span12">
@@ -159,7 +174,7 @@
             </fieldset>            
             <div class="form-actions">
                 <button type="submit" class="btn btn btn-back">Back</button>
-                <button type="submit" class="btn btn-success btn-finish">Create my account</button>
+                <button type="submit" class="btn btn-success btn-finish">Set up my account</button>
             </div>
           </form>
         </div>
@@ -178,7 +193,7 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script data-main="/js/steps" src="/js/libs/require.min.js"></script>
+    
 
   </body>
 </html>

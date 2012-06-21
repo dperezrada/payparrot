@@ -1,6 +1,7 @@
 var Accounts = require('payparrot_models/objects/accounts.js');
 var Suscriptions = require('payparrot_models/objects/suscriptions.js');
 var Payments = require('payparrot_models/objects/payments.js');
+var AccountsPlans = require('payparrot_models/objects/accounts_plans.js');
 var pp_stats = require('payparrot_models/libs/stats.js');
 var _ = require('underscore');
 var crypto = require('crypto');
@@ -102,9 +103,15 @@ exports.get_credentials = function(req, res){
 
 exports.logged = function(req, res){
 	if(req.user.setup){
-		res.redirect('/app.html');
+		if (req.user.subscriptions) {
+			res.redirect('/app.html');
+		} else {
+			res.redirect('/accounts/subscriptions');	
+		}		
+	} else {
+		res.redirect('/accounts/setup');	
 	}
-	res.redirect('/accounts/setup');
+	
 };
 
 exports.login = function(req, res){
@@ -135,7 +142,11 @@ exports.signup = function(req, res){
 };
 
 exports.setup = function(req,res) {
-	res.render('steps.ejs');
+	res.render('steps.ejs', {account_id: req.user._id});
+}
+
+exports.subscriptions = function(req,res) {
+	res.render('subscriptions.ejs', {account_id: req.user._id});
 }
 
 exports.token_auth = function(req, res, next){
@@ -155,6 +166,57 @@ exports.token_auth = function(req, res, next){
 			}
 		}
 	});
+}
 
-	
+exports.update_plan = function(req,res) {
+
+	var get_plan = function(callback){
+		Plans.findOne({name: req.body.name}, function(err,plan){
+			if(err) callback(err);
+			else {
+				if (!plan) {
+					callback(err, null);
+				} else {
+					callback(null, plan);
+				}
+			}
+		});	
+	};
+	var create_account_plan = function(plan, callback){
+		var plan_data = plan.toJSON();
+		plan_data['active'] = true;
+		AccountsPlans.findOne({account_id: req.params.account_id, active:1}, function (err, account_plan){
+			if(err) callback(err);
+			else{
+				var new_account_plan = new AccountsPlans(plan_data);
+				new_account_plan.save(function(err){
+					if(err) callback(err);
+					else {
+						if (account_plan) {
+							account_plan.active = 0;
+							account_plan.save(function(err){
+								if (!err) {
+									callback(null, new_account_plan);
+								} else {
+									calback(err);
+								}
+							})
+						} else {
+							callback(null, new_account_plan);
+						}						
+						
+					}
+				});
+			}
+		});			
+	};
+	async.waterfall(
+		[
+			get_plan,
+			create_account_plan
+		],
+		function(err,account_plan){
+
+		}
+	);
 }

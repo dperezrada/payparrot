@@ -36,6 +36,7 @@ define([
       this.credentials_model = new CredentialsModel({id: this.model.get("id")});
       this.credentials_model.fetch({success: function(model){
           $('.credentials .public-token', this.el).html(model.get("public_token"));
+          $('.credentials .private-token', this.el).html(model.get("private_token"));
         }
       });
       $('.pane-content',this.el).html(this.template(this.model.toJSON()));  

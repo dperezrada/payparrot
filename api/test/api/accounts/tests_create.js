@@ -22,6 +22,7 @@ describe('POST /accounts', function(){
 			payments_total: 0,
 			payments_today: 0
 		}
+		self.account.setup = false;
 	});
 	after(function(done){
 		require('../../tear_down').remove_all(done);

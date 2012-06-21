@@ -21,7 +21,8 @@ describe('POST /login', function(){
 	});
    	it('should be able to login', function(done){
 		request.get({url: 'http://localhost:3000/logged', followRedirect: false}, function(e, r, body){
-			assert.equal(200, r.statusCode);
+			assert.equal(302, r.statusCode);
+			assert.equal('http://localhost:3000/accounts/setup', r.headers.location);
 			done();
 		});
 	});
