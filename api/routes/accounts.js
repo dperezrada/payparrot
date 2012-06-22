@@ -2,6 +2,7 @@ var Accounts = require('payparrot_models/objects/accounts.js');
 var Suscriptions = require('payparrot_models/objects/suscriptions.js');
 var Payments = require('payparrot_models/objects/payments.js');
 var AccountsPlans = require('payparrot_models/objects/accounts_plans.js');
+var Plans = require('payparrot_models/objects/plans.js');
 var pp_stats = require('payparrot_models/libs/stats.js');
 var _ = require('underscore');
 var crypto = require('crypto');
@@ -184,10 +185,12 @@ exports.update_plan = function(req,res) {
 	};
 	var create_account_plan = function(plan, callback){
 		var plan_data = plan.toJSON();
+		delete plan_data._id;
 		plan_data['active'] = true;
 		AccountsPlans.findOne({account_id: req.params.account_id, active:1}, function (err, account_plan){
 			if(err) callback(err);
 			else{
+
 				var new_account_plan = new AccountsPlans(plan_data);
 				new_account_plan.save(function(err){
 					if(err) callback(err);
@@ -216,7 +219,10 @@ exports.update_plan = function(req,res) {
 			update_account_plan
 		],
 		function(err,account_plan){
-			
+			if(err) res.throw_error(err, 503);
+			else{
+				res.statusCode = 204;
+			}
 		}
 	);
 }
