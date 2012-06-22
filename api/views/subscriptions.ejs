@@ -11,7 +11,7 @@
 
     <!-- Le styles -->
     <link href="/css/style.css" rel="stylesheet">
-    <script data-main="/js/steps" src="/js/libs/require.min.js"></script>
+    <script data-main="/js/subscriptions" src="/js/libs/require.min.js"></script>
     <!-- link href='https://fonts.googleapis.com/css?family=Duru+Sans' rel='stylesheet' type='text/css' -->
     <!-- <link href="/css/bootstrap-responsive.css" rel="stylesheet"> -->
     <style type="text/css">
@@ -96,6 +96,8 @@
         </div>
       </div>
 
+      <p>Your current plan: <span id='current-plan'></span></p>
+
       <div class="row" style="margin-top:50px;">
         <div class="span12">
           <div class="pricing_column social">
@@ -110,7 +112,7 @@
               <p>1 tweet / month</p>
             </div>
             <div class="divider"></div>             
-            <button class='btn-success btn-large btn'>Start</button>  
+            <button class='btn-success btn-large btn btn-set-plan' data='social'>Start</button>  
           </div>
           <div class="pricing_column standard">
             <div class="plan_title">Standard</div>
@@ -124,7 +126,7 @@
               <p>$25 / month</p>
             </div>
             <div class="divider"></div>                         
-            <button class='btn-success btn-large btn'>Buy now</button>  
+            <button class='btn-success btn-large btn btn-set-plan' data='standard'>Buy now</button>  
           </div>
           <div class="pricing_column pro">
             <div class="plan_title">Pro</div>
@@ -138,7 +140,7 @@
               <p>$50 / month</p>
             </div>
             <div class="divider"></div>                                     
-            <button class='btn-success btn-large btn'>Buy now</button>  
+            <button class='btn-success btn-large btn btn-set-plan' data='pro'>Buy now</button>  
           </div>
           <div class="pricing_column premium">
             <div class="plan_title">Premium</div>
@@ -152,7 +154,7 @@
               <p>$100 / month</p>
             </div>
             <div class="divider"></div>                         
-            <button class='btn-success btn-large btn'>Buy now</button>  
+            <button class='btn-success btn-large btn btn-set-plan' data='premium'>Buy now</button>  
           </div>                         
         </div>
       </div>
