@@ -7,11 +7,12 @@ var plans_schema = new Schema({
  	name: String,
 	price: String,
 	parrots: Number,
-	active: {type: Boolean, default: true},
+	id: String,
+	created_at: {type: Date, default: Date.now, private: true},
 });
 
 mongoose.model('Plans', plans_schema);
-var Messages = mongoose.model('Plans');
-module.exports = Messages;
+var Plans = mongoose.model('Plans');
+module.exports = Plans;
 
-Messages.prototype.returnJSON = returnJSON;
+Plans.prototype.returnJSON = returnJSON;

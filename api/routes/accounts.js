@@ -1,12 +1,15 @@
 var Accounts = require('payparrot_models/objects/accounts.js');
 var Suscriptions = require('payparrot_models/objects/suscriptions.js');
 var Payments = require('payparrot_models/objects/payments.js');
+var Plans = require('payparrot_models/objects/plans.js');
 var AccountsPlans = require('payparrot_models/objects/accounts_plans.js');
 var Plans = require('payparrot_models/objects/plans.js');
 var pp_stats = require('payparrot_models/libs/stats.js');
 var _ = require('underscore');
 var crypto = require('crypto');
 var async = require('async');
+
+var ObjectId = require('mongoose').Types.ObjectId;
 
 exports.create = function(req, res){;
 	var account = new Accounts(req.body);
@@ -171,22 +174,23 @@ exports.token_auth = function(req, res, next){
 
 exports.update_plan = function(req,res) {
 
-	var get_plan = function(callback){
+	var get_plan = function(account, callback){
 		Plans.findOne({name: req.body.name}, function(err,plan){
 			if(err) callback(err);
 			else {
 				if (!plan) {
 					callback(err, null);
 				} else {
-					callback(null, plan);
+					callback(null, account, plan);
 				}
 			}
 		});	
 	};
-	var create_account_plan = function(plan, callback){
+	var create_account_plan = function(account, plan, callback){
 		var plan_data = plan.toJSON();
 		delete plan_data._id;
 		plan_data['active'] = true;
+		plan_data['account_id'] = account._id;
 		AccountsPlans.findOne({account_id: req.params.account_id, active:1}, function (err, account_plan){
 			if(err) callback(err);
 			else{
@@ -214,15 +218,22 @@ exports.update_plan = function(req,res) {
 	};
 	async.waterfall(
 		[
-			get_plan,
+			async.apply(get_plan, req.user),
 			create_account_plan,
 			update_account_plan
 		],
-		function(err,account_plan){
+		function(err, account_plan){
 			if(err) res.throw_error(err, 503);
-			else{
-				res.statusCode = 204;
-			}
+			else res.send({"id": account_plan._id});
 		}
 	);
 }
+exports.get_plan = function(req,res) {
+	AccountsPlans.findOne({account_id: req.params.account_id, active: true}, function (err, account_plan){
+		if(err) res.throw_error(err, 503);
+		else if(!account_plan) res.throw_error(null, 404);
+		else {
+			res.send(account_plan.returnJSON());
+		}
+	});
+};

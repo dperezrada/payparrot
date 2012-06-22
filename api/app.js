@@ -17,7 +17,7 @@ var passport = require('passport')
 var throw_error_middleware = function(req, res, next){
 	res.throw_error = function(message, status_code){
 		if(message){
-			console.log(message);
+			console.error(message);
 		}
 		if (status_code == 503) {
 			res.statusCode = 503;

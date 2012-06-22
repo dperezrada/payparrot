@@ -1,23 +1,22 @@
-var mongoose = require('mongoose')
-	,Schema = mongoose.Schema
-	,_ = require('underscore')
-	,crypto = require('crypto')
-	,returnJSON = require('./utils').returnJSON;
+var mongoose = require('mongoose'),
+	Schema = mongoose.Schema,
+	_ = require('underscore'),
+	returnJSON = require('./utils').returnJSON;
 
 var accounts_plans_schema = new Schema({
- 	name: String,
- 	price: String,
- 	parrots: Number,
- 	account_id: Schema.ObjectId,
 	id: String,
-	active: {type: Boolean, default: false},
+ 	name: String,
+	price: String,
+	account_id: {type: Schema.ObjectId, private: true},
+	parrots: Number,
+	active: {type: Boolean, default: true, private: true},
 	created_at: {type: Date, default: Date.now, private: true},
-}, {strict:true});
-
-
+});
 
 mongoose.model('AccountsPlans', accounts_plans_schema);
 var AccountsPlans = mongoose.model('AccountsPlans');
 module.exports = AccountsPlans;
 
+
+AccountsPlans.prototype.returnJSON = returnJSON;
 AccountsPlans.prototype.returnJSON = returnJSON;
