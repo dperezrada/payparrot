@@ -48,12 +48,30 @@ require([
 				}
 			});	
 		}
+		function delete_account(callback){
+			if ($('.btn-cancel')) {
+				$('.btn-cancel').html('<img src="/img/loading.gif" width=16>');	
+			}
+			$.ajax({
+				url: "/accounts/"+window.account_id+"/plan",
+				type: "DELETE",
+				dataType: "json",
+				success: function(data) {
+					callback(null, data);
+				},
+				error: function(err) {
+					callback(err);
+				}
+			});	
+		}		
 
 		function render_set_plan(plan) {
 			if (!plan) {
 				$("#current-plan").html("<strong>You don't have any plan yet</strong>");
 			} else {
 				$("#current-plan").html("<strong>"+plan.name+"</strong>");
+				$('.btn-cancel').show();
+				$('.btn-cancel').html("Cancel my account");
 			}
 			$('.plans button').attr('disabled',false);
 			$('.plans button').addClass('btn-success');
@@ -86,8 +104,9 @@ require([
 		function unset_plan(ev) {
 			var c = confirm("Are you sure that you want to cancel yur account? All your pending tweets will be deleted");
 			if (c) {
-				update_account('', function(err,data){
+				delete_account(function(err,data){
 					fetch_plan();
+					$('.btn-cancel').hide();
 				});
 			}
 		}		
