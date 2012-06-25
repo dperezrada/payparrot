@@ -47,4 +47,15 @@ describe('PUT /accounts/:account_id/plan', function(){
 				});
 			});
 	});
+	it('should delete your selected plan', function(done){
+		request(
+			{
+				url: 'http://localhost:3000/accounts/'+self.account.id+'/plan',
+				method: 'delete'
+			},
+			function (e, response_put, body) {
+				assert.equal(204, response_put.statusCode);
+				done();
+			});
+	});	
 });

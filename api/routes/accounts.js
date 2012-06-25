@@ -203,7 +203,7 @@ exports.update_plan = function(req,res) {
 					}
 				});
 			}
-		});			
+		});
 	};
 	var update_account_plan = function(account_plan, new_account_plan, callback){
 		if (account_plan) {
@@ -234,6 +234,24 @@ exports.get_plan = function(req,res) {
 		else if(!account_plan) res.throw_error(null, 404);
 		else {
 			res.send(account_plan.returnJSON());
+		}
+	});
+};
+exports.delete_plan = function(req,res) {
+	AccountsPlans.findOne({account_id: req.params.account_id, active: true}, function (err, account_plan){
+		if(err) res.throw_error(err, 503);
+		else if(!account_plan) res.throw_error(null, 404);
+		else {
+			// res.send(account_plan.returnJSON());
+			console.log(account_plan);
+			account_plan.active = false;
+			account_plan.save(function(err){
+				if (err) res.throw_error(err, 503);
+				else {
+					res.statusCode = 204;
+					res.send();
+				}
+			});
 		}
 	});
 };

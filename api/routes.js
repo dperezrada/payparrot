@@ -64,7 +64,8 @@ module.exports = function(app) {
 	app.get('/accounts/:account_id/messages', req_auth, messages.list);
 	app.get('/accounts/:account_id/messages/:message_id', req_auth, messages.get);
 	app.put('/accounts/:account_id/messages/:message_id', req_auth, messages.update);
-
+	
+	app.delete('/accounts/:account_id/plan', req_auth, accounts.delete_plan);
 	app.get('/accounts/:account_id/plan', req_auth, accounts.get_plan);
 	app.put('/accounts/:account_id/plan', req_auth, accounts.update_plan);
 
