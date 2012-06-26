@@ -8,29 +8,41 @@ var SaasyNotifications = require('payparrot_models/objects/saasy_notifications.j
 var _ = require('underscore');
 var crypto = require('crypto');
 var async = require('async');
+var request = require('request');
 
 var ObjectId = require('mongoose').Types.ObjectId;
 
-var change_saasy_subscription = function(callback) {
-	var body = '<subscription><no-end-date/><productPath>/</productPath><quantity>1</quantity><proration>true</proration></subscription>';
+var change_saasy_subscription = function(saasy_subscription,new_plan,callback) {
+	var request_url = 'https://Administrator:headjocari@api.fastspring.com/company/payparrot/subscription/'+saasy_subscription.saasy_subscription_id;
+	var body = '<subscription><no-end-date/><productPath>/'+new_plan.product_path+'</productPath><quantity>1</quantity><proration>true</proration></subscription>';
+	request.put(
+		{
+			url: request_url,
+			body: body,
+			'Content-type': 'application/xml'
+		},
+		function (err, response_put, body) {
+			if (err) callback(err);
+			else callback(null,body);
+		});
 }
 
 exports.update_plan = function(req,res) {
 
 	var get_plan = function(account, callback){
-		Plans.findOne({name: req.body.name}, function(err,plan){
-			if(err || !plan) callback(err, null);
+		Plans.findOne({name: req.body.name}, function(err,new_plan){
+			if(err || !new_plan) callback(err, null);
 			else {
-				callback(null, account, plan);
+				callback(null, account, new_plan);
 			}
 		});	
 	};
 
-	var verify_payment_method = function(account,plan,callback) {
+	var verify_payment_method = function(account,new_plan,callback) {
 
-		if (plan.price=="tweet") {
+		if (new_plan.price=="tweet") {
 			// PayParrot magic
-			callback(null,account,plan);
+			callback(null,account,new_plan);
 		} else {
 			SaasySubscriptions.findOne({account_id: account._id},function(err, saasy_subscription){
 				if (err) callback(err);
@@ -38,14 +50,17 @@ exports.update_plan = function(req,res) {
 					if (saasy_subscription) {
 
 						// API Saasy change plan
-						change_saasy_subscription(function(err,data){
-							//callback(null, account, plan);
+						change_saasy_subscription(saasy_subscription,new_plan,function(err,data){
+							if (err) callback(err);
+							else {
+								callback(null, new_plan);	
+							}
 						})
 
 					} else {
 						
 						// Redirect to saasy: first payment
-						callback({redirect_url: plan.product_url});
+						callback({redirect_url: new_plan.product_url});
 
 					}
 				}
@@ -58,7 +73,7 @@ exports.update_plan = function(req,res) {
 			async.apply(get_plan, req.user),
 			verify_payment_method
 		],
-		function(err, account_plan){
+		function(err, new_plan){
 			if(err) {
 				if (err.redirect_url) {
 					res.send({redirect_url: err.redirect_url+'?referrer='+req.user._id});
@@ -67,7 +82,7 @@ exports.update_plan = function(req,res) {
 				}
 			}
 			else { 
-				change_plan(plan,req.user,function(err,data){
+				change_plan(new_plan,req.user,function(err,data){
 					if (!err) {
 						res.send(data);
 					}
@@ -84,7 +99,6 @@ var change_plan = function(new_plan,account,cb) {
 	}
 
 	var create_account_plan = function(account, new_plan, current_account_plan, callback){
-		console.log("1");
 		var plan_data = new_plan.toJSON();
 		delete plan_data._id;
 		plan_data['active'] = true;
