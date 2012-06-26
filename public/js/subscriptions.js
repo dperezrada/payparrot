@@ -68,6 +68,7 @@ require([
 		function render_set_plan(plan) {
 			if (!plan) {
 				$("#current-plan").html("<strong>You don't have any plan yet</strong>");
+				$('.btn-cancel').hide();
 			} else {
 				$("#current-plan").html("<strong>"+plan.name+"</strong>");
 				$('.btn-cancel').show();
@@ -97,7 +98,11 @@ require([
 		function set_plan(ev) {
 			var plan = $(ev.target).attr('data');
 			update_account(plan, function(err,data){
-				fetch_plan();
+				if (data.redirect_url) {
+					window.location = data.redirect_url;
+				} else {
+					fetch_plan();	
+				}
 			});
 		}
 

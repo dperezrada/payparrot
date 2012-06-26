@@ -4,6 +4,7 @@ var passport 	= require('passport');
 var messages    = require('./routes/messages')
   , accounts    = require('./routes/accounts')
   , parrots     = require('./routes/parrots')
+  , plans     = require('./routes/plans')
   , potential_users     = require('./routes/potential_users')
   , notifications     = require('./routes/notifications')
   , suscriptions     = require('./routes/suscriptions');
@@ -65,9 +66,11 @@ module.exports = function(app) {
 	app.get('/accounts/:account_id/messages/:message_id', req_auth, messages.get);
 	app.put('/accounts/:account_id/messages/:message_id', req_auth, messages.update);
 	
-	app.delete('/accounts/:account_id/plan', req_auth, accounts.delete_plan);
-	app.get('/accounts/:account_id/plan', req_auth, accounts.get_plan);
-	app.put('/accounts/:account_id/plan', req_auth, accounts.update_plan);
+	app.delete('/accounts/:account_id/plan', req_auth, plans.delete_plan);
+	app.get('/accounts/:account_id/plan', req_auth, plans.get_plan);
+	app.put('/accounts/:account_id/plan', req_auth, plans.update_plan);
+
+	app.post('/saasy/:notification_type', plans.notifications);
 
 
 	app.get('/accounts/setup', req_auth, accounts.setup);
