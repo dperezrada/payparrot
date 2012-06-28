@@ -15,8 +15,13 @@ class Accounts(BaseDocument):
     notification_url = StringField()
     credentials = DictField()
     created_at = DateTimeField(default=datetime.now)
-    stats = DictField()
+    stats = DictField(default = {
+		'parrots_total': 0,
+		'parrots_today': 0,
+		'payments_total': 0,
+		'payments_today': 0
+	})
     
     meta = {
-        'private': ['created_at', 'password', 'salt']
+        'private': ['created_at', 'password', 'salt', 'credentials']
     }

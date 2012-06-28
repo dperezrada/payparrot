@@ -16,13 +16,8 @@ class TestAccounts(unittest.TestCase):
             'startup': 'Payparrot',
             'url': 'http://payparrot.com/',
             'callback_url': 'http://demo.payparrot.com',
-            'notification_url': 'http://demo.payparrot.com/notifications',
-            'credentials': {
-                'public_token': '123',
-                'private_token': '456'
-            }
+            'notification_url': 'http://demo.payparrot.com/notifications'
         }
-        self.maxDiff = None
     
     def tearDown(self):
         Accounts.drop_collection()
@@ -47,10 +42,11 @@ class TestAccounts(unittest.TestCase):
             'url': 'http://payparrot.com/',
             'callback_url': 'http://demo.payparrot.com',
             'notification_url': 'http://demo.payparrot.com/notifications',
-            'credentials': {
-                'public_token': '123',
-                'private_token': '456'
-            },
-            'stats': {},
+            'stats': {
+    			'parrots_total': 0,
+    			'parrots_today': 0,
+    			'payments_total': 0,
+    			'payments_today': 0
+    		}
         }
         self.assertEqual(expected_json, json.loads(account.JSON()))
