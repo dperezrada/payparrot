@@ -1,1 +1,0 @@
-db.messages.insert({ "_id" : ObjectId("4fb2709c3a2405374a000144"), "active" : "1", "status" : "0", "account_id" : ObjectId("4fb2d2db4684a54770000018"), "text" : "Hola mundo", "url" : "http://www.qubity.com" })

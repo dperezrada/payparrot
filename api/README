@@ -1,6 +1,0 @@
-#INSTALL
-npm install -d
-#RUN
-supervisor app.js
-#TESTS
-make test
