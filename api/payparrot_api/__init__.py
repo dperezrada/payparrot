@@ -1,9 +1,20 @@
 # -*- coding: utf-8 -*-
-from bottle import route, run, default_app
+import bottle
+from bottle import route, request, response
 
+from mongoengine import connect
+
+from payparrot_dal import Accounts
+
+connect('payparrot_test')
 
 @route('/accounts', method="POST")
 def create_account():
-    return '<b>Hello %s!</b>' % name
+    account = Accounts(**request.json)
+    account.save()
+    response.status = 201
+    return {'id': str(account.id)}
 
-application = default_app.pop()
+bottle.debug(True)
+
+application = bottle.default_app.pop()
