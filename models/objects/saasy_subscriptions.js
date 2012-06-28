@@ -1,6 +1,7 @@
 var mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
 	_ = require('underscore'),
+	request = require('request'),
 	returnJSON = require('./utils').returnJSON;
 
 var saasy_subscription_schema = new Schema({
@@ -10,10 +11,6 @@ var saasy_subscription_schema = new Schema({
 	active: {type: Boolean, default: true, private: true},
 	created_at: {type: Date, default: Date.now, private: true},
 });
-
-var change_saasy_subscription = function(saasy_subscription,new_plan,callback) {
-
-}
 
 saasy_subscription_schema.method('change_remote_subscription', function(new_plan, callback) {
 	var request_url = 'https://Administrator:headjocari@api.fastspring.com/company/payparrot/subscription/'+this.saasy_subscription_id;
@@ -27,6 +24,32 @@ saasy_subscription_schema.method('change_remote_subscription', function(new_plan
 		function (err, response_put, body) {
 			if (err) callback(err);
 			else callback(null,body);
+		});	
+});
+
+saasy_subscription_schema.method('cancel_remote_subscription', function(callback) {
+	var request_url = 'https://Administrator:headjocari@api.fastspring.com/company/payparrot/subscription/'+this.saasy_subscription_id;	
+	request(
+		{
+			url: request_url,
+			method: 'delete'
+		},
+		function (err, response_put, body) {
+			if (err) callback(err);
+			else callback(null);
+		});	
+});
+
+saasy_subscription_schema.static('cancel_remote_subscription', function(saasy_subscription_id, callback) {
+	var request_url = 'https://Administrator:headjocari@api.fastspring.com/company/payparrot/subscription/'+saasy_subscription_id;
+	request(
+		{
+			url: request_url,
+			method: 'delete'
+		},
+		function (err, response_put, body) {
+			if (err) callback(err);
+			else callback(null);
 		});	
 });
 

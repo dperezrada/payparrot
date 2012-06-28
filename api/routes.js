@@ -67,10 +67,10 @@ module.exports = function(app) {
 	app.put('/accounts/:account_id/messages/:message_id', req_auth, messages.update);
 	
 	app.delete('/accounts/:account_id/plan', req_auth, plans.delete_plan);
-	app.get('/accounts/:account_id/plan', req_auth, plans.get_plan);
+	app.get('/accounts/:account_id/plan', req_auth, plans.get_account_plan);
 	app.put('/accounts/:account_id/plan', req_auth, plans.update_plan);
 
-	app.post('/saasy/:notification_type', plans.notifications);
+	app.post('/saasy/:notification_type', plans.receive_saasy_notifications);
 
 
 	app.get('/accounts/setup', req_auth, accounts.setup);
