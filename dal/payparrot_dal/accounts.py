@@ -24,7 +24,6 @@ class Accounts(Document):
     })
     roles = ListField()
     meta = {
-        'collection': 'accounts',
         'private': ['created_at', 'password', 'salt', 'credentials', 'roles']
     }
     

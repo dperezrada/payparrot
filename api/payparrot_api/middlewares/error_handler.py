@@ -13,7 +13,7 @@ class ErrorHandler(object):
             return self.app(environ, start_response)
         except UnauthorizeException, e:
             start_response(
-                '401 Found', 
+                '401 Unauthorized', 
                 [
                     ('Cache-control', 'no-cache'),
                     ('Content-Type', 'application/json')
@@ -21,7 +21,6 @@ class ErrorHandler(object):
             )
             return ['{"error": "Unauthorized"}']
         except Exception, e:
-            print "murio"
             print >> sys.stderr, e
             start_response(
                 '500 Internal Server Error', 

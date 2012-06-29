@@ -8,6 +8,7 @@ from payparrot_dal import Accounts, AccountsSessions
 
 @route('/accounts', method="POST")
 def create_account():
+    # TODO: check mongo injection
     account = Accounts(**request.json)
     account.save()
     response.status = 201
