@@ -15,3 +15,9 @@ class BaseDocument(Document):
                 if type(prepared_json[key]) == ObjectId:
                     prepared_json[key] = str(prepared_json[key])
         return prepared_json
+    
+    def update_with_data(self, json):
+        for key, value in json.iteritems():
+            self.__setattr__(key, value)
+        self.save()
+        

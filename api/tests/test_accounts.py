@@ -66,7 +66,7 @@ class TestGetAccountData(unittest.TestCase):
             }
         }
         self.response = app.post_json('/accounts', self.account_data)
-        self.account_id = self.response.json.get('id')
+        self.account_id = str(self.response.json.get('id'))
 
     def test_get_account_info(self):
         response = app.get('/accounts/'+self.account_id)
@@ -94,3 +94,47 @@ class TestGetAccountData(unittest.TestCase):
         response = app.get('/accounts/'+self.account_id+'/credentials')
         self.assertEqual(200, response.status_int)
         self.assertEqual({'public_token': '123', 'private_token': '456'}, response.json)
+    
+class TestUpdateAccount(unittest.TestCase):
+    def setUp(self):
+        from mongoengine import connect
+        connect('payparrot_test')
+        self.account_data = {
+	        'email': 'daniel@payparrot.com',
+	        'password': '123',
+	        'name': 'Daniel',
+	        'startup': 'Payparrot',
+	        'url': 'http://payparrot.com/',
+		}
+        self.response = app.post_json('/accounts', self.account_data)
+        self.account_id = str(self.response.json.get('id'))
+        self.maxDiff = None
+
+    def test_get_account_info(self):
+        modified_account_data = {
+	        'email': 'daniel@payparroting.com',
+	        'name': 'Guillermo',
+	        'startup': 'PayparrotIng',
+	        'url': 'http://payparroting.com/'
+		}
+        response = app.put_json('/accounts/'+self.account_id, modified_account_data)
+        self.assertEqual(204, response.status_int)
+        response = app.get('/accounts/'+self.account_id)
+        self.assertEqual(
+            {
+                'id': self.account_id,
+    	        'email': 'daniel@payparroting.com',
+    	        'name': 'Guillermo',
+    	        'startup': 'PayparrotIng',
+    	        'url': 'http://payparroting.com/',
+    	        'notification_url': None,
+    	        'callback_url': None,
+                'stats': {
+                    'parrots_today': 0,
+                    'parrots_total': 0,
+                    'payments_today': 0,
+                    'payments_total': 0
+                }
+            },
+            response.json
+        )

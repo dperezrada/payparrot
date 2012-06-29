@@ -23,6 +23,14 @@ def get_account(account_id):
     else:
         return accounts[0].JSON()
 
+@route('/accounts/:account_id', method="PUT")
+def get_account(account_id):
+    accounts = Accounts.objects(id = account_id)
+    if len(accounts) == 0:
+        response.status = 404
+    else:
+        accounts[0].update_with_data(request.json)
+        response.status = 204
 
 @route('/accounts/:account_id/credentials', method="GET")
 def get_credentials(account_id):
