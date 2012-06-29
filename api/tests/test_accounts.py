@@ -4,7 +4,7 @@ import json
 import unittest
 
 from server_test_app import app
-from payparrot_dal import Accounts
+from payparrot_dal import Accounts, AccountsSessions
 
 class TestCreateAccounts(unittest.TestCase):
     def setUp(self):
@@ -20,6 +20,9 @@ class TestCreateAccounts(unittest.TestCase):
             'notification_url': 'http://demo.payparrot.com/notifications'
         }
         self.response = app.post_json('/accounts', self.account_data)
+    
+    def tearDown(self):
+        Accounts.drop_collection()
 		
     def test_create_status(self):
         self.assertEqual(201, self.response.status_int)
@@ -68,6 +71,10 @@ class TestGetAccountData(unittest.TestCase):
         self.response = app.post_json('/accounts', self.account_data)
         self.account_id = str(self.response.json.get('id'))
 
+    def tearDown(self):
+        Accounts.drop_collection()
+        AccountsSessions.drop_collection()
+
     def test_get_account_info(self):
         response = app.get('/accounts/'+self.account_id)
         self.assertEqual(200, response.status_int)
@@ -109,6 +116,10 @@ class TestUpdateAccount(unittest.TestCase):
         self.response = app.post_json('/accounts', self.account_data)
         self.account_id = str(self.response.json.get('id'))
         self.maxDiff = None
+    
+    def tearDown(self):
+        Accounts.drop_collection()
+        AccountsSessions.drop_collection()
 
     def test_get_account_info(self):
         modified_account_data = {
