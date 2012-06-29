@@ -15,8 +15,17 @@ def create_account():
     response.status = 201
     return {'id': str(account.id)}
 
+@route('/accounts/:account_id', method="GET")
+def get_account(account_id):
+    accounts = Accounts.objects(id = account_id)
+    if len(accounts) == 0:
+        response.status = 404
+    else:
+        return accounts[0].JSON()
+
+
 @route('/accounts/:account_id/credentials', method="GET")
-def create_account(account_id):
+def get_credentials(account_id):
     accounts = Accounts.objects(id = account_id).only('credentials')
     if len(accounts) == 0:
         response.status = 404

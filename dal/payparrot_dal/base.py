@@ -14,4 +14,4 @@ class BaseDocument(Document):
                 prepared_json[key] = self.__getattribute__(key)
                 if type(prepared_json[key]) == ObjectId:
                     prepared_json[key] = str(prepared_json[key])
-        return json.dumps(prepared_json)
+        return prepared_json

@@ -49,4 +49,4 @@ class TestAccounts(unittest.TestCase):
     			'payments_today': 0
     		}
         }
-        self.assertEqual(expected_json, json.loads(account.JSON()))
+        self.assertEqual(expected_json, account.JSON())

@@ -46,7 +46,7 @@ class TestCreateAccounts(unittest.TestCase):
             },
         }
         accounts = Accounts.objects(id = account_id)
-        self.assertEqual(expected_json, json.loads(accounts[0].JSON()))
+        self.assertEqual(expected_json, accounts[0].JSON())
         
 class TestGetAccountData(unittest.TestCase):
     def setUp(self):
@@ -67,6 +67,28 @@ class TestGetAccountData(unittest.TestCase):
         }
         self.response = app.post_json('/accounts', self.account_data)
         self.account_id = self.response.json.get('id')
+
+    def test_get_account_info(self):
+        response = app.get('/accounts/'+self.account_id)
+        self.assertEqual(200, response.status_int)
+        self.assertEqual(
+            {
+                'id': self.account_id,
+                'email': 'daniel@payparrot.com',
+                'name': 'Daniel',
+                'startup': 'Payparrot',
+                'url': 'http://payparrot.com/',
+                'callback_url': 'http://demo.payparrot.com',
+                'notification_url': 'http://demo.payparrot.com/notifications',
+                'stats': {
+            		'parrots_total': 0,
+            		'parrots_today': 0,
+            		'payments_total': 0,
+            		'payments_today': 0
+                },
+            },
+            response.json
+        )
 
     def test_get_credentials(self):
         response = app.get('/accounts/'+self.account_id+'/credentials')
