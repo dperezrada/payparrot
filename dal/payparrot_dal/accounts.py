@@ -3,6 +3,7 @@ from datetime import datetime
 from mongoengine import StringField, DateTimeField, DictField
 
 from payparrot_dal.base import BaseDocument
+from payparrot_dal.accounts_sessions import AccountsSessions
 
 class Accounts(BaseDocument):
     email = StringField(required=True)
@@ -25,3 +26,11 @@ class Accounts(BaseDocument):
     meta = {
         'private': ['created_at', 'password', 'salt', 'credentials']
     }
+    
+    @staticmethod
+    def get_from_session(id):
+        accounts_sessions = AccountsSessions.objects(session_id = id).limit(1)
+        if len(accounts_sessions) > 0:
+            accounts = Accounts.objects(id = accounts_sessions[0].account_id).limit(1)
+            if len(accounts) > 0:
+                return accounts[0]
