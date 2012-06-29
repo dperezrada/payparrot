@@ -28,7 +28,8 @@ saasy_subscription_schema.method('change_remote_subscription', function(new_plan
 });
 
 saasy_subscription_schema.method('cancel_remote_subscription', function(callback) {
-	var request_url = 'https://Administrator:headjocari@api.fastspring.com/company/payparrot/subscription/'+this.saasy_subscription_id;	
+	var request_url = 'https://Administrator:headjocari@api.fastspring.com/company/payparrot/subscription/'+this.saasy_subscription_id;
+	console.log(request_url);
 	request(
 		{
 			url: request_url,

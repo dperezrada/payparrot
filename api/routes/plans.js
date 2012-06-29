@@ -128,8 +128,8 @@ exports.delete_plan = function(req,res) {
 				if (local_saasy_subscription) {
 					async.waterfall(
 						[
-							async.apply(cancel_remote_saasy_subscription,local_saasy_subscription.saasy_subscription_id),
 							//async.apply(local_saasy_subscription.cancel_remote_subscription),
+							async.apply(cancel_remote_saasy_subscription,local_saasy_subscription.saasy_subscription_id),
 							async.apply(deactivate_local_saasy_subscription,local_saasy_subscription),
 							async.apply(disable_account_plan, account_plan)
 						],
@@ -245,13 +245,10 @@ var check_local_subscription_and_deactivate_plan = function(notification_data,ca
 			var local_saasy_subscription = args[0];
 			var account = args[1];
 			var account_plan = args[2];
-			console.log("chan");
-			console.log(local_saasy_subscription);
-			console.log(account_plan);
 			if (local_saasy_subscription && account && account_plan && !err) {
+				console.log("Vamos a cancelar");
 				async.waterfall(
 					[	
-						local_saasy_subscription.cancel_remote_subscription,
 						async.apply(deactivate_local_saasy_subscription, local_saasy_subscription),
 						async.apply(disable_account_plan, null, account_plan)
 					],
