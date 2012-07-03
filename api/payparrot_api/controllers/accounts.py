@@ -62,3 +62,8 @@ def login():
         response.status = 204
     else:
         raise UnauthorizeException()
+
+@route('/logout', method="GET")
+def logout():
+    response.set_cookie('sid', '', path='/')
+    response.status = 204

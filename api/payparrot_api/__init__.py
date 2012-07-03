@@ -9,6 +9,7 @@ connect('payparrot_test')
 
 # Import controllers
 from controllers.accounts import *
+from controllers.messages import *
     
 bottle.debug(True)
 

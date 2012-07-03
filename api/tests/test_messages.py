@@ -20,6 +20,7 @@ class TestCreateMessages(unittest.TestCase):
             'notification_url': 'http://demo.payparrot.com/notifications'
         }
         self.response = app.post_json('/accounts', self.account_data)
+        self.account_id = self.response.json.get('id')
         app.post_json('/login',
             {'email': self.account_data['email'], 'password': self.account_data['password']}
         )
@@ -35,39 +36,33 @@ class TestCreateMessages(unittest.TestCase):
         ]
         self.responses = []
         for i, message in enumerate(self.messages):
-            self.responses[i] = app.post_json('/accounts/'+str(self.response.json['id'])+'/messages', message)
-            print message
-        print self.responses
+            self.responses.append(app.post_json('/accounts/'+str(self.account_id)+'/messages', message))
     def tearDown(self):
         Accounts.drop_collection()
         Messages.drop_collection()
+        AccountsSessions.drop_collection()
+        app.get('/logout')
         
     def test_create_status(self):
-        self.assertEqual(201, self.responses[0].response.status_int)
+        self.assertEqual(201, self.responses[0].status_int)
      
-    # def test_get_object_id(self):
-    #     account_id = self.response.json.get('id')
-    #     self.assertTrue(account_id)
-    # 
-    # def test_get_saved_account(self):
-    #     account_id = self.response.json.get('id')
-    #     expected_json = {
-    #         'id': account_id,
-    #         'email': 'daniel@payparrot.com',
-    #         'name': 'Daniel',
-    #         'startup': 'Payparrot',
-    #         'url': 'http://payparrot.com/',
-    #         'callback_url': 'http://demo.payparrot.com',
-    #         'notification_url': 'http://demo.payparrot.com/notifications',
-    #         'stats': {
-    #           'parrots_total': 0,
-    #           'parrots_today': 0,
-    #           'payments_total': 0,
-    #           'payments_today': 0
-    #         },
-    #     }
-    #     accounts = Accounts.objects(id = account_id)
-    #     self.assertEqual(expected_json, accounts[0].JSON())
+    def test_get_object_id(self):
+        message_id = self.responses[0].json.get('id')
+        self.assertTrue(message_id)
+    
+    def test_get_message(self):
+        message_id = self.responses[0].json.get('id')
+        message = app.get('/accounts/%s/messages/%s' % (self.account_id, message_id)).json
+        self.assertEqual(self.messages[0].get('url'), message.get('url'))
+        self.assertEqual(self.messages[0].get('text'), message.get('text'))
+
+    def test_update_message(self):
+        message_id = self.responses[0].json.get('id')
+        message_to_update = {
+            'active': False
+        }
+        message = app.put_json('/accounts/%s/messages/%s' % (str(self.account_id), str(message_id)), message_to_update)
+        self.assertEqual(204, message.status_int)
 
 
 

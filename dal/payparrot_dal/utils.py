@@ -3,8 +3,11 @@ from bson.objectid import ObjectId
 
 def JSON(self):
     prepared_json = {}
+    private = []
+    if hasattr(self, 'meta'):
+        private = self.meta.get('private', [])
     for key, value in self._fields.iteritems():
-        if key not in self.meta.get('private', []):
+        if key not in private:
             prepared_json[key] = self.__getattribute__(key)
             if type(prepared_json[key]) == ObjectId:
                 prepared_json[key] = str(prepared_json[key])

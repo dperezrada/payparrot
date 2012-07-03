@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
+import traceback
 
 from payparrot_api.libs.exceptions import UnauthorizeException
 
@@ -22,6 +23,7 @@ class ErrorHandler(object):
             return ['{"error": "Unauthorized"}']
         except Exception, e:
             print >> sys.stderr, e
+            traceback.print_exc(file=sys.stderr)
             start_response(
                 '500 Internal Server Error', 
                 [
