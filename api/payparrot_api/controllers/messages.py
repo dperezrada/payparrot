@@ -18,6 +18,7 @@ def create_message(account_id):
     return {'id': str(message.id)}
 
 @route('/accounts/:account_id/messages/:message_id', method="GET")
+@secure()
 def get_message(account_id, message_id):
     messages = Messages.objects(id = message_id, account_id = account_id)
     if len(messages) == 0:
@@ -26,6 +27,7 @@ def get_message(account_id, message_id):
         return messages[0].JSON()
 
 @route('/accounts/:account_id/messages/:message_id', method="PUT")
+@secure()
 def update_message(account_id, message_id):
     messages = Messages.objects(id = message_id, account_id = account_id)
     if len(messages) == 0:
