@@ -18,7 +18,7 @@ setup(name='payparrot_api',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-        "bottle", "webtest", "nose", "lxml", "mongoengine"
+        "bottle", "webtest", "nose", "lxml", "mongoengine", "pymongo"
       ],
       entry_points="""
       # -*- Entry points: -*-

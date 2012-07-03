@@ -14,7 +14,11 @@ def JSON(self):
     return prepared_json
 
 def update_with_data(self, json):
+    readonly = []
+    class_keys = self._fields.keys()
+    if hasattr(self, 'meta'):
+        readonly = self.meta.get('readonly', [])
     for key, value in json.iteritems():
-        self.__setattr__(key, value)
+        if key not in readonly and key in class_keys:
+            self.__setattr__(key, value)
     self.save()
-        

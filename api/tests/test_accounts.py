@@ -62,11 +62,7 @@ class TestGetAccountData(unittest.TestCase):
             'startup': 'Payparrot',
             'url': 'http://payparrot.com/',
             'callback_url': 'http://demo.payparrot.com',
-            'notification_url': 'http://demo.payparrot.com/notifications',
-            'credentials': {
-                'public_token': '123',
-                'private_token': '456'
-            }
+            'notification_url': 'http://demo.payparrot.com/notifications'
         }
         self.response = app.post_json('/accounts', self.account_data)
         self.account_id = str(self.response.json.get('id'))
