@@ -13,16 +13,16 @@ def get_session_id():
         return cookies[key].value
     return ''
 
-def get_account():
+def get_account(db):
     session_id = get_session_id()
     request.account = None
     if session_id:
-        request.account = Accounts.get_from_session(session_id)
+        request.account = Accounts.get_from_session(db, session_id)
     
 
-def authorize(*allowed_roles):
+def authorize(db, *allowed_roles):
     allow = False
-    get_account()
+    get_account(db)
     if request.account:
         if len(allowed_roles) > 0:
             if len(set(request.account.roles).intersection(set(allowed_roles))) > 0:
@@ -32,10 +32,10 @@ def authorize(*allowed_roles):
     if not allow:
        raise UnauthorizeException()
           
-def secure(*allowed_roles):
-    def decorator(func):
-        def wrapper(*a, **ka):
-            authorize(*allowed_roles)
-            return func(*a, **ka)
-        return wrapper
-    return decorator
+# def secure(*allowed_roles):
+#     def decorator(func):
+#         def wrapper(*a, **ka):
+#             authorize(*allowed_roles)
+#             return func(*a, **ka)
+#         return wrapper
+#     return decorator

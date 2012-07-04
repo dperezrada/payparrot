@@ -2,7 +2,6 @@
 
 from bottle import route, request, response
 
-from payparrot_api.middlewares.auth import secure
 from payparrot_api.libs.exceptions import UnauthorizeException
 from payparrot_dal import Accounts, AccountsSessions
 
@@ -14,7 +13,7 @@ def create_account(db):
     return {'id': str(account.id)}
 
 @route('/accounts/:account_id', method="GET")
-def get_account(account_id,db):
+def get_account(account_id,db, secure=True):
     account = Accounts.findOne(db, account_id)
     if account:
         return account.JSON()
@@ -23,7 +22,7 @@ def get_account(account_id,db):
         return {}
 
 @route('/accounts/:account_id', method="PUT")
-def get_account(account_id, db):
+def get_account(account_id, db, secure=True):
     account = Accounts.findOne(db, account_id)
     if account:
         return account.JSON()
@@ -33,7 +32,7 @@ def get_account(account_id, db):
         return {}
 
 @route('/accounts/:account_id/credentials', method="GET")
-def get_credentials(account_id, db):
+def get_credentials(account_id, db, secure=True):
     account = Accounts.findOne(db, account_id)
     if account:
         return account.JSON()
@@ -42,11 +41,7 @@ def get_credentials(account_id, db):
         return {}
 
 @route('/logged', method="GET")
-def logged():
-    pass
-
-@route('/admin', method="GET")
-def admin():
+def logged(secure = True):
     pass
 
 @route('/login', method="POST")
