@@ -1,16 +1,19 @@
-from datetime import datetime
+from time import time
+import datetime
+from random import random
+from hashlib import sha512
 
-from mongoengine import Document, StringField, DateTimeField, DictField, ListField, ObjectIdField, BooleanField
+from payparrot_dal.base import BaseModel
 
-from payparrot_dal.utils import JSON, update_with_data
-
-class Messages(Document):
-    text = StringField(required=True)
-    url = StringField(required=True)
-    id = StringField(required=True)
-    account_id = ObjectIdField()
-    status = BooleanField()
-    active = BooleanField()
-
-Messages.JSON = JSON
-Messages.update_with_data = update_with_data
+class Messages(BaseModel):
+    _meta = {
+        'collection': 'messages',
+        'fields': {
+            'account_id': {'required': True},
+			'text': {'required': True},
+			'url': {'required': True},
+			'account_id': {'required': True},
+			'status': {'required': True, 'readonly': True},
+			'active': {'default': True}     
+    	}
+    }

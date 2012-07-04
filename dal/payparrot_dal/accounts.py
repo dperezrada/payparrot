@@ -1,8 +1,7 @@
-# from datetime import datetime
-# from hashlib import sha256
-# from random import random
-# from time import time
-# 
+from datetime import datetime
+from hashlib import sha256
+from random import random
+from time import time
 
 from payparrot_dal.base import BaseModel
 from payparrot_dal.accounts_sessions import AccountsSessions
@@ -14,31 +13,27 @@ class Accounts(BaseModel):
             'email': {'required': True},
             'name': {'required': True},
             'startup': {'required': True},
-            'password': {'required': True},
-            'salt': {},
+            'password': {'required': True, 'private': True},
+            'salt': {'private': True},
             'url': {'required': True},
             'callback_url': {},
             'notification_url': {},
-            'credentials': {'readonly': True},
+            'credentials': {
+                'readonly': True,
+                'private': True,
+                'default': {
+                    'private_token': sha256(str(random())+'payparrot'+str(time())).hexdigest(),
+                    'public_token': sha256(str(random())+'payparrot'+str(time())).hexdigest()
+                }                
+            },
             'created_at': {'readonly': True, 'private': True},
-            'stats': {}
+            'stats': {'default': {}}
         }
     }
     @staticmethod
     def get_from_session(db, id):
-        account_session_dict = AccountsSessions.findOne(db, {'session_id': id})
-        if account_session_dict:
-            account_dict = Accounts.findOne(db, {'_id': account_session_dict['account_id']})
-            if account_dict:
-                return Accounts(db, account_dict)
-
-#     def save(self, *args, **kwargs):
-#         if not self.id:
-#             self.credentials = {
-#                 'private_token': sha256(str(random())+'payparrot'+str(time())).hexdigest(),
-#                 'public_token': sha256(str(random())+'payparrot'+str(time())).hexdigest()
-#             }
-#         super(Accounts, self).save(*args, **kwargs)
-
-# Accounts.JSON = JSON
-# Accounts.update_with_data = update_with_data
+        account_session = AccountsSessions.findOne(db, {'session_id': id})
+        if account_session:
+            account = Accounts.findOne(db, account_session.account_id)
+            if account:
+                return account

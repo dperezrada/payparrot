@@ -7,31 +7,29 @@ from payparrot_api.libs.exceptions import UnauthorizeException
 from payparrot_dal import Accounts, AccountsSessions, Messages
 
 @route('/accounts/:account_id/messages', method="POST")
-@secure()
-def create_message(account_id):
+def create_message(account_id, db):
     # TODO: check mongo injection
     new_message = request.json
     new_message['account_id'] = account_id
-    message = Messages(**new_message)
-    message.save()
+    message = Messages(db, new_message)
+    message.insert()
     response.status = 201
     return {'id': str(message.id)}
 
 @route('/accounts/:account_id/messages/:message_id', method="GET")
-@secure()
-def get_message(account_id, message_id):
-    messages = Messages.objects(id = message_id, account_id = account_id)
-    if len(messages) == 0:
-        response.status = 404
+def get_message(account_id, message_id, db):
+    message = Messages.findOne(db, message_id)
+    if message:
+        return message.JSON()
     else:
-        return messages[0].JSON()
+        response.status = 404
+        return {}
 
 @route('/accounts/:account_id/messages/:message_id', method="PUT")
-@secure()
-def update_message(account_id, message_id):
-    messages = Messages.objects(id = message_id, account_id = account_id)
-    if len(messages) == 0:
-        response.status = 404
-    else:
-        messages[0].update_with_data(request.json)
+def update_message(account_id, message_id, db):
+    message = Messages.findOne(db, message_id)
+    if message:
+    	message.update(request.json)
         response.status = 204
+    else:
+        response.status = 404

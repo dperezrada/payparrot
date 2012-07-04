@@ -2,15 +2,15 @@
 import os
 import json
 import unittest
+import utils
 
 from server_test_app import app
 from payparrot_dal import Accounts, AccountsSessions, Messages
 
 class TestStartPayment(unittest.TestCase):
     def setUp(self):
-        from mongoengine import connect
-        connect('payparrot_test')
-        self.account = Accounts(**{
+        self.db = utils.connect_to_mongo()
+        self.account = Accounts(self.db, {
             'email': 'daniel@payparrot.com',
             'password': '123',
             'name': 'Daniel',
@@ -18,13 +18,13 @@ class TestStartPayment(unittest.TestCase):
             'url': 'http://payparrot.com/',
             'callback_url': 'http://www.epistemonikos.org',
         })
-        self.account.save()
+        self.account.insert()
 
         
     def tearDown(self):
-        Accounts.drop_collection()
-        Messages.drop_collection()
-        AccountsSessions.drop_collection()
+        self.db.accounts.drop()
+        self.db.messages.drop()
+        self.db.accounts_sessions.drop()
         app.get('/logout')
 
     def test_redirect(self):

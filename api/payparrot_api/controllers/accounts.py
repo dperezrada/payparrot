@@ -7,57 +7,57 @@ from payparrot_api.libs.exceptions import UnauthorizeException
 from payparrot_dal import Accounts, AccountsSessions
 
 @route('/accounts', method="POST")
-def create_account():
-    # TODO: check mongo injection
-    account = Accounts(**request.json)
-    account.save()
+def create_account(db):
+    account = Accounts(db,request.json)
+    account.insert()
     response.status = 201
     return {'id': str(account.id)}
 
 @route('/accounts/:account_id', method="GET")
-def get_account(account_id):
-    accounts = Accounts.objects(id = account_id)
-    if len(accounts) == 0:
-        response.status = 404
+def get_account(account_id,db):
+    account = Accounts.findOne(db, account_id)
+    if account:
+        return account.JSON()
     else:
-        return accounts[0].JSON()
+        response.status = 404
+        return {}
 
 @route('/accounts/:account_id', method="PUT")
-def get_account(account_id):
-    accounts = Accounts.objects(id = account_id)
-    if len(accounts) == 0:
-        response.status = 404
+def get_account(account_id, db):
+    account = Accounts.findOne(db, account_id)
+    if account:
+        return account.JSON()
+        
     else:
-        accounts[0].update_with_data(request.json)
-        response.status = 204
+        response.status = 404
+        return {}
 
 @route('/accounts/:account_id/credentials', method="GET")
-def get_credentials(account_id):
-    accounts = Accounts.objects(id = account_id).only('credentials')
-    if len(accounts) == 0:
-        response.status = 404
+def get_credentials(account_id, db):
+    account = Accounts.findOne(db, account_id)
+    if account:
+        return account.JSON()
     else:
-        return accounts[0].credentials
+        response.status = 404
+        return {}
 
 @route('/logged', method="GET")
-@secure()
 def logged():
     pass
 
 @route('/admin', method="GET")
-@secure('admin')
 def admin():
     pass
 
 @route('/login', method="POST")
-def login():
-    accounts = Accounts.objects(**{
+def login(db):
+    account = Accounts.findOne(db, {
         'email': request.json.get('email'),
         'password': request.json.get('password')
     })
-    if accounts:
-        account_session = AccountsSessions(account_id = accounts[0].id)
-        account_session.save()
+    if account:
+        account_session = AccountsSessions(db, {'account_id': account._id})
+        account_session.insert()
         response.set_cookie('sid', account_session.session_id, path='/', expires = account_session.expires)
         response.status = 204
     else:

@@ -18,6 +18,7 @@ class TestAccounts(unittest.TestCase):
             'callback_url': 'http://demo.payparrot.com',
             'notification_url': 'http://demo.payparrot.com/notifications'
         }
+        self.maxDiff = None
     
     def tearDown(self):
         self.db.accounts.drop()
@@ -39,29 +40,25 @@ class TestAccounts(unittest.TestCase):
         self.assertEqual('Felipe', account.name)
 
     
-    # def test_return_json(self):
-    #     account = Accounts(**self.account_data)
-    #     expected_json = {
-    #         'id': None,
-    #         'email': 'daniel@payparrot.com',
-    #         'name': 'Daniel',
-    #         'startup': 'Payparrot',
-    #         'url': 'http://payparrot.com/',
-    #         'callback_url': 'http://demo.payparrot.com',
-    #         'notification_url': 'http://demo.payparrot.com/notifications',
-    #         'stats': {
-    # 			'parrots_total': 0,
-    # 			'parrots_today': 0,
-    # 			'payments_total': 0,
-    # 			'payments_today': 0
-    # 		}
-    #     }
-    #     self.assertEqual(expected_json, account.JSON())
+    def test_return_json(self):
+        account = Accounts(self.db, self.account_data)
+        account.insert()
+        expected_json = {
+            'id': str(account.id),
+            'email': 'daniel@payparrot.com',
+            'name': 'Daniel',
+            'startup': 'Payparrot',
+            'url': 'http://payparrot.com/',
+            'callback_url': 'http://demo.payparrot.com',
+            'notification_url': 'http://demo.payparrot.com/notifications',
+            'stats': {}
+        }
+        received_json = account.JSON()
+        self.assertEqual(expected_json, received_json)
 
-    # def test_create_credentials(self):
-    #     account = Accounts(**self.account_data)
-    #     account.save()
-    #     print account.credentials
-    #     self.assertTrue(account.credentials.get('private_token'))
-    #     self.assertTrue(account.credentials.get('public_token'))
+    def test_create_credentials(self):
+        account = Accounts(self.db, self.account_data)
+        account.insert()
+        self.assertTrue(account.credentials.get('private_token'))
+        self.assertTrue(account.credentials.get('public_token'))
 

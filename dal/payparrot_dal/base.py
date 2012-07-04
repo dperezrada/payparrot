@@ -22,7 +22,7 @@ class BaseModel(object):
                 self._meta['required'].append(key)
             if value.get('readonly'):
                 self._meta['readonly'].append(key)
-            if value.get('default'):
+            if self._data.get(key) is None and value.get('default') is not None:
                 self._data[key] = value.get('default')
 
     def __getattr__(self, key):
@@ -34,6 +34,10 @@ class BaseModel(object):
     #         self._data[key] = value
 
     def insert(self, safe = True):
+        self._remove_readonly(self._data)
+        for key, value in self._meta['fields'].iteritems():
+            if self._data.get(key) is None and value.get('default') is not None:
+                self._data[key] = value.get('default')
         self.db[self._meta['collection']].insert(self._data, safe = safe)
         update_id(self._data)
 
@@ -47,6 +51,20 @@ class BaseModel(object):
         for key in data.keys():
             if key in self._meta['readonly']:
                 del data[key]
+
+    def JSON(self):
+        prepared_json = {}
+        private = []
+        if hasattr(self, '_meta'):
+            private = self._meta.get('private', [])
+        for key, value in self._meta.get('fields',{}).iteritems():
+            if key not in private:
+                prepared_json[key] = self._data.get(key)
+                if type(prepared_json[key]) == ObjectId:
+                    prepared_json[key] = str(prepared_json[key])
+        if self._data.get('id'):
+            prepared_json['id'] = str(self._data.get('id'))
+        return prepared_json
     
     @classmethod
     def find(cls, db, *args, **kwargs):
@@ -54,5 +72,14 @@ class BaseModel(object):
 
     @classmethod
     def findOne(cls, db, *args, **kwargs):
-        return db[cls._meta['collection']].find_one(*args, **kwargs)
-        
+        if type(args[0]) == str:
+            args = list(args);
+            args[0] = ObjectId(args[0])
+        result = db[cls._meta['collection']].find_one(*args, **kwargs)
+        if result:
+            return cls(db, result)
+
+    def refresh(self):
+        data = db[cls._meta['collection']].find_one({'_id': self.id})
+        if data:
+            self._data = data

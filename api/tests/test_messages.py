@@ -3,13 +3,13 @@ import os
 import json
 import unittest
 
+import utils
 from server_test_app import app
 from payparrot_dal import Accounts, AccountsSessions, Messages
 
 class TestCreateMessages(unittest.TestCase):
     def setUp(self):
-        from mongoengine import connect
-        connect('payparrot_test')
+        self.db = utils.connect_to_mongo()
         self.account_data = {
             'email': 'daniel@payparrot.com',
             'password': '123',
@@ -38,9 +38,9 @@ class TestCreateMessages(unittest.TestCase):
         for i, message in enumerate(self.messages):
             self.responses.append(app.post_json('/accounts/'+str(self.account_id)+'/messages', message))
     def tearDown(self):
-        Accounts.drop_collection()
-        Messages.drop_collection()
-        AccountsSessions.drop_collection()
+        self.db.accounts.drop()
+        self.db.messages.drop()
+        self.db.accounts_sessions.drop()
         app.get('/logout')
         
     def test_create_status(self):
