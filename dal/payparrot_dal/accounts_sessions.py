@@ -1,13 +1,16 @@
+from time import time
 import datetime
-import time
-import random
+from random import random
 from hashlib import sha512
 
-from mongoengine import StringField, DateTimeField, DictField, ObjectIdField
+from payparrot_dal.base import BaseModel
 
-from mongoengine import Document
-
-class AccountsSessions(Document):
-    session_id = StringField(required=True, default= sha512("salt session de payparrot"+repr(time.time())+str(random.random())).hexdigest())
-    expires = DateTimeField(default=(datetime.datetime.now() + datetime.timedelta(1*365/12)))
-    account_id = ObjectIdField()
+class AccountsSessions(BaseModel):
+    _meta = {
+        'collection': 'accounts_sessions',
+        'fields': {
+            'session_id': {'readonly': True, 'default': sha512("salt session de payparrot"+repr(time())+str(random())).hexdigest()},
+            'expires': {'readonly': True, 'default': (datetime.datetime.now() + datetime.timedelta(1*365/12))},
+            'account_id': {'required': True}
+        }
+    }

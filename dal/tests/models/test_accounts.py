@@ -2,18 +2,12 @@
 import unittest
 import json
 
-from pymongo import Connection
-
 from payparrot_dal import Accounts
-
-
-def connect_to_mongo():
-    connection = Connection()
-    return connection['payparrot_test']
+import utils
 
 class TestAccounts(unittest.TestCase):
     def setUp(self):
-        self.db = connect_to_mongo()
+        self.db = utils.connect_to_mongo()
 
         self.account_data = {
             'email': 'daniel@payparrot.com',
@@ -38,7 +32,7 @@ class TestAccounts(unittest.TestCase):
         account.insert()
         self.assertTrue(account.id)
 
-    def test_save_should_generate_an_id(self):
+    def test_update_document(self):
         account = Accounts(self.db, self.account_data)
         account.insert()
         account.update({'name': 'Felipe'})
