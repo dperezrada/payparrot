@@ -10,6 +10,7 @@ db = connect('payparrot_test')
 # Import controllers
 from controllers.accounts import *
 from controllers.messages import *
+from controllers.parrots import *
     
 bottle.debug(True)
 
