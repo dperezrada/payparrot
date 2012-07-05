@@ -4,7 +4,7 @@ from payparrot_dal.base import BaseModel
 
 class Subscriptions(BaseModel):
     _meta = {
-        'collection': 'sessions',
+        'collection': 'subscriptions',
         'fields': {
             'account_id': {'required': True},
 			'parrot_id': {'required': True},

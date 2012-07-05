@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 from boto.sqs.connection import SQSConnection
@@ -8,7 +9,7 @@ from payparrot_dal.base import BaseModel
 
 class Notifications(BaseModel):
     _meta = {
-        'collection': 'sessions',
+        'collection': 'notifications',
         'fields': {
             'subscription_id': {'required': True},
 			'account_id': {'required': True},
@@ -26,11 +27,11 @@ class Notifications(BaseModel):
     }
 
     def insert(self, safe = True):
-        super(Notifications, self).insert(safe)
-        conn = SQSConnection('AKIAJ3K3RPWKT6EPASFAv', 'NI24owBHKlFQKyBjZVKRw0SMnv4fXSLM8kPA8H')
-        queue = Queue(conn, 'https://queue.amazonaws.com/229116634218/notifications_test')
+        conn = SQSConnection('AKIAIN47MW5VQ4RBN7TQ', 'SThKjV6E8RMKNLdkHaeq4bj7QiDTu6NWGMSUOTCx')
+        queue = conn.get_queue('notifications_test')
         m = Message()
-        m.set_body({'suscription_id': self.suscription_id, 'account_id': self.account_id, 'parrot_id': self.parrot_id, 'type': self.type, 'notification_id': self.id})
-        status = queue.write(m)
-        print "CREAMOS NOTIFICAIONs"
-        print status
+        m.set_body(json.dumps({'suscription_id': str(self.suscription_id), 'account_id': str(self.account_id), 'parrot_id': str(self.parrot_id), 'type': self.type, 'notification_id': str(self.id)}))
+        created_message = queue.write(m)
+        print "CREAMOS NOTIFICAIONS"
+        self._data['queue_message_id'] = created_message.id
+        super(Notifications, self).insert(safe)
