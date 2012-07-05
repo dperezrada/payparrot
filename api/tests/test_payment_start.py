@@ -3,9 +3,13 @@ import os
 import json
 import unittest
 import utils
+from urlparse import urlparse
+
+import oauth2 as oauth
 
 from server_test_app import app
-from payparrot_dal import Accounts, AccountsSessions, Messages
+from payparrot_dal import Accounts, AccountsSessions, Messages, Twitter, Subscriptions
+
 
 class TestStartPayment(unittest.TestCase):
     def setUp(self):
@@ -19,6 +23,7 @@ class TestStartPayment(unittest.TestCase):
             'callback_url': 'http://www.epistemonikos.org',
         })
         self.account.insert()
+        self.redirect = app.get('/accounts/%s/parrots/start?external_id=1&token=%s' % (self.account.id, self.account.credentials['public_token']))
 
         
     def tearDown(self):
@@ -28,7 +33,66 @@ class TestStartPayment(unittest.TestCase):
         app.get('/logout')
 
     def test_redirect(self):
-        print self.account.credentials
+        self.assertEqual(302, self.redirect.status_int)
+        self.assertEqual('https://api.twitter.com/oauth/authorize?oauth_token=', self.redirect.location[0:52])
+
+class TestFinishPayment(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.db = utils.connect_to_mongo()
+        self.account = Accounts(self.db, {
+            'email': 'daniel@payparrot.com',
+            'password': '123',
+            'name': 'Daniel',
+            'startup': 'Payparrot',
+            'url': 'http://payparrot.com/',
+            'callback_url': 'http://www.epistemonikos.org',
+        })
+        self.account.insert()
+        self.redirect = app.get('/accounts/%s/parrots/start?external_id=1&token=%s' % (self.account.id, self.account.credentials['public_token']))
+        print ""
+        print self.redirect.location
+        url = raw_input("Final url? ")
+        query_string = urlparse(url).query
+        self.finish_response = app.get('/parrots/finish?%s' % (query_string))
+
+    @classmethod
+    def tearDownClass(self):
+        self.db.accounts.drop()
+        self.db.messages.drop()
+        self.db.accounts_sessions.drop()
+        app.get('/logout')
+
+    def test_status_code(self):
+        self.assertEqual(302, self.finish_response.status_int)
+    
+    # def test_check_subscription(self):
+    #     query_string = urlparse(self.finish_response)
+    #     self.assertEqual(302, self.finish_response.status_int)
+
+        
+
+    # def test_connection(self):
+    #     pass
+    #     twitter = Twitter()
+    #     client = twitter.create_session()
+    #     tokens = twitter.get_request_token(client)
+    #     print tokens
+    #     url = twitter.redirect_url(tokens)
+    #     print url
+    #     oauth_verifier = raw_input("Oauth verifier? ")
+    #     access_tokens = twitter.get_access_tokens(oauth_verifier,tokens)
+    #     print "Access tokens:"
+    #     print access_tokens
+
+    #     ## Test api client
+    # def test_client(self):
+    #     twitter = Twitter()
+    #     oauth_token = raw_input("Token? ")
+    #     oauth_token_secret = raw_input("Token secret? ")
+    #     twitter.create_client(oauth_token,oauth_token_secret)
+    #     response = twitter.get('https://api.twitter.com/1/statuses/home_timeline.json')
+    #     print response
 
 
 
