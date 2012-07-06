@@ -4,7 +4,6 @@ import json
 from bson.objectid import ObjectId
 from bottle import route, request, response, redirect
 
-from payparrot_api.middlewares.auth import secure
 from payparrot_api.libs.exceptions import UnauthorizeException
 from payparrot_dal import Accounts, AccountsSessions, Sessions, Twitter, Parrots, Subscriptions, Notifications
 
@@ -108,4 +107,4 @@ def create_notification(db, account,parrot,subscription):
         'request_url': account.notification_url
     })
     notification.insert()
-    return notification_data.id
+    return notification.id

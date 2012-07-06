@@ -5,7 +5,7 @@ def connect_to_mongo():
     connection = Connection()
     return connection['payparrot_test']
 
-def tear_down(db):
+def tear_down(db, app):
 	db.accounts.drop()
 	db.messages.drop()
 	db.accounts_sessions.drop()
@@ -13,3 +13,4 @@ def tear_down(db):
 	db.sessions.drop()
 	db.parrots.drop()
 	db.notifications.drop()
+	app.get('/logout')

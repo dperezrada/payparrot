@@ -23,8 +23,8 @@ class TestCreateAccounts(unittest.TestCase):
         self.maxDiff = None
     
     def tearDown(self):
-        self.db.accounts.drop()
-		
+        utils.tear_down(self.db, app)
+        
     def test_create_status(self):
         self.assertEqual(201, self.response.status_int)
 
@@ -34,6 +34,9 @@ class TestCreateAccounts(unittest.TestCase):
     
     def test_get_saved_account(self):
         account_id = self.response.json.get('id')
+        response = app.post_json('/login',
+            {'email': self.account_data['email'], 'password': self.account_data['password']}
+        )
         expected_json = {
             'id': account_id,
             'email': 'daniel@payparrot.com',

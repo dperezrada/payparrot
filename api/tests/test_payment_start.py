@@ -27,10 +27,7 @@ class TestStartPayment(unittest.TestCase):
 
         
     def tearDown(self):
-        self.db.accounts.drop()
-        self.db.messages.drop()
-        self.db.accounts_sessions.drop()
-        app.get('/logout')
+        utils.tear_down(self.db, app)
 
     def test_redirect(self):
         self.assertEqual(302, self.redirect.status_int)
@@ -58,10 +55,7 @@ class TestFinishPayment(unittest.TestCase):
 
     @classmethod
     def tearDownClass(self):
-        self.db.accounts.drop()
-        self.db.messages.drop()
-        self.db.accounts_sessions.drop()
-        app.get('/logout')
+        utils.tear_down(self.db, app)
 
     def test_status_code(self):
         self.assertEqual(302, self.finish_response.status_int)

@@ -38,10 +38,7 @@ class TestCreateMessages(unittest.TestCase):
         for i, message in enumerate(self.messages):
             self.responses.append(app.post_json('/accounts/'+str(self.account_id)+'/messages', message))
     def tearDown(self):
-        self.db.accounts.drop()
-        self.db.messages.drop()
-        self.db.accounts_sessions.drop()
-        app.get('/logout')
+        utils.tear_down(self.db, app)
         
     def test_create_status(self):
         self.assertEqual(201, self.responses[0].status_int)

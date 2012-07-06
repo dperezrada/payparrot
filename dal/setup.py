@@ -18,7 +18,7 @@ setup(name='payparrot_dal',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-        "mongoengine"
+        "pymongo", "nose", "oauth2", "boto"
       ],
       entry_points="""
       # -*- Entry points: -*-

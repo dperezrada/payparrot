@@ -21,8 +21,7 @@ class TestLoginSimpleUSer(unittest.TestCase):
         self.response = app.post_json('/accounts', self.account_data)
     
     def tearDown(self):
-        self.db.accounts.drop()
-        self.db.accounts_sessions.drop()
+        utils.tear_down(self.db, app)
       
     def test_cannot_get_logged_page_without_been_logged(self):
         self.response = app.get('/logged', status=401)

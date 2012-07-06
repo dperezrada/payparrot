@@ -96,7 +96,7 @@ class TestParrots(unittest.TestCase):
         self.subscription.insert()
 
     def tearDown(self):
-        utils.tear_down(self.db)
+        utils.tear_down(self.db, app)
 
     def test_invalid_token(self):
         response = app.get('/parrots/finish?oauth_token=lala', status = 404)
