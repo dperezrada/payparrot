@@ -18,7 +18,7 @@ setup(name='payparrot_api',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-        "bottle", "lxml", "pymongo", "oauth2", "boto", "ludibrio"
+        "bottle", "lxml", "pymongo", "oauth2", "boto"
       ],
       entry_points="""
       # -*- Entry points: -*-
