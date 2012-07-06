@@ -7,73 +7,14 @@ from datetime import datetime
 
 import oauth2 as oauth
 
-import utils
-from server_test_app import app
+import payparrot_tests as pp_tests
 from payparrot_dal import Accounts, AccountsSessions, Messages, Twitter, Subscriptions, Parrots
-
-
-# class TestStartPayment(unittest.TestCase):
-#     def setUp(self):
-#         self.db = utils.connect_to_mongo()
-#         self.account = Accounts(self.db, {
-#             'email': 'daniel@payparrot.com',
-#             'password': '123',
-#             'name': 'Daniel',
-#             'startup': 'Payparrot',
-#             'url': 'http://payparrot.com/',
-#             'callback_url': 'http://www.epistemonikos.org',
-#         })
-#         self.account.insert()
-#         self.redirect = app.get('/accounts/%s/parrots/start?external_id=1&token=%s' % (self.account.id, self.account.credentials['public_token']))
-
-        
-#     def tearDown(self):
-#         self.db.accounts.drop()
-#         self.db.messages.drop()
-#         self.db.accounts_sessions.drop()
-#         app.get('/logout')
-
-#     def test_redirect(self):
-#         self.assertEqual(302, self.redirect.status_int)
-#         self.assertEqual('https://api.twitter.com/oauth/authorize?oauth_token=', self.redirect.location[0:52])
-
-# class TestFinishPayment(unittest.TestCase):
-#     @classmethod
-#     def setUpClass(self):
-#         self.db = utils.connect_to_mongo()
-#         self.account = Accounts(self.db, {
-#             'email': 'daniel@payparrot.com',
-#             'password': '123',
-#             'name': 'Daniel',
-#             'startup': 'Payparrot',
-#             'url': 'http://payparrot.com/',
-#             'callback_url': 'http://www.epistemonikos.org',
-#             'notification_url': 'http://www.epistemonikos.org',
-#         })
-#         self.account.insert()
-#         self.redirect = app.get('/accounts/%s/parrots/start?external_id=1&token=%s' % (self.account.id, self.account.credentials['public_token']))
-#         print "\n", self.redirect.location
-#         url = raw_input("Final url? ")
-#         query_string = urlparse(url).query
-#         self.finish_response = app.get('/parrots/finish?%s' % (query_string))
-
-#     @classmethod
-#     def tearDownClass(self):
-#         self.db.accounts.drop()
-#         self.db.messages.drop()
-#         self.db.accounts_sessions.drop()
-#         app.get('/logout')
-
-#     def test_status_code(self):
-#         self.assertEqual(302, self.finish_response.status_int)
-    
-#     def test_location(self):
-#         self.assertEqual('http://www.epistemonikos.org', self.finish_response.location)
 
 class TestParrots(unittest.TestCase):
     def setUp(self):
-        self.db = utils.connect_to_mongo()
-        self.account = Accounts(self.db, {
+        self.app = pp_tests.get_app()
+        self.db = pp_tests.connect_to_mongo()
+        self.account = pp_tests.create_account_and_login(self.app, self.db, {
             'email': 'daniel@payparrot.com',
             'password': '123',
             'name': 'Daniel',
@@ -82,7 +23,6 @@ class TestParrots(unittest.TestCase):
             'callback_url': 'http://www.epistemonikos.org',
             'notification_url': 'http://www.epistemonikos.org',
         })
-        self.account.insert()
         self.parrot = Parrots(self.db, {
             'twitter_id': '123123123',
             'oauth_token': 'asd',
@@ -96,21 +36,21 @@ class TestParrots(unittest.TestCase):
         self.subscription.insert()
 
     def tearDown(self):
-        utils.tear_down(self.db, app)
+        pp_tests.tear_down(self.db, self.app)
 
     def test_invalid_token(self):
-        response = app.get('/parrots/finish?oauth_token=lala', status = 404)
+        response = self.app.get('/parrots/finish?oauth_token=lala', status = 404)
         self.assertEqual({'error': 'Expired token'}, response.json)
 
     def test_get_one_parrot_status(self):
-        response = app.get('/accounts/%s/parrots/%s' % (self.account.id, self.parrot.id))
+        response = self.app.get('/accounts/%s/parrots/%s' % (self.account.id, self.parrot.id))
         self.assertEqual(200, response.status_int)
         self.assertEqual(self.parrot.JSON(), response.json)
 
     def test_delete_one_parrot(self):
-        response = app.delete('/accounts/%s/parrots/%s' % (str(self.account.id), str(self.parrot.id)))
+        response = self.app.delete('/accounts/%s/parrots/%s' % (str(self.account.id), str(self.parrot.id)))
         self.assertEqual(204, response.status_int)
-        app.get('/accounts/%s/parrots/%s' % (self.account.id, self.parrot.id), status=404)
+        self.app.get('/accounts/%s/parrots/%s' % (self.account.id, self.parrot.id), status=404)
     
     def test_location(self):
         pass
@@ -169,28 +109,3 @@ class TestParrots(unittest.TestCase):
     #             );
 
     # }); 
-
-
-
-    # def test_connection(self):
-    #     pass
-    #     twitter = Twitter()
-    #     client = twitter.create_session()
-    #     tokens = twitter.get_request_token(client)
-    #     print tokens
-    #     url = twitter.redirect_url(tokens)
-    #     print url
-    #     oauth_verifier = raw_input("Oauth verifier? ")
-    #     access_tokens = twitter.get_access_tokens(oauth_verifier,tokens)
-    #     print "Access tokens:"
-    #     print access_tokens
-
-    #     ## Test api client
-    # def test_client(self):
-    #     twitter = Twitter()
-    #     oauth_token = raw_input("Token? ")
-    #     oauth_token_secret = raw_input("Token secret? ")
-    #     twitter.create_client(oauth_token,oauth_token_secret)
-    #     response = twitter.get('https://api.twitter.com/1/statuses/home_timeline.json')
-    #     print response
-

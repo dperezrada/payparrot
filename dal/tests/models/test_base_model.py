@@ -2,7 +2,7 @@
 import unittest
 import json
 
-import utils
+import payparrot_tests as pp_tests
 from payparrot_dal.base import BaseModel
 from payparrot_dal import Accounts
 
@@ -18,7 +18,7 @@ class Movies(BaseModel):
 
 class TestBase(unittest.TestCase):
     def setUp(self):
-        self.db = utils.connect_to_mongo()
+        self.db = pp_tests.connect_to_mongo()
 
         self.movie_data = {
             'title': 'The Matrix',
@@ -27,7 +27,7 @@ class TestBase(unittest.TestCase):
         self.movie = Movies(self.db, self.movie_data)
     
     def tearDown(self):
-        self.db.accounts.drop()
+        self.db.movies.drop()
 
     def test_default_value(self):
         self.movie.insert()

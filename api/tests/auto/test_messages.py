@@ -3,13 +3,13 @@ import os
 import json
 import unittest
 
-import utils
-from server_test_app import app
+import payparrot_tests as pp_tests
 from payparrot_dal import Accounts, AccountsSessions, Messages
 
 class TestCreateMessages(unittest.TestCase):
     def setUp(self):
-        self.db = utils.connect_to_mongo()
+        self.app = pp_tests.get_app()
+        self.db = pp_tests.connect_to_mongo()
         self.account_data = {
             'email': 'daniel@payparrot.com',
             'password': '123',
@@ -19,9 +19,9 @@ class TestCreateMessages(unittest.TestCase):
             'callback_url': 'http://demo.payparrot.com',
             'notification_url': 'http://demo.payparrot.com/notifications'
         }
-        self.response = app.post_json('/accounts', self.account_data)
+        self.response = self.app.post_json('/accounts', self.account_data)
         self.account_id = self.response.json.get('id')
-        app.post_json('/login',
+        self.app.post_json('/login',
             {'email': self.account_data['email'], 'password': self.account_data['password']}
         )
         self.messages = [
@@ -36,9 +36,9 @@ class TestCreateMessages(unittest.TestCase):
         ]
         self.responses = []
         for i, message in enumerate(self.messages):
-            self.responses.append(app.post_json('/accounts/'+str(self.account_id)+'/messages', message))
+            self.responses.append(self.app.post_json('/accounts/'+str(self.account_id)+'/messages', message))
     def tearDown(self):
-        utils.tear_down(self.db, app)
+        pp_tests.tear_down(self.db, self.app)
         
     def test_create_status(self):
         self.assertEqual(201, self.responses[0].status_int)
@@ -49,7 +49,7 @@ class TestCreateMessages(unittest.TestCase):
     
     def test_get_message(self):
         message_id = self.responses[0].json.get('id')
-        message = app.get('/accounts/%s/messages/%s' % (self.account_id, message_id)).json
+        message = self.app.get('/accounts/%s/messages/%s' % (self.account_id, message_id)).json
         self.assertEqual(self.messages[0].get('url'), message.get('url'))
         self.assertEqual(self.messages[0].get('text'), message.get('text'))
 
@@ -58,7 +58,7 @@ class TestCreateMessages(unittest.TestCase):
         message_to_update = {
             'active': False
         }
-        message = app.put_json('/accounts/%s/messages/%s' % (str(self.account_id), str(message_id)), message_to_update)
+        message = self.app.put_json('/accounts/%s/messages/%s' % (str(self.account_id), str(message_id)), message_to_update)
         self.assertEqual(204, message.status_int)
 
 

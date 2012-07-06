@@ -3,11 +3,11 @@ import unittest
 import json
 
 from payparrot_dal import Accounts, Messages
-import utils
+import payparrot_tests as pp_tests
 
 class TestMessages(unittest.TestCase):
     def setUp(self):
-        self.db = utils.connect_to_mongo()
+        self.db = pp_tests.connect_to_mongo()
 
         self.account_data = {
             'email': 'daniel@payparrot.com',

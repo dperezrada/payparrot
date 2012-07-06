@@ -3,11 +3,11 @@ import unittest
 import json
 
 from payparrot_dal import Accounts
-import utils
+import payparrot_tests as pp_tests
 
 class TestAccounts(unittest.TestCase):
     def setUp(self):
-        self.db = utils.connect_to_mongo()
+        self.db = pp_tests.connect_to_mongo()
 
         self.account_data = {
             'email': 'daniel@payparrot.com',
@@ -21,7 +21,7 @@ class TestAccounts(unittest.TestCase):
         self.maxDiff = None
     
     def tearDown(self):
-        self.db.accounts.drop()
+        pp_tests.tear_down(self.db)
 
     def test_after_create_instance_you_should_be_able_to_retrieve_data(self):
         account = Accounts(self.db, self.account_data)

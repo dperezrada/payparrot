@@ -3,7 +3,7 @@ import sys, os
 
 version = '0.1'
 
-setup(name='payparrot_dal',
+setup(name='payparrot_tests',
       version=version,
       description="",
       long_description="""\
@@ -18,7 +18,7 @@ setup(name='payparrot_dal',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-        "pymongo", "oauth2", "boto"
+        "nose", "webtest"
       ],
       entry_points="""
       # -*- Entry points: -*-

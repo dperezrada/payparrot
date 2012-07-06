@@ -3,13 +3,13 @@ import os
 import json
 import unittest
 
-import utils
-from server_test_app import app
+import payparrot_tests as pp_test
 from payparrot_dal import Accounts, AccountsSessions
 
 class TestCreateAccounts(unittest.TestCase):
     def setUp(self):
-        self.db = utils.connect_to_mongo()
+        self.app = pp_test.get_app()
+        self.db = pp_test.connect_to_mongo()
         self.account_data = {
             'email': 'daniel@payparrot.com',
             'password': '123',
@@ -19,11 +19,11 @@ class TestCreateAccounts(unittest.TestCase):
             'callback_url': 'http://demo.payparrot.com',
             'notification_url': 'http://demo.payparrot.com/notifications'
         }
-        self.response = app.post_json('/accounts', self.account_data)
+        self.response = self.app.post_json('/accounts', self.account_data)
         self.maxDiff = None
     
     def tearDown(self):
-        utils.tear_down(self.db, app)
+        pp_test.tear_down(self.db, self.app)
         
     def test_create_status(self):
         self.assertEqual(201, self.response.status_int)
@@ -34,7 +34,7 @@ class TestCreateAccounts(unittest.TestCase):
     
     def test_get_saved_account(self):
         account_id = self.response.json.get('id')
-        response = app.post_json('/login',
+        response = self.app.post_json('/login',
             {'email': self.account_data['email'], 'password': self.account_data['password']}
         )
         expected_json = {
@@ -47,5 +47,5 @@ class TestCreateAccounts(unittest.TestCase):
             'notification_url': 'http://demo.payparrot.com/notifications',
             'stats': {},
         }
-        response = app.get('/accounts/'+account_id)
+        response = self.app.get('/accounts/'+account_id)
         self.assertEqual(expected_json, response.json)
