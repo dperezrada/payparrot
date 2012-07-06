@@ -2,12 +2,12 @@
 import unittest
 import json
 
-import utils
+import payparrot_tests as pp_tests
 from payparrot_dal import Accounts, AccountsSessions
 
 class TestAccountsSessions(unittest.TestCase):
     def setUp(self):
-        self.db = utils.connect_to_mongo()
+        self.db = pp_tests.connect_to_mongo()
 
         self.account_data = {
             'email': 'daniel@payparrot.com',
@@ -23,8 +23,7 @@ class TestAccountsSessions(unittest.TestCase):
 
     
     def tearDown(self):
-        self.db.accounts.drop()
-        self.db.accounts_sessions.drop()
+        pp_tests.tear_down(self.db)
 
     def test_create_session_setup_default_elements(self):
         self.assertTrue(self.account_session.expires)

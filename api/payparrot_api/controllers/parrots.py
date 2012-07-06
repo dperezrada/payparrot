@@ -62,13 +62,25 @@ def parrots_finish(db):
                 subscription.insert()
             else:
                 subscription.update(subscription_parameters)
-            notification_id = create_notification(db, account, parrot, subscription)
-            print notification_id
+            notification_id = _create_notification(db, account, parrot, subscription)
             if notification_id:
                 redirect(account.callback_url)
     else:
         response.status = 404
         return {'error': 'Expired token'}
+
+def _create_notification(db, account,parrot,subscription):
+    notification = Notifications(db, {
+        'account_id': account.id,
+        'parrot_id': parrot.id,
+        'type': 'suscription_activated',
+        'suscription_id': subscription.id,
+        'external_id': subscription.external_id,
+        'request_url': account.notification_url
+    })
+    notification.insert()
+    return notification.id
+
 
 def get_valid_parrot(db, account_id, parrot_id):
     account = Accounts.findOne(db,account_id)
@@ -80,7 +92,7 @@ def get_valid_parrot(db, account_id, parrot_id):
                 return parrot
 
 @route('/accounts/:account_id/parrots/:parrot_id', method="GET")
-def get_parrot(account_id, parrot_id, db):
+def get_parrot(account_id, parrot_id, db, secure = True):
     parrot = get_valid_parrot(db, account_id, parrot_id)
     if parrot:
         return parrot.JSON()
@@ -88,23 +100,11 @@ def get_parrot(account_id, parrot_id, db):
     return {}
 
 @route('/accounts/:account_id/parrots/:parrot_id', method="DELETE")
-def delete_parrot(account_id, parrot_id, db):
+def delete_parrot(account_id, parrot_id, db, secure = True):
     parrot = get_valid_parrot(db,account_id,parrot_id)
     if parrot:
         db.subscriptions.remove({'parrot_id': ObjectId(parrot_id), 'account_id': ObjectId(account_id)})
         response.status = 204
         return
     response.status = 404
-    return {}    
-
-def create_notification(db, account,parrot,subscription):
-    notification = Notifications(db, {
-        'account_id': account.id,
-        'parrot_id': parrot.id,
-        'type': 'suscription_activated',
-        'suscription_id': subscription.id,
-        'external_id': subscription.external_id,
-        'request_url': account.notification_url
-    })
-    notification.insert()
-    return notification.id
+    return {}
