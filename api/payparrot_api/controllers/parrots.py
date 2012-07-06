@@ -113,7 +113,6 @@ def get_parrots(account_id, db, secure = True):
     if querystring.screen_name:
         screen_name_regex = re.compile(querystring.screen_name,re.IGNORECASE)
         query_subscriptions['twitter_screen_name'] = screen_name_regex
-    print query_subscriptions
     parrots_from_subscriptions = Subscriptions.find(db, query_subscriptions, {'parrot_id': True, '_id': False}).skip(skip).limit(limit).sort([('_id', -1)])
     parrots_id = map(lambda x: x.get('parrot_id'), parrots_from_subscriptions)
     parrots = Parrots.find(db, {'_id': {'$in': parrots_id}})

@@ -22,7 +22,7 @@ class Notifications(BaseModel):
             'status': {},
             'type': {},
             'queue_message_id': {},
-            'created_at': {'default': datetime.now}
+            'created_at': {'default': datetime.now, 'private': True}
     	}
     }
 
@@ -32,6 +32,5 @@ class Notifications(BaseModel):
         m = Message()
         m.set_body(json.dumps({'suscription_id': str(self.suscription_id), 'account_id': str(self.account_id), 'parrot_id': str(self.parrot_id), 'type': self.type, 'notification_id': str(self.id)}))
         created_message = queue.write(m)
-        print "CREAMOS NOTIFICAIONS"
         self._data['queue_message_id'] = created_message.id
         super(Notifications, self).insert(safe)
