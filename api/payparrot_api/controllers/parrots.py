@@ -99,6 +99,7 @@ def get_parrots(account_id, db, secure = True):
     from_ = querystring.get("from")
     to_ = querystring.get("to")    
     query_subscriptions = {'account_id': ObjectId(account_id), 'active': True}
+    # import nose; nose.tools.set_trace()
     # if not querystring.skip
     #     querystring.skip = 0
     # if not querystring.limit

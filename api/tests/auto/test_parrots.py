@@ -34,11 +34,6 @@ class TestParrots(unittest.TestCase):
         self.parrot.insert()
         self.subscription = Subscriptions(self.db, {'account_id': self.account.id, 'active': True, 'parrot_id': self.parrot.id})
         self.subscription.insert()
-        
-        from ludibrio import Stub
-        with Stub() as datetime:
-            from datetime import datetime
-            datetime.now() >> datetime2.datetime.now() - 2*timedelta(days=1)
             
         self.parrot1 = Parrots(self.db, {
             'twitter_id': '4322143214',
@@ -50,8 +45,6 @@ class TestParrots(unittest.TestCase):
         self.parrot1.insert()
         self.subscription1 = Subscriptions(self.db, {'account_id': self.account.id, 'active': True, 'parrot_id': self.parrot1.id})        
         self.subscription1.insert()
-        print datetime.now()
-        datetime.restore_import()
 
     def tearDown(self):
         pp_tests.tear_down(self.db, self.app)
@@ -72,11 +65,13 @@ class TestParrots(unittest.TestCase):
     
     def test_get_parrots_with_date_filter(self):
         one_day = timedelta(days=1)
-        from_ = date.today()-one_day*7
+        from_ = datetime.now()-one_day*7
         from_text = str(from_)
-        to_ = date.today() - one_day
+        to_ = datetime.now() - one_day
         to_text = str(to_)
-        response = self.app.get('/accounts/%s/parrots?from=%s&to=%s' % (self.account.id, from_text, to_text))
+        #Hack to change date
+        self.db.subscriptions.update({'parrot_id': self.parrot1.id},{'$set': {'created_at': from_+one_day*5}})
+        response = self.app.get('/accounts/%s/parrots?from=%s&to=%s' % (self.account.id, from_text.split(" ")[0], to_text.split(" ")[0]))
         self.assertEqual(200, response.status_int)
         self.assertEqual(1, len(response.json))
         print response.json
