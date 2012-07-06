@@ -22,7 +22,7 @@ class Notifications(BaseModel):
             'status': {},
             'type': {},
             'queue_message_id': {},
-            'created_at': {'default': datetime.now()}
+            'created_at': {'default': datetime.now}
     	}
     }
 

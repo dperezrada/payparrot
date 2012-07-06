@@ -1,4 +1,5 @@
 from bson.objectid import ObjectId
+from types import BuiltinFunctionType
 
 def update_id(data):
     if data.get('id'):
@@ -6,6 +7,12 @@ def update_id(data):
     if data.get('_id'):
         data['id'] = ObjectId(data['_id'])
         del data['_id']
+
+def set_default(data, key, default):
+    if type(default) == BuiltinFunctionType:
+        data[key] = default()
+    else:
+        data[key] = default
 
 class BaseModel(object):
     def __init__(self, db, data):
@@ -23,7 +30,7 @@ class BaseModel(object):
             if value.get('readonly'):
                 self._meta['readonly'].append(key)
             if self._data.get(key) is None and value.get('default') is not None:
-                self._data[key] = value.get('default')
+                set_default(self._data, key, value.get('default'))
 
     def __getattr__(self, key):
         if key != '_data' and key != '_meta':
@@ -37,7 +44,7 @@ class BaseModel(object):
         self._remove_readonly(self._data)
         for key, value in self._meta['fields'].iteritems():
             if self._data.get(key) is None and value.get('default') is not None:
-                self._data[key] = value.get('default')
+               set_default(self._data, key, value.get('default'))
         self.db[self._meta['collection']].insert(self._data, safe = safe)
         update_id(self._data)
 
@@ -51,20 +58,31 @@ class BaseModel(object):
         for key in data.keys():
             if key in self._meta['readonly']:
                 del data[key]
-
-    def JSON(self):
+    
+    @classmethod   
+    def _toJSON(cls, data):
         prepared_json = {}
         private = []
-        if hasattr(self, '_meta'):
-            private = self._meta.get('private', [])
-        for key, value in self._meta.get('fields',{}).iteritems():
+        if hasattr(cls, '_meta'):
+            private = cls._meta.get('private', [])
+        for key, value in cls._meta.get('fields',{}).iteritems():
             if key not in private:
-                prepared_json[key] = self._data.get(key)
+                prepared_json[key] = data.get(key)
                 if type(prepared_json[key]) == ObjectId:
                     prepared_json[key] = str(prepared_json[key])
-        if self._data.get('id'):
-            prepared_json['id'] = str(self._data.get('id'))
+        if data.get('id'):
+            prepared_json['id'] = str(data.get('id'))
+        if data.get('_id'):
+            prepared_json['id'] = str(data.get('_id'))            
         return prepared_json
+
+
+    def JSON(self):
+        return self._toJSON(self._data)
+            
+    @classmethod
+    def toJSON(cls, data):
+        return cls._toJSON(data)
     
     @classmethod
     def find(cls, db, *args, **kwargs):

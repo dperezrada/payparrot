@@ -8,8 +8,8 @@ class Parrots(BaseModel):
             'twitter_id': {'required': True},
 			'oauth_token': {'required': True},
 			'oauth_token_secret': {'required': True},
-			'created_at': {'default': datetime.now(), 'readonly': True, 'private': True},
+			'created_at': {'default': datetime.now, 'readonly': True, 'private': True},
 			'twitter_info': {'default': {}},
-			'payments': {'default': []}
+			'payments': {'default': []},
     	}
     }

@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 import json
+from datetime import datetime
 
 from bson.objectid import ObjectId
 from bottle import route, request, response, redirect
+
 
 from payparrot_api.libs.exceptions import UnauthorizeException
 from payparrot_dal import Accounts, AccountsSessions, Sessions, Twitter, Parrots, Subscriptions, Notifications
@@ -90,6 +92,32 @@ def get_valid_parrot(db, account_id, parrot_id):
             parrot = Parrots.findOne(db, parrot_id)
             if parrot:
                 return parrot
+
+@route('/accounts/:account_id/parrots', method="GET")
+def get_parrots(account_id, db, secure = True):
+    querystring = request.query;
+    from_ = querystring.get("from")
+    to_ = querystring.get("to")    
+    query_subscriptions = {'account_id': ObjectId(account_id), 'active': True}
+    # if not querystring.skip
+    #     querystring.skip = 0
+    # if not querystring.limit
+    #     querystring.limit = 0
+
+    if from_ or to_:
+        query_subscriptions['created_at'] = {}
+    if from_:
+        query_subscriptions['created_at']['$gte'] = datetime.strptime(from_, '%Y-%m-%d')
+    if to_:
+        query_subscriptions['created_at']['$lte'] = datetime.strptime(to_, '%Y-%m-%d')
+    print query_subscriptions
+    parrots_from_subscriptions = Subscriptions.find(db, query_subscriptions, {'parrot_id': True, '_id': False})
+    parrots_id = map(lambda x: x.get('parrot_id'), parrots_from_subscriptions)
+    parrots = Parrots.find(db, {'_id': {'$in': parrots_id}})
+    # TODO: fix this
+    response.headers['Content-type'] = 'application/json'
+    return json.dumps(map(lambda x: Parrots.toJSON(x), parrots))
+
 
 @route('/accounts/:account_id/parrots/:parrot_id', method="GET")
 def get_parrot(account_id, parrot_id, db, secure = True):
