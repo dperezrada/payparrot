@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+import re
 from datetime import datetime
 
 from bson.objectid import ObjectId
@@ -57,7 +58,8 @@ def parrots_finish(db):
                 'parrot_id': parrot.id,
                 'account_id': account.id,
                 'active': True,
-                'external_id': session.external_id
+                'external_id': session.external_id,
+                'twitter_screen_name': body.get("screen_name")
             }
             if not subscription:
                 subscription = Subscriptions(db, subscription_parameters)
@@ -97,22 +99,22 @@ def get_valid_parrot(db, account_id, parrot_id):
 def get_parrots(account_id, db, secure = True):
     querystring = request.query;
     from_ = querystring.get("from")
-    to_ = querystring.get("to")    
+    to_ = querystring.get("to")
+    skip = querystring.get('skip', 0)
+    limit = querystring.get('limit', 0)
     query_subscriptions = {'account_id': ObjectId(account_id), 'active': True}
     # import nose; nose.tools.set_trace()
-    # if not querystring.skip
-    #     querystring.skip = 0
-    # if not querystring.limit
-    #     querystring.limit = 0
-
     if from_ or to_:
         query_subscriptions['created_at'] = {}
     if from_:
         query_subscriptions['created_at']['$gte'] = datetime.strptime(from_, '%Y-%m-%d')
     if to_:
         query_subscriptions['created_at']['$lte'] = datetime.strptime(to_, '%Y-%m-%d')
+    if querystring.screen_name:
+        screen_name_regex = re.compile(querystring.screen_name,re.IGNORECASE)
+        query_subscriptions['twitter_screen_name'] = screen_name_regex
     print query_subscriptions
-    parrots_from_subscriptions = Subscriptions.find(db, query_subscriptions, {'parrot_id': True, '_id': False})
+    parrots_from_subscriptions = Subscriptions.find(db, query_subscriptions, {'parrot_id': True, '_id': False}).skip(skip).limit(limit).sort([('_id', -1)])
     parrots_id = map(lambda x: x.get('parrot_id'), parrots_from_subscriptions)
     parrots = Parrots.find(db, {'_id': {'$in': parrots_id}})
     # TODO: fix this

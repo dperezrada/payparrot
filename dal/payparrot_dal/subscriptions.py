@@ -12,6 +12,7 @@ class Subscriptions(BaseModel):
             'notified': {'default': False, 'private': True},
             'first_tweet': {'private': True, 'default': False},
             'created_at': {'default': datetime.now},
-            'external_id': {}
+            'external_id': {},
+            'twitter_screen_name': {'default':'','required': True}
     	}
     }

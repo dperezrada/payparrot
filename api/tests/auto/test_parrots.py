@@ -29,10 +29,13 @@ class TestParrots(unittest.TestCase):
             'oauth_token': 'asd',
             'oauth_token_secret': 'asdf',
             'twitter_info': {},
-            'payments': []
+            'payments': [],
+            'twitter_info': {
+                'screen_name': 'danielgua'
+            }
         })
         self.parrot.insert()
-        self.subscription = Subscriptions(self.db, {'account_id': self.account.id, 'active': True, 'parrot_id': self.parrot.id})
+        self.subscription = Subscriptions(self.db, {'account_id': self.account.id, 'active': True, 'parrot_id': self.parrot.id, 'twitter_screen_name': self.parrot.twitter_info.get("screen_name")})
         self.subscription.insert()
             
         self.parrot1 = Parrots(self.db, {
@@ -40,10 +43,13 @@ class TestParrots(unittest.TestCase):
             'oauth_token': 'asd',
             'oauth_token_secret': 'asdf',
             'twitter_info': {},
-            'payments': []
+            'payments': [],
+            'twitter_info': {
+                'screen_name': 'blabla'
+            }
         })
         self.parrot1.insert()
-        self.subscription1 = Subscriptions(self.db, {'account_id': self.account.id, 'active': True, 'parrot_id': self.parrot1.id})        
+        self.subscription1 = Subscriptions(self.db, {'account_id': self.account.id, 'active': True, 'parrot_id': self.parrot1.id,'twitter_screen_name': self.parrot1.twitter_info.get("screen_name")})        
         self.subscription1.insert()
 
     def tearDown(self):
@@ -74,9 +80,14 @@ class TestParrots(unittest.TestCase):
         response = self.app.get('/accounts/%s/parrots?from=%s&to=%s' % (self.account.id, from_text.split(" ")[0], to_text.split(" ")[0]))
         self.assertEqual(200, response.status_int)
         self.assertEqual(1, len(response.json))
-        print response.json
         self.assertEqual(str(self.parrot1.id), response.json[0]['id'])
-        
+
+    def test_get_parrots_by_screen_name(self):
+        response = self.app.get('/accounts/%s/parrots?screen_name=%s' % (self.account.id, 'danielgua'))
+        self.assertEqual(200, response.status_int)
+        self.assertEqual(1, len(response.json))
+        # self.assertEqual(str(self.parrot1.id), response.json[0]['id'])        
+
     # it('should get parrots from account', function(done){
     #     var today = new Date();
     #     var today_text = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate();
