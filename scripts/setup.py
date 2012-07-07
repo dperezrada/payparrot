@@ -18,6 +18,7 @@ setup(name='payparrot_scripts',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
+        "python-dateutil", "httplib2"
       ],
       entry_points="""
       # -*- Entry points: -*-

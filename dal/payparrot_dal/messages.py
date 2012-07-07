@@ -12,8 +12,7 @@ class Messages(BaseModel):
             'account_id': {'required': True},
 			'text': {'required': True},
 			'url': {'required': True},
-			'account_id': {'required': True},
-			'status': {'required': True, 'readonly': True},
-			'active': {'default': True}     
+			'status': {'required': True},
+			'active': {'default': True}
     	}
     }

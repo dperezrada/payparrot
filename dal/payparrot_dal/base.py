@@ -90,9 +90,10 @@ class BaseModel(object):
 
     @classmethod
     def findOne(cls, db, *args, **kwargs):
-        if type(args[0]) == str:
-            args = list(args);
-            args[0] = ObjectId(args[0])
+        if len(args) > 0:
+            if type(args[0]) == str:
+                args = list(args);
+                args[0] = ObjectId(args[0])
         result = db[cls._meta['collection']].find_one(*args, **kwargs)
         if result:
             return cls(db, result)

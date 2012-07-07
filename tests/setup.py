@@ -18,7 +18,7 @@ setup(name='payparrot_tests',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-        "nose", "webtest", "ludibrio"
+        "nose", "webtest", "ludibrio", "nose-cov"
       ],
       entry_points="""
       # -*- Entry points: -*-

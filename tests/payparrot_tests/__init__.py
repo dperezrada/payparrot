@@ -14,15 +14,16 @@ def connect_to_mongo():
     return connection['payparrot_test']
 
 def tear_down(db, app=None):
-	db.accounts.drop()
-	db.messages.drop()
-	db.accounts_sessions.drop()
-	db.subscriptions.drop()
-	db.sessions.drop()
-	db.parrots.drop()
-	db.notifications.drop()
-	if app:
-	    app.get('/logout')
+    db.accounts.drop()
+    db.messages.drop()
+    db.accounts_sessions.drop()
+    db.subscriptions.drop()
+    db.sessions.drop()
+    db.parrots.drop()
+    db.notifications.drop()
+    db.payments.drop()
+    if app:
+        app.get('/logout')
 
 def create_account_and_login(app, db, account_data):
     account = Accounts(db, account_data)
