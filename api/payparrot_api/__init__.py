@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import bottle
 
-from payparrot_api.libs.mongodb import connect 
+from payparrot_dal.mongodb import connect
 from payparrot_api.middlewares.mongo_auth import MongoPlugin 
 from payparrot_api.middlewares.error_handler import ErrorHandler
 

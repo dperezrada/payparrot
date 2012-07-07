@@ -98,6 +98,6 @@ class BaseModel(object):
             return cls(db, result)
 
     def refresh(self):
-        data = db[cls._meta['collection']].find_one({'_id': self.id})
+        data = self.db[self._meta['collection']].find_one({'_id': self.id})
         if data:
             self._data = data

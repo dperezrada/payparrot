@@ -3,7 +3,7 @@ import sys, os
 
 version = '0.1'
 
-setup(name='payparrot_tests',
+setup(name='payparrot_scripts',
       version=version,
       description="",
       long_description="""\
@@ -18,7 +18,6 @@ setup(name='payparrot_tests',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-        "nose", "webtest", "ludibrio"
       ],
       entry_points="""
       # -*- Entry points: -*-
