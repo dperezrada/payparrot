@@ -77,3 +77,7 @@ class TestCronsIntegration(unittest.TestCase):
         message_start = self.message.text
         received_message = json_twitter_status[0].get('text')
         self.assertEqual(self.message.text, received_message[0:len(message_start)])
+
+        queue = Queue.get_queue('payment_test')
+        self.assertEqual(0, queue.count())
+        
