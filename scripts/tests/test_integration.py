@@ -5,7 +5,7 @@ from urlparse import urlparse
 from random import randint
 
 import payparrot_tests as pp_tests
-from payparrot_dal import Accounts, Messages, Subscriptions
+from payparrot_dal import Accounts, Messages, Subscriptions, Parrots, Twitter
 from payparrot_dal.queue import Queue
 
 
@@ -59,3 +59,21 @@ class TestCronsIntegration(unittest.TestCase):
             'account_id': str(subscription.account_id),
             'parrot_id': str(subscription.parrot_id)
         }, json.loads(message.get_body()))
+    
+    def test_cron2(self):
+        from payparrot_scripts.crons.cron1 import main as cron1
+        cron1()
+        
+        from payparrot_scripts.crons.cron2 import main as cron2
+        cron2()
+        
+        parrot = Parrots.findOne(self.db, {})
+        
+        twitter = Twitter()
+        twitter.create_client(parrot.oauth_token, parrot.oauth_token_secret)
+        headers, body = twitter.get("http://api.twitter.com/1/statuses/user_timeline.json?user_id=%s&include_rts=false&count=1" % parrot.screen_name)
+        json_twitter_status = json.loads(body)
+
+        message_start = self.message.text
+        received_message = json_twitter_status[0].get('text')
+        self.assertEqual(self.message.text, received_message[0:len(message_start)])

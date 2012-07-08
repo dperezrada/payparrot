@@ -1,14 +1,23 @@
 # -*- coding: utf-8 -*-
 import json
 
+from boto import config
 from boto.sqs.connection import SQSConnection
 from boto.sqs.message import Message
 from boto.sqs.queue import Queue
+
+if not config.has_section('Boto'):
+    config.add_section('Boto')
+    config.set('Boto', 'debug', '0')
 
 class Queue(object):
     """docstring for Queue"""
     aws_key = 'AKIAIN47MW5VQ4RBN7TQ'
     aws_secret = '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'
+    
+    import logging
+    logging.basicConfig(level=logging.ERROR)
+
 
     @classmethod
     def get_queue(cls, queue_name):
