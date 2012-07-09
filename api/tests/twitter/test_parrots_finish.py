@@ -33,10 +33,7 @@ class TestFinishPayment(unittest.TestCase):
 
     @classmethod
     def tearDownClass(self):
-        self.db.accounts.drop()
-        self.db.messages.drop()
-        self.db.accounts_sessions.drop()
-        self.app.get('/logout')
+        pp_tests.tear_down(self.db)
 
     def test_status_code(self):
         self.assertEqual(302, self.finish_response.status_int)

@@ -1,5 +1,6 @@
 import urlparse
 import oauth2 as oauth
+from urllib import urlencode
 
 class Twitter():
 	consumer_key = 'lFkPrTmvjcSUD5JtrOvg'
@@ -42,3 +43,6 @@ class Twitter():
 
 	def get(self, url):
 		return self.client.request(url)
+	
+	def post(self, url, body):
+		return self.client.request(url, method = 'POST', body=urlencode(body))

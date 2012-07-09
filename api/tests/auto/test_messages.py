@@ -36,7 +36,7 @@ class TestCreateMessages(unittest.TestCase):
         ]
         self.responses = []
         for i, message in enumerate(self.messages):
-            sel f.responses.append(self.app.post_json('/accounts/'+str(self.account_id)+'/messages', message))
+            self.responses.append(self.app.post_json('/accounts/'+str(self.account_id)+'/messages', message))
     def tearDown(self):
         pp_tests.tear_down(self.db, self.app)
         
