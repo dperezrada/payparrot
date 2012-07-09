@@ -27,7 +27,7 @@ def tear_down(db, app=None):
 def create_account_and_login(app, db, account_data):
     account = Accounts(db, account_data)
     account.insert()
-    app.post_json('/login',
+    app.post('/login',
         {'email': account_data['email'], 'password': account_data['password']}
     )
     return account

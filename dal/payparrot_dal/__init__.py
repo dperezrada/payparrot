@@ -6,3 +6,5 @@ from parrots import Parrots
 from sessions import Sessions
 from notifications import Notifications
 from subscriptions import Subscriptions
+from plans import Plans
+from accounts_plans import AccountsPlans

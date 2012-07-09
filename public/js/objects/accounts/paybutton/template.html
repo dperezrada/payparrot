@@ -1,0 +1,30 @@
+<div class="row">
+
+	<div class="span8">
+		
+		<h3>The button</h3>
+		<hr>
+		<div style="text-align:center;">
+			<button class="btn btn-success btn-large">
+				<img src="/img/logo-notext-24x24.png" style="margin-top: -5px;margin-right: 5px;">
+				Pay with a monthly tweet
+			</button>
+		</div>
+		<hr>
+		<div class="alert alert-info" style="text-align:center;">
+
+			<strong>URL</strong><br>
+			http://payparrot.com/parrots/start?token=<%= public_token %>&external_id=
+		</div>
+	</div>
+
+	<div class="span4">
+		<h3>How to use the Payment Button</h3>
+		<hr>
+		<p>
+			The payment button is just a suggestion. The important thing is the URL we are providing you. This URL contains your public token and a special parameter that you can define by your own. This special parameter will be returned to the Redirect URL after a successful subscription, and will also be available for you in every POST message that PayParrot notify to your server.
+		</p>
+		<p>The last parameter that goes in the URL is <strong>external_id</strong>, wich you can fill with your own user's id or and internal subscription id. </p>
+	</div>	
+
+</div>

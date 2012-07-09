@@ -28,10 +28,10 @@ class TestLoginSimpleUSer(unittest.TestCase):
         self.response = self.app.get('/logged', status=401)
     
     def test_login_status(self):
-        response = self.app.post_json('/login',
+        response = self.app.post('/login',
             {'email': self.account_data['email'], 'password': self.account_data['password']}
         )
-        self.assertEqual(204, response.status_int)
+        self.assertEqual(302, response.status_int)
     
     def test_invalid_login_status(self):
         response = self.app.post_json('/login',
@@ -40,8 +40,8 @@ class TestLoginSimpleUSer(unittest.TestCase):
         )
     
     def test_login_and_be_able_to_get_logged_page(self):
-        response = self.app.post_json('/login',
+        response = self.app.post('/login',
             {'email': self.account_data['email'], 'password': self.account_data['password']}
         )
         response = self.app.get('/logged')
-        self.assertEqual(200, response.status_int)
+        self.assertEqual(302, response.status_int)

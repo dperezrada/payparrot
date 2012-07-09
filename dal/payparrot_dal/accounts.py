@@ -27,7 +27,9 @@ class Accounts(BaseModel):
                 }                
             },
             'created_at': {'readonly': True, 'private': True},
-            'stats': {'default': {}}
+            'stats': {'default': {}},
+            'setup': {'private': True, 'default': False},
+            'subscriptions': {'private': True, 'default': False}
         }
     }
     @staticmethod

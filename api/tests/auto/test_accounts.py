@@ -34,7 +34,7 @@ class TestCreateAccounts(unittest.TestCase):
     
     def test_get_saved_account(self):
         account_id = self.response.json.get('id')
-        response = self.app.post_json('/login',
+        response = self.app.post('/login',
             {'email': self.account_data['email'], 'password': self.account_data['password']}
         )
         expected_json = {

@@ -21,7 +21,7 @@ class TestCreateMessages(unittest.TestCase):
         }
         self.response = self.app.post_json('/accounts', self.account_data)
         self.account_id = self.response.json.get('id')
-        self.app.post_json('/login',
+        self.app.post('/login',
             {'email': self.account_data['email'], 'password': self.account_data['password']}
         )
         self.messages = [
@@ -36,7 +36,7 @@ class TestCreateMessages(unittest.TestCase):
         ]
         self.responses = []
         for i, message in enumerate(self.messages):
-            self.responses.append(self.app.post_json('/accounts/'+str(self.account_id)+'/messages', message))
+            sel f.responses.append(self.app.post_json('/accounts/'+str(self.account_id)+'/messages', message))
     def tearDown(self):
         pp_tests.tear_down(self.db, self.app)
         
