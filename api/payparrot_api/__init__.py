@@ -27,6 +27,6 @@ application.install(plugin)
 application.catchall = False
 application = ErrorHandler(application)
 
-# if __name__ == '__main__':
-bottle.TEMPLATE_PATH = [os.path.join(os.path.abspath(os.path.dirname(__file__)), './views')]
-bottle.run(host='localhost', port=8080)
+if __name__ == '__main__':
+	bottle.TEMPLATE_PATH = [os.path.join(os.path.abspath(os.path.dirname(__file__)), './views')]
+	bottle.run(host='localhost', port=8080, reloader = True)

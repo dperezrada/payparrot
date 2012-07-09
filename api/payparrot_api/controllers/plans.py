@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os, sys
 from bottle import route, request, response, static_file, SimpleTemplate, template, view, redirect
+from bson.objectid import ObjectId
 
 from payparrot_api.libs.exceptions import UnauthorizeException
 from payparrot_dal import Accounts, AccountsSessions, Plans, AccountsPlans
@@ -11,7 +12,7 @@ from payparrot_dal import Accounts, AccountsSessions, Plans, AccountsPlans
 
 @route('/accounts/:account_id/plan', method="GET")
 def callback(account_id, db, secure=True):
-	account_plan = AccountsPlans.findOne(db, {'account_id':account_id, 'active': True})
+	account_plan = AccountsPlans.findOne(db, {'account_id': ObjectId(account_id), 'active': True})
 	if account_plan:
 		return account_plan.JSON()
 
@@ -30,12 +31,9 @@ def callback(account_id, db, secure=True):
     		return {"id":str(new_account_plan.id)}
 
 def change_plan(db,new_plan,account):
-	current_account_plan = AccountsPlans.findOne(db, {'account_id': str(account.id), 'active': True})
-	print current_account_plan
+	current_account_plan = AccountsPlans.findOne(db, {'account_id': account.id, 'active': True})
 	if current_account_plan:
-		# current_account_plan.disable()
-		print "YAY"
-		current_account_plan.update({'active': False})
+		current_account_plan.disable()
 	new_account_plan = AccountsPlans.create_from_plan(db,account.JSON(),new_plan.JSON())
 	return new_account_plan
 

@@ -11,18 +11,14 @@ from payparrot_dal import Accounts, AccountsSessions
 def callback():
     return static_file('login.html', os.path.join(os.path.abspath(os.path.dirname(__file__)), '../../../public/'))    
 
+
 @route('/signup', method="POST")
 def callback(db):
-    #params = {'company':request.forms.get("company"),'name':request.forms.get("name"),'email':request.forms.get("email"),'password':request.forms.get("password")}
     params = {'company':'','name':'','email':'','password':''}
     params.update(request.forms)
     account = Accounts.findOne(db, {'email': params.get("email","")})
     status = False
-    if account:
-        pass
-    else:
-        new_account = Accounts(db, {'name': 'lalala'})
-        new_account.insert()
+    if not account:
         new_account = Accounts(db, params)
         new_account.insert()
         status = True

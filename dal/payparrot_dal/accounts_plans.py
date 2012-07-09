@@ -2,6 +2,7 @@ from datetime import datetime
 from hashlib import sha256
 from random import random
 from time import time
+from bson.objectid import ObjectId
 
 from payparrot_dal.base import BaseModel
 
@@ -26,7 +27,7 @@ class AccountsPlans(BaseModel):
         if new_plan['id']:
             del new_plan['id']
         new_plan['active'] = True
-        new_plan['account_id'] = account.get("id")
+        new_plan['account_id'] = ObjectId(account.get("id"))
         new_account_plan = AccountsPlans(db, new_plan)
         new_account_plan.insert()
         return new_account_plan
