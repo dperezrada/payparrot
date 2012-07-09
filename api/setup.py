@@ -18,7 +18,7 @@ setup(name='payparrot_api',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-        "bottle", "lxml", "oauth2", "boto"
+        "bottle==0.10.11", "oauth2", "boto"
       ],
       entry_points="""
       # -*- Entry points: -*-

@@ -15,10 +15,17 @@ from controllers.notifications import *
     
 bottle.debug(True)
 
-application = bottle.default_app.pop()
+application = bottle.default_app()
+
 
 plugin = MongoPlugin(uri="mongodb://localhost:27017/", db="payparrot_test", json_mongo=True, keyword='db')
-application.install(plugin)
+try:
+    application.install(plugin)
+except:
+    pass
 
 application.catchall = False
 application = ErrorHandler(application)
+
+if __name__ == '__main__':
+    bottle.run(application, host='0.0.0.0', port=8080)
