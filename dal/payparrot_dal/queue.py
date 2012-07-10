@@ -32,9 +32,12 @@ class Queue(object):
         return queue.write(new_message)
 
     @classmethod
-    def get_message(cls, queue_name):
+    def get_message(cls, queue_name, visibility_timeout = None):
         queue = cls.get_queue(queue_name)
-        messages = queue.get_messages()
+        if visibility_timeout:
+            messages = queue.get_messages(visibility_timeout=visibility_timeout)
+        else:
+            messages = queue.get_messages()
         if len(messages) > 0:
             return messages[0]
     

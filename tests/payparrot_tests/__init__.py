@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from time import sleep
 
 from webtest import TestApp
 from pymongo import Connection
@@ -26,6 +27,7 @@ def tear_down(db, app=None, queue = False):
     if app:
         app.get('/logout')
     if queue:
+        sleep(1)
         for queue_name in ['notifications_test', 'payment_test']:
             queue = Queue.get_queue(queue_name)
             while queue.count():
