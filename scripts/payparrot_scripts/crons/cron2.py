@@ -10,10 +10,6 @@ from payparrot_dal.mongodb import connect
 from payparrot_dal.queue import Queue
 from payparrot_dal import Accounts, Notifications, Parrots, Messages, Twitter, Payments, Subscriptions, NextPayments
 
-
-if __name__ == '__main__':
-    main()
-
 def main():
     db = connect()
     message = Queue.get_message('payments')
@@ -71,11 +67,13 @@ def tweet_message(parrot, message):
     return json.loads(body)
 
 def store_payment(db, twitter_json, payment_message, message, raw_message):
+    subscription = Subscriptions.findOne(db, {'account_id': ObjectId(payment_message.get('account_id')),'parrot_id': ObjectId(payment_message.get('parrot_id'))})
     payment_data = {
         'twitter_response': twitter_json,
         # TODO: Entender este action data
         'action_date': datetime.now(),
         'account_id': ObjectId(payment_message.get('account_id')),
+        'subscription_id': ObjectId(subscription.id),
         'parrot_id': ObjectId(payment_message.get('parrot_id')),
         'message_id': ObjectId(message.get('id')),
         'message_id_sqs': raw_message.id,
@@ -128,3 +126,6 @@ def create_next_payment(db, last_payment):
         'action_date': next_action_date
     });
     next_payment.insert()
+
+if __name__ == '__main__':
+    main()    

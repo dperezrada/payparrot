@@ -1,11 +1,21 @@
 # -*- coding: utf-8 -*-
 import os, sys
+from bson.objectid import ObjectId
+from datetime import date, datetime
+
+from dateutil.relativedelta import relativedelta
 from bottle import route, request, response, static_file, SimpleTemplate, template, view, redirect
 
 from payparrot_api.libs.exceptions import UnauthorizeException
-from payparrot_dal import Accounts, AccountsSessions
+from payparrot_dal import Accounts, AccountsSessions, AccountsPlans
 
 #Move away from here
+
+@route('/notifications', method="POST")
+def callback():
+    print request.forms.__dict__
+    print request.query.__dict__
+    return {}
 
 @route('/login')
 def callback():
@@ -14,10 +24,12 @@ def callback():
 
 @route('/signup', method="POST")
 def callback(db):
-    params = {'company':'','name':'','email':'','password':''}
+    print request.forms
+    params = {'startup':'','name':'','email':'','password':''}
     params.update(request.forms)
     account = Accounts.findOne(db, {'email': params.get("email","")})
     status = False
+    print params
     if not account:
         new_account = Accounts(db, params)
         new_account.insert()
@@ -44,8 +56,23 @@ def create_account(db):
     return {'id': str(account.id)}
 
 @route('/accounts/:account_id', method="GET")
-def get_account(account_id,db):
+def get_account(account_id,db, secure = True):
+    if account_id == 'me':
+        account_id = request.account.id
     account = Accounts.findOne(db, account_id)
+    filter_parrots = {'account_id': ObjectId(account_id), 'active': True}
+    account._data['stats']['parrots_total'] = db.subscriptions.find(filter_parrots).count()
+    from_ = datetime.today()
+    from_ = datetime(from_.year, from_.month, from_.day)
+    to_ = from_ + relativedelta(days=+1)
+    filter_parrots['created_at'] = {'$gte': from_, '$lt': to_}
+    account._data['stats']['parrots_today'] = db.subscriptions.find(filter_parrots).count()
+    account._data['stats']['payments_total'] = db.payments.find({'account_id': ObjectId(account_id), 'success': True}).count()
+    filter_payments = {'account_id': ObjectId(account_id), 'success': True}
+    filter_payments['created_at'] = {'$gte': from_, '$lt': to_}
+    account._data['stats']['payments_today'] = db.payments.find(filter_payments).count()
+                    # 'payments_total': 0,
+                    # 'payments_today': 0
     if account:
         return account.JSON()
     else:
@@ -66,7 +93,7 @@ def get_account(account_id, db, secure=True):
 def get_credentials(account_id, db, secure=True):
     account = Accounts.findOne(db, account_id)
     if account:
-        return account.JSON()
+        return account.credentials
     else:
         response.status = 404
         return {}
@@ -74,13 +101,14 @@ def get_credentials(account_id, db, secure=True):
 @route('/logged', method="GET")
 def logged(db,secure = True):
     account = request.account
+    account_plan = AccountsPlans.findOne(db, {'account_id': ObjectId(account.id)})
     if not account:
         redirect('/login')
         return
     if not account.setup:
         redirect('/accounts/setup')
         return
-    if not account.subscriptions:
+    if not account_plan:
         redirect('/accounts/subscriptions')
         return
     redirect('/app.html')

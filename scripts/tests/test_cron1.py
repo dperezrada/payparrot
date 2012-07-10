@@ -45,7 +45,7 @@ class TestCron1(unittest.TestCase):
             Queue.insert(
                 'payments', 
                 {
-                    'suscription_id': str(self.subscription.id),
+                    'subscription_id': str(self.subscription.id),
                     'account_id': str(self.account.id),
                     'parrot_id': str(self.parrot.id)
                 }

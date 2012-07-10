@@ -10,10 +10,9 @@ from bottle import route, request, response, redirect
 from payparrot_api.libs.exceptions import UnauthorizeException
 from payparrot_dal import Accounts, AccountsSessions, Sessions, Twitter, Parrots, Subscriptions, Notifications
 
-@route('/accounts/:account_id/parrots/start', method="GET")
-def parrots_start(account_id, db):
-    # TODO: verificar el public_token
-    account = Accounts.findOne(db,account_id)
+@route('/parrots/start', method="GET")
+def parrots_start(db):
+    account = Accounts.findOne(db,{'credentials.public_token': request.query.get("token")})
     if account:
         twitter = Twitter()
         client = twitter.create_session()
@@ -23,6 +22,7 @@ def parrots_start(account_id, db):
         redirect_url = twitter.redirect_url(tokens)
         redirect(redirect_url)
     else:
+        print "Noooo ---"
         response.status = 404
         return {}
 
@@ -77,8 +77,8 @@ def _create_notification(db, account,parrot,subscription):
     notification = Notifications(db, {
         'account_id': account.id,
         'parrot_id': parrot.id,
-        'type': 'suscription_activated',
-        'suscription_id': subscription.id,
+        'type': 'subscription_activated',
+        'subscription_id': subscription.id,
         'external_id': subscription.external_id,
         'request_url': account.notification_url
     })

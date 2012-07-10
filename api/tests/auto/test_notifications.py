@@ -33,7 +33,7 @@ class TestNotifications(unittest.TestCase):
             'parrot_id': ObjectId(),
             'request_url': 'http://localhost:3000/notifications/echo',
             'status': 'pending',
-            'type': 'suscription_activated'
+            'type': 'subscription_activated'
         })
         self.notification.insert()
 

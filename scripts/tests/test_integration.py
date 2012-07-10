@@ -55,7 +55,7 @@ class TestCronsIntegration(unittest.TestCase):
         
         message = Queue.get_message('payments', visibility_timeout=1)
         self.assertEqual({
-            'suscription_id': str(subscription.id),
+            'subscription_id': str(subscription.id),
             'account_id': str(subscription.account_id),
             'parrot_id': str(subscription.parrot_id)
         }, json.loads(message.get_body()))

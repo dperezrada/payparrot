@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from bson.objectid import ObjectId
+import json 
 
 from bottle import route, request, response
 
@@ -8,11 +10,20 @@ from payparrot_dal import Accounts, AccountsSessions, Messages
 @route('/accounts/:account_id/messages', method="POST")
 def create_message(account_id, db, secure=True):
     new_message = request.json
-    new_message['account_id'] = account_id
+    new_message['account_id'] = ObjectId(account_id)
     message = Messages(db, new_message)
     message.insert()
     response.status = 201
-    return {'id': str(message.id)}
+    return message.JSON()
+
+@route('/accounts/:account_id/messages', method="GET")
+def get_message(account_id, db, secure=True):
+    messages = Messages.find(db, {'account_id':ObjectId(account_id)})
+    if messages:
+        return json.dumps(map(lambda x: Messages.toJSON(x), messages))
+    else:
+        response.status = 404
+        return {}    
 
 @route('/accounts/:account_id/messages/:message_id', method="GET")
 def get_message(account_id, message_id, db, secure=True):

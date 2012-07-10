@@ -2,6 +2,7 @@
 import sys
 import json
 
+from urllib import urlencode
 from httplib2 import Http
 
 from payparrot_dal import Subscriptions, Notifications
@@ -12,12 +13,9 @@ VALID_NOTIFICATIONS = [
     "payment_success",
     "payment_failed",
     "payment_failed",
-    "suscription_activated",
-    "suscription_deactivated"
+    "subscription_activated",
+    "subscription_deactivated"
 ]
-
-if __name__ == '__main__':
-    main()
 
 def main():
     db = connect()
@@ -37,7 +35,7 @@ def notify(db, notification_raw):
             return
         if notification.request_url:
             query_data = {
-                'suscription_id': str(notification.suscription_id),
+                'subscription_id': str(notification.subscription_id),
                 'account_id': str(notification.account_id),
                 'parrot_id': str(notification.parrot_id),
                 'type': notification_message.get('type'),
@@ -46,7 +44,7 @@ def notify(db, notification_raw):
                 # TODO: check if we should send the screen_name
             }
             http_client = Http()
-            headers, body = http_client.post(url = notification.request_url, body = query_data)
+            headers, body = http_client.request(uri = notification.request_url, body = urlencode(query_data), method = 'POST')
             if int(headers.status) >= 200 and int(headers.status) < 300:
                 notification.update({
                     'response_status': headers.status,
@@ -64,3 +62,7 @@ def notify(db, notification_raw):
             print >> sys.stderr, "Failed. No request URL"
     else:
         print >> sys.stderr, "Failed. No notification found in db with id %s" % notification_message.get('notification_id')
+
+
+if __name__ == '__main__':
+    main()        

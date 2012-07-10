@@ -7,6 +7,7 @@ class Subscriptions(BaseModel):
         'collection': 'subscriptions',
         'fields': {
             'account_id': {'required': True},
+            'subscription_id': {'required': True},
 			'parrot_id': {'required': True},
 			'active': {'required': True},
             'notified': {'default': False, 'private': True},

@@ -24,6 +24,7 @@ class Notifications(BaseModel):
     }
 
     def insert(self, safe = True):
+        super(Notifications, self).insert(safe)
         created_message = Queue.insert(
             'notifications', 
             {
@@ -34,5 +35,4 @@ class Notifications(BaseModel):
                 'notification_id': str(self.id)
             }
         )
-        self._data['queue_message_id'] = created_message.id
-        super(Notifications, self).insert(safe)
+        self.update({'queue_message_id': created_message.id})

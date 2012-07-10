@@ -1,5 +1,6 @@
 from bson.objectid import ObjectId
 from types import BuiltinFunctionType
+from datetime import datetime
 
 def update_id(data):
     if data.get('id'):
@@ -70,6 +71,11 @@ class BaseModel(object):
                 prepared_json[key] = data.get(key)
                 if type(prepared_json[key]) == ObjectId:
                     prepared_json[key] = str(prepared_json[key])
+                elif type(prepared_json[key]) == datetime:
+                    prepared_json[key] = prepared_json[key].isoformat(" ")
+                    splited_values = prepared_json[key].split('.')
+                    if len(splited_values)>0:
+                        prepared_json[key]= splited_values[0]
         if data.get('id'):
             prepared_json['id'] = str(data.get('id'))
         if data.get('_id'):
@@ -91,7 +97,7 @@ class BaseModel(object):
     @classmethod
     def findOne(cls, db, *args, **kwargs):
         if len(args) > 0:
-            if type(args[0]) == str:
+            if type(args[0]) in [str, unicode]:
                 args = list(args);
                 args[0] = ObjectId(args[0])
         result = db[cls._meta['collection']].find_one(*args, **kwargs)
