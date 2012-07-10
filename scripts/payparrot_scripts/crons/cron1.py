@@ -8,11 +8,11 @@ if __name__ == '__main__':
     main()
 
 def main():
-    db = connect('payparrot_test')
+    db = connect()
     subscriptions = Subscriptions.find(db, {'active': True, 'first_tweet': False})
     for subscription_raw in subscriptions:
         created_message = Queue.insert(
-            'payment_test', 
+            'payments', 
             {
                 'suscription_id': str(subscription_raw['_id']),
                 'account_id': str(subscription_raw['account_id']),

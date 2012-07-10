@@ -51,9 +51,9 @@ class TestCronsIntegration(unittest.TestCase):
         subscription = Subscriptions.findOne(self.db, {})
         self.assertTrue(subscription.first_tweet)
         
-        self.assertEqual(1, Queue.get_queue('payment_test').count())
+        self.assertEqual(1, Queue.get_queue('payments').count())
         
-        message = Queue.get_message('payment_test', visibility_timeout=1)
+        message = Queue.get_message('payments', visibility_timeout=1)
         self.assertEqual({
             'suscription_id': str(subscription.id),
             'account_id': str(subscription.account_id),
@@ -78,6 +78,6 @@ class TestCronsIntegration(unittest.TestCase):
         received_message = json_twitter_status[0].get('text')
         self.assertEqual(self.message.text, received_message[0:len(message_start)])
 
-        queue = Queue.get_queue('payment_test')
+        queue = Queue.get_queue('payments')
         self.assertEqual(0, queue.count())
         

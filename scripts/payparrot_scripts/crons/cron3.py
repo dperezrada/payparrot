@@ -20,11 +20,11 @@ if __name__ == '__main__':
     main()
 
 def main():
-    db = connect('payparrot_test')
-    message = Queue.get_message('notifications_test')
+    db = connect()
+    message = Queue.get_message('notifications')
     while message:
         notify(db, message)
-        message = Queue.get_message('notifications_test')
+        message = Queue.get_message('notifications')
 
 def notify(db, notification_raw):
     notification_message = json.loads(notification_raw.get_body())
@@ -54,7 +54,7 @@ def notify(db, notification_raw):
                     'response_body': body,
                     'status': 'sent'
                 })
-                Queue.delete_message('notifications_test', notification_raw)
+                Queue.delete_message('notifications', notification_raw)
             else:
                 print sys.stderr, "Failed. Notification response not 2XX (received %s) from url %s" % (
                     headers.status,

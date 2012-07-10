@@ -53,8 +53,8 @@ class TestCron2(unittest.TestCase):
 
         with Mock() as Queue:
             from payparrot_dal.queue import Queue
-            Queue.get_message('payment_test') >> mockedQueueMessage()
-            Queue.get_message('payment_test') >> None
+            Queue.get_message('payments') >> mockedQueueMessage()
+            Queue.get_message('payments') >> None
         
         self.message = Messages(self.db, {
             'account_id': self.account.id,

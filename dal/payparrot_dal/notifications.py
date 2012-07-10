@@ -25,7 +25,7 @@ class Notifications(BaseModel):
 
     def insert(self, safe = True):
         created_message = Queue.insert(
-            'notifications_test', 
+            'notifications', 
             {
                 'subscription_id': str(self.subscription_id),
                 'account_id': str(self.account_id),

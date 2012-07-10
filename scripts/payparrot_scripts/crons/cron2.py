@@ -15,11 +15,11 @@ if __name__ == '__main__':
     main()
 
 def main():
-    db = connect('payparrot_test')
-    message = Queue.get_message('payment_test')
+    db = connect()
+    message = Queue.get_message('payments')
     while message:
         process_payment(db, message)
-        message = Queue.get_message('payment_test')
+        message = Queue.get_message('payments')
 
 def process_payment(db, raw_message):
     payment_message = json.loads(raw_message.get_body())
@@ -29,7 +29,7 @@ def process_payment(db, raw_message):
         twitter_json = tweet_message(parrot, message)
         payment = store_payment(db, twitter_json, payment_message, message, raw_message)
         if payment.success:
-            if Queue.delete_message('payment_test', raw_message):
+            if Queue.delete_message('payments', raw_message):
                 print "Payments succeded"
                 send_notification(db, payment, 'payment_success')
                 create_next_payment(db, payment)
@@ -44,7 +44,7 @@ def process_payment(db, raw_message):
                 if total_payments_attempts > 3:
                     print >> sys.stderr, "Too many payments attempts"
                     subscription.update({'active': False})
-                    if Queue.delete_message('payment_test', message_raw):
+                    if Queue.delete_message('payments', message_raw):
                         send_notification(payment,'subscription_deactivated')
                     else:
                         print >> sys.stderr, "Failed. Couldnt delete message."
@@ -66,7 +66,7 @@ def get_message_to_share(db, payment_message):
 def tweet_message(parrot, message):
     twitter = Twitter()
     twitter.create_client(parrot.oauth_token, parrot.oauth_token_secret)
-    trackable_url = create_trackable_url(message.get('id'))
+    trackable_url = create_trackable_url(message.get('_id'))
     headers, body = twitter.post("https://api.twitter.com/1/statuses/update.json", {"status": message.get('text')+" "+trackable_url})
     return json.loads(body)
 

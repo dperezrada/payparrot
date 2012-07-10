@@ -1,14 +1,15 @@
 import urlparse
 import oauth2 as oauth
 from urllib import urlencode
+import os
 
 class Twitter():
-	consumer_key = 'lFkPrTmvjcSUD5JtrOvg'
-	consumer_secret = 'sCxLuVAd1HnGIjdolKUqAjZaSOO7BGhViD1a7w'
+	consumer_key = os.environ.get("PAYPARROT_TWITTER_KEY")
+	consumer_secret = os.environ.get("PAYPARROT_TWITTER_SECRET")
 	request_token_url = 'https://api.twitter.com/oauth/request_token?oauth_callback='
 	access_token_url = 'https://api.twitter.com/oauth/access_token'
 	authorize_url = 'https://api.twitter.com/oauth/authorize'
-	oauth_callback = 'http://localhost:8080/parrots/finish'
+	oauth_callback = os.environ.get("PAYPARROT_TWITTER_CALLBACK")
 
 	def __init__(self):
 		self.consumer = oauth.Consumer(self.consumer_key, self.consumer_secret)
