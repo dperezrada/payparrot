@@ -27,14 +27,7 @@ class Accounts(BaseModel):
                 }                
             },
             'created_at': {'readonly': True, 'private': True},
-            'stats': {
-                'default': {
-                    'parrots_total': 0,
-                    'parrots_today': 0,
-                    'payments_total': 0,
-                    'payments_today': 0
-                }
-            },
+            'stats': {'default': {}},
             'setup': {'private': True, 'default': False},
             'subscriptions': {'private': True, 'default': False}
         }

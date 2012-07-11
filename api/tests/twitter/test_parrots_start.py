@@ -22,7 +22,7 @@ class TestStartPayment(unittest.TestCase):
             'callback_url': 'http://www.epistemonikos.org',
         })
         self.account.insert()
-        self.redirect = self.app.get('/accounts/%s/parrots/start?external_id=1&token=%s' % (self.account.id, self.account.credentials['public_token']))
+        self.redirect = self.app.get('/parrots/start?external_id=1&token=%s' % self.account.credentials['public_token'])
 
         
     def tearDown(self):

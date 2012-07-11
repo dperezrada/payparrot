@@ -45,7 +45,12 @@ class TestCreateAccounts(unittest.TestCase):
             'url': 'http://payparrot.com/',
             'callback_url': 'http://demo.payparrot.com',
             'notification_url': 'http://demo.payparrot.com/notifications',
-            'stats': {},
+            'stats': {
+                'parrots_today': 0,
+                'parrots_total': 0,
+                'payments_today': 0,
+                'payments_total': 0
+            }
         }
         response = self.app.get('/accounts/'+account_id)
         self.assertEqual(expected_json, response.json)

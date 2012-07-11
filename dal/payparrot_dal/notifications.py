@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from bson.objectid import ObjectId
 
 from payparrot_dal.queue import Queue
 from payparrot_dal.base import BaseModel
@@ -8,10 +9,10 @@ class Notifications(BaseModel):
     _meta = {
         'collection': 'notifications',
         'fields': {
-            'subscription_id': {'required': True},
-            'account_id': {'required': True},
+            'subscription_id': {'required': True, 'type': ObjectId},
+            'account_id': {'required': True, 'type': ObjectId},
             'external_id': {},
-            'parrot_id': {'required': True},
+            'parrot_id': {'required': True, 'type': ObjectId},
             'request_url': {'required': True},
             'response_status': {},
             'response_headers': {},

@@ -13,7 +13,7 @@ class AccountsPlans(BaseModel):
             'name': {'required': True},
             'price': {},
             'parrots': {},
-            'account_id': {},
+            'account_id': {type: ObjectId},
             'active': {'default': True, 'private': True},
             'created_at': {'private': True, 'default':datetime.now}
         }

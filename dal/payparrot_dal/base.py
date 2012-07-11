@@ -23,6 +23,7 @@ class BaseModel(object):
         self._meta['private'] = []
         self._meta['required'] = []
         self._meta['readonly'] = []
+        self._meta['types'] = []
         for key, value in self._meta['fields'].iteritems():
             if value.get('private'):
                 self._meta['private'].append(key)
@@ -30,12 +31,25 @@ class BaseModel(object):
                 self._meta['required'].append(key)
             if value.get('readonly'):
                 self._meta['readonly'].append(key)
+            if value.get('type'):
+                self._meta['types'].append(key)
             if self._data.get(key) is None and value.get('default') is not None:
                 set_default(self._data, key, value.get('default'))
 
     def __getattr__(self, key):
         if key != '_data' and key != '_meta':
             return self._data.get(key)
+    
+    def _set_types(self, data = None):
+        for key in self._meta['types']:
+            try:
+                if self._data.get(key):
+                    if data:
+                        data[key] = self._meta['fields'][key]['type'](self._data[key])
+                    else:
+                        self._data[key] = self._meta['fields'][key]['type'](self._data[key])
+            except:
+                pass
 
     # def __setattr__(self, key, value):
     #     if key not in ['_data', '_meta']:
@@ -46,19 +60,24 @@ class BaseModel(object):
         for key, value in self._meta['fields'].iteritems():
             if self._data.get(key) is None and value.get('default') is not None:
                set_default(self._data, key, value.get('default'))
+        self._set_types()
         self.db[self._meta['collection']].insert(self._data, safe = safe)
         update_id(self._data)
 
     def update(self, data, safe = True):
         to_update_data = {}
         self._remove_readonly(data)
-        self.db[self._meta['collection']].update({'_id': ObjectId(self._data['id'])}, {'$set': data}, safe = safe)
         self._data.update(data)
+        self._set_types(data)
+        self.db[self._meta['collection']].update({'_id': ObjectId(self._data['id'])}, {'$set': data}, safe = safe)
     
     def _remove_readonly(self, data):
         for key in data.keys():
             if key in self._meta['readonly']:
+                #  or key not in self._meta['fields'].keys()
                 del data[key]
+        if data.get('id'):
+            del data['id']
     
     @classmethod   
     def _toJSON(cls, data):

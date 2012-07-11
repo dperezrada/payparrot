@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 import json
+from bson.objectid import ObjectId
 
 import payparrot_tests as pp_tests
 from payparrot_dal.base import BaseModel
@@ -11,6 +12,7 @@ class Movies(BaseModel):
         'collection': 'movies',
         'fields': {
             'title': {'required': True},
+            'account_id': {'type': ObjectId},
             'rating': {},
             'date_added': {'readonly': True, 'default': 123}
         }
@@ -37,3 +39,25 @@ class TestBase(unittest.TestCase):
         self.movie.insert()
         self.movie.update({'date_added': 456})
         self.assertEqual(123, self.movie.date_added)
+    
+    def test_type(self):
+        self.movie.insert()
+        account_id = ObjectId()
+        self.movie.update({'account_id': str(account_id)})
+        self.movie.refresh()
+        self.assertEqual(account_id, self.movie.account_id)
+        
+    def test_update_doesnt_store_id(self):
+        self.movie.insert()
+        account_id = ObjectId()
+        self.movie.update({'account_id': str(account_id), 'id': 'hola'})
+        movie_from_db = self.db.movies.find_one({'_id': self.movie.id})
+        self.assertEqual(None, movie_from_db.get('id'))
+
+    def test_shouldnt_store_not_defined_attributes(self):
+        self.movie.insert()
+        account_id = ObjectId()
+        self.movie.update({'account_id': str(account_id), 'another_thing': 'hola'})
+        movie_from_db = self.db.movies.find_one({'_id': self.movie.id})
+        self.assertEqual(None, movie_from_db.get('another_thing'))
+        

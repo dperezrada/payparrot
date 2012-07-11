@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from payparrot_dal.base import BaseModel
 
 class Parrots(BaseModel):

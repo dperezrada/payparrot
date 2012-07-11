@@ -20,10 +20,12 @@ def main():
 def process_payment(db, raw_message):
     payment_message = json.loads(raw_message.get_body())
     parrot = Parrots.findOne(db, {'_id': ObjectId(payment_message.get('parrot_id'))})
+    print "parrot", parrot._data
     if parrot:
         message = get_message_to_share(db, payment_message)
         twitter_json = tweet_message(parrot, message)
         payment = store_payment(db, twitter_json, payment_message, message, raw_message)
+        print "payment", payment._data
         if payment.success:
             if Queue.delete_message('payments', raw_message):
                 print "Payments succeded"
