@@ -130,4 +130,19 @@ def login(db):
 @route('/logout', method="GET")
 def logout():
     response.set_cookie('sid', '', path='/')
-    response.status = 204
+    redirect('/login')
+
+@route('/apply', method="POST")
+def apply(db):
+    applicant = {
+        'email': request.json.get("email",""),
+        'name': request.json.get("name","")
+    }
+    if applicant['email'] and applicant['name']:
+        user = db.potential_users.find_one({'email':applicant['email']})
+        if not user:
+            db.potential_users.insert(applicant)
+        redirect('/applied.html')
+    else:
+        response.status = 404
+        return {}

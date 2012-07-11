@@ -21,11 +21,15 @@ require([
 			$.ajax({
 				url: "/apply",
 				type: "POST",
-				dataType: "json",
+				contentType: "application/json",
 				data: {
 					'name': name,
 					'email': email
 				},
+				data: JSON.stringify({
+					'name': name,
+					'email': email
+				}),
 				success: function() {
 					console.log('ok');
 					window.location = '/applied.html';
