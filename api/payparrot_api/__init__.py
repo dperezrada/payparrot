@@ -13,9 +13,10 @@ from controllers.parrots import *
 from controllers.notifications import *
 from controllers.plans import *
 from controllers.static import *
-    
-bottle.debug(True)
 
+if os.environ.get('PAYPARROT_ENV','') != "PRODUCTION":
+	bottle.debug(True)
+bottle.TEMPLATE_PATH = [os.path.join(os.path.abspath(os.path.dirname(__file__)), './views')]
 application = bottle.default_app()
 
 plugin = MongoPlugin()

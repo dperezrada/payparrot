@@ -110,9 +110,9 @@ def logged(db,secure = True):
     if not account.setup:
         redirect('/accounts/setup')
         return
-    if not account_plan:
-        redirect('/accounts/subscriptions')
-        return
+    # if not account_plan:
+    #     redirect('/accounts/subscriptions')
+    #     return
     redirect('/app.html')
 
 @route('/login', method="POST")
