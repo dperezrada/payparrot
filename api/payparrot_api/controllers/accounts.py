@@ -142,7 +142,6 @@ def apply(db):
         user = db.potential_users.find_one({'email':applicant['email']})
         if not user:
             db.potential_users.insert(applicant)
-        redirect('/applied.html')
     else:
         response.status = 404
         return {}
