@@ -53,7 +53,7 @@ def update_message(account_id, message_id, db, secure=True):
         response.status = 404
 
 @route('/r/:message_id', method="GET")
-def redirect_from_message(sqs_id, db):
+def redirect_from_message(message_id, db):
     message = Messages.findOne(db, message_id)
     if message:
         response.redirect(message.url)
