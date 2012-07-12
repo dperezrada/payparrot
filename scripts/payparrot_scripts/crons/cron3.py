@@ -41,7 +41,6 @@ def notify(db, notification_raw):
                 'type': notification_message.get('type'),
                 'external_id': str(notification.external_id),
                 'notification_id': str(notification.id),
-                # TODO: check if we should send the screen_name
             }
             http_client = Http()
             headers, body = http_client.request(uri = notification.request_url, body = urlencode(query_data), method = 'POST')

@@ -41,7 +41,6 @@ class TestNotifications(unittest.TestCase):
         pp_tests.tear_down(self.db, self.app)
 
     def test_get_notification(self):
-        # TODO: Secure by private token (api request)
         response = self.app.get('/accounts/%s/notifications/%s' % (self.account.id, self.notification.id))
         expected = self.notification.JSON()
         self.assertEqual(200, response.status_int)

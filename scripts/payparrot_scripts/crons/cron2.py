@@ -23,7 +23,7 @@ def process_payment(db, raw_message):
     print "parrot", parrot._data
     if parrot:
         message = get_message_to_share(db, payment_message)
-        twitter_json = tweet_message(parrot, message)
+        twitter_json = tweet_message(parrot, message, raw_message.id)
         payment = store_payment(db, twitter_json, payment_message, message, raw_message)
         print "payment", payment._data
         if payment.success:
@@ -53,7 +53,7 @@ def create_trackable_url(message_id):
   return 'http://pprt.co/r/%s' % message_id
 
 def get_message_to_share(db, payment_message):
-    # TODO: Resolver pregunta. Que significa status?
+    # status means if we approved or not the message. Default True
     messages = list(Messages.find(db, {'account_id': ObjectId(payment_message.get('account_id')), 'status': True, 'active': True}))
     total_messages = len(messages)
     if total_messages == 0:
@@ -61,10 +61,10 @@ def get_message_to_share(db, payment_message):
         return
     return messages[randint(0, total_messages-1)]
 
-def tweet_message(parrot, message):
+def tweet_message(parrot, message, id_sqs):
     twitter = Twitter()
     twitter.create_client(parrot.oauth_token, parrot.oauth_token_secret)
-    trackable_url = create_trackable_url(message.get('_id'))
+    trackable_url = create_trackable_url(id_sqs)
     headers, body = twitter.post("https://api.twitter.com/1/statuses/update.json", {"status": message.get('text')+" "+trackable_url})
     return json.loads(body)
 
@@ -72,7 +72,7 @@ def store_payment(db, twitter_json, payment_message, message, raw_message):
     subscription = Subscriptions.findOne(db, {'account_id': ObjectId(payment_message.get('account_id')),'parrot_id': ObjectId(payment_message.get('parrot_id'))})
     payment_data = {
         'twitter_response': twitter_json,
-        # TODO: Entender este action data
+        # action date means when this payment has to be tweeted
         'action_date': datetime.now(),
         'account_id': ObjectId(payment_message.get('account_id')),
         'subscription_id': ObjectId(subscription.id),
