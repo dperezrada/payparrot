@@ -68,10 +68,24 @@ def parrots_finish(db):
                 subscription.update(subscription_parameters)
             notification_id = _create_notification(db, account, parrot, subscription)
             if notification_id:
-                redirect(account.callback_url)
+                redirect_url = generate_redirect_url(account.callback_url, session.external_id, subscription.id, notification_id)
+                redirect(redirect_url)
     else:
         response.status = 404
         return {'error': 'Expired token'}
+
+def generate_redirect_url(callback_url,session_external_id, subscription_id, notification_id):
+    # TODO: Refactor
+    parameters = "";
+    sep = "?";
+    if callback_url.find('?')>=0:
+        sep = "&";
+    if session_external_id:
+        parameters = sep+"external_id="+session_external_id
+    if subscription_id:
+        parameters = parameters+"&subscription_id="+subscription_id
+    parameters = parameters+"&notification_id="+notification_id;
+    return callback_url+parameters
 
 def _create_notification(db, account,parrot,subscription):
     notification = Notifications(db, {
