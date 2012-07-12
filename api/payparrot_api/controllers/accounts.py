@@ -2,6 +2,7 @@
 import os, sys
 from bson.objectid import ObjectId
 from datetime import date, datetime
+from hashlib import sha1
 
 from dateutil.relativedelta import relativedelta
 from bottle import route, request, response, static_file, SimpleTemplate, template, view, redirect
@@ -24,14 +25,13 @@ def callback():
 
 @route('/signup', method="POST")
 def callback(db):
-    print request.forms
     params = {'startup':'','name':'','email':'','password':''}
     params.update(request.forms)
     account = Accounts.findOne(db, {'email': params.get("email","")})
     status = False
-    print params
     if not account:
         new_account = Accounts(db, params)
+        new_account._data['password'] = sha1(new_account.salt+params.get('password')).hexdigest()
         new_account.insert()
         status = True
     params['status'] = status
@@ -50,7 +50,9 @@ def callback(db, secure=True):
 
 @route('/accounts', method="POST")
 def create_account(db):
+    params = request.json
     account = Accounts(db,request.json)
+    account._data['password'] = sha1(account.salt+params.get('password')).hexdigest()
     account.insert()
     response.status = 201
     return {'id': str(account.id)}
@@ -115,17 +117,22 @@ def logged(db,secure = True):
 
 @route('/login', method="POST")
 def login(db):
-    account = Accounts.findOne(db, {
+    account_by_email = Accounts.findOne(db, {
         'email': request.forms.get('email'),
-        'password': request.forms.get('password')
     })
-    if account:
-        account_session = AccountsSessions(db, {'account_id': account.id})
-        account_session.insert()
-        response.set_cookie('sid', account_session.session_id, path='/', expires = account_session.expires)
-        redirect('/logged')
-    else:
-        raise UnauthorizeException()
+    
+    if account_by_email:
+        account = Accounts.findOne(db, {
+            'email': request.forms.get('email'),
+            'password': sha1(account_by_email.salt+request.forms.get('password')).hexdigest()
+        })
+        if account:
+            account_session = AccountsSessions(db, {'account_id': account.id})
+            account_session.insert()
+            response.set_cookie('sid', account_session.session_id, path='/', expires = account_session.expires)
+            redirect('/logged')
+            return
+    raise UnauthorizeException()
 
 @route('/logout', method="GET")
 def logout():

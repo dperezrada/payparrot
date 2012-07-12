@@ -40,14 +40,12 @@ class BaseModel(object):
         if key != '_data' and key != '_meta':
             return self._data.get(key)
     
-    def _set_types(self, data = None):
-        for key in self._meta['types']:
+    @classmethod
+    def _set_types(cls, data):
+        for key in cls._meta['types']:
             try:
-                if self._data.get(key):
-                    if data:
-                        data[key] = self._meta['fields'][key]['type'](self._data[key])
-                    else:
-                        self._data[key] = self._meta['fields'][key]['type'](self._data[key])
+                if data.get(key):
+                    data[key] = cls._meta['fields'][key]['type'](data[key])
             except:
                 pass
 
@@ -60,7 +58,7 @@ class BaseModel(object):
         for key, value in self._meta['fields'].iteritems():
             if self._data.get(key) is None and value.get('default') is not None:
                set_default(self._data, key, value.get('default'))
-        self._set_types()
+        self._set_types(self._data)
         self.db[self._meta['collection']].insert(self._data, safe = safe)
         update_id(self._data)
 
@@ -73,8 +71,7 @@ class BaseModel(object):
     
     def _remove_readonly(self, data):
         for key in data.keys():
-            if key in self._meta['readonly']:
-                #  or key not in self._meta['fields'].keys()
+            if key in self._meta['readonly'] or key not in self._meta['fields'].keys():
                 del data[key]
         if data.get('id'):
             del data['id']
@@ -121,9 +118,11 @@ class BaseModel(object):
                 args[0] = ObjectId(args[0])
         result = db[cls._meta['collection']].find_one(*args, **kwargs)
         if result:
+            cls._set_types(result)
             return cls(db, result)
 
     def refresh(self):
         data = self.db[self._meta['collection']].find_one({'_id': self.id})
         if data:
+            cls._set_types(data)
             self._data = data

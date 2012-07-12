@@ -35,9 +35,11 @@ def tear_down(db, app=None, queue = False):
                     Queue.delete_message(queue_name, message)
 
 def create_account_and_login(app, db, account_data):
-    account = Accounts(db, account_data)
-    account.insert()
+    response = app.post_json('/accounts',
+        account_data
+    )
     app.post('/login',
         {'email': account_data['email'], 'password': account_data['password']}
     )
+    account = Accounts.findOne(db, response.json.get('id'))
     return account
