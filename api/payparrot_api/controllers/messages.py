@@ -2,7 +2,7 @@
 from bson.objectid import ObjectId
 import json 
 
-from bottle import route, request, response
+from bottle import route, request, response, redirect
 
 from payparrot_api.libs.exceptions import UnauthorizeException
 from payparrot_dal import Accounts, AccountsSessions, Messages
@@ -56,6 +56,6 @@ def update_message(account_id, message_id, db, secure=True):
 def redirect_from_message(message_id, db):
     message = Messages.findOne(db, message_id)
     if message:
-        response.redirect(message.url)
+        redirect(message.url)
     else:
         response.status = 404
