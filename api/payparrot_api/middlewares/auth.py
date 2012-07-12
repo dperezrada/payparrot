@@ -13,12 +13,24 @@ def get_session_id():
         return cookies[key].value
     return ''
 
-def get_account(db):
+def get_from_token(db):
+    token = request.query.get('token')
+    if token:
+        account = Accounts.findOne(db, {'credentials.private_token': token})
+        if account:
+            request.account = account
+            return True
+
+def get_from_session(db):
     session_id = get_session_id()
     request.account = None
     if session_id:
         request.account = Accounts.get_from_session(db, session_id)
-    
+
+
+def get_account(db):
+    if not get_from_token(db):
+        get_from_session(db)
 
 def authorize(db, *allowed_roles):
     allow = False
