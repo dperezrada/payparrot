@@ -29,4 +29,4 @@ application = ErrorHandler(application)
 
 if __name__ == '__main__':
     bottle.TEMPLATE_PATH = [os.path.join(os.path.abspath(os.path.dirname(__file__)), './views')]
-    bottle.run(application, host='0.0.0.0', port=8080, reloader = True)
+    bottle.run(application, host='0.0.0.0', port=os.environ.get('PAYPARROT_API_PORT'), reloader = os.environ.get('PAYPARROT_API_RELOADER'))
