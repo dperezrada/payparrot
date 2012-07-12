@@ -14,7 +14,7 @@ class Accounts(BaseModel):
             'name': {'required': True},
             'startup': {'required': True},
             'password': {'required': True, 'private': True},
-            'salt': {'private': True},
+            'salt': {'private': True, 'default': str(random())},
             'url': {'required': True},
             'callback_url': {},
             'notification_url': {},

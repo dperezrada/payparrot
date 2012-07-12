@@ -6,9 +6,10 @@ from bson.objectid import ObjectId
 from payparrot_api.libs.exceptions import UnauthorizeException
 from payparrot_dal import Accounts, AccountsSessions, Plans, AccountsPlans
 
-#db.plans.insert({'name':'standard','price':'25','parrots':'300','product_path':'pp-standard','product_url':'https://sites.fastspring.com/payparrot/instant/pp-standard'})
-#db.plans.insert({'name':'pro','price':'25','parrots':'300','product_path':'pp-pro','product_url':'https://sites.fastspring.com/payparrot/instant/pp-pro'})
-#db.plans.insert({'name':'premium','price':'25','parrots':'300','product_path':'pp-premium','product_url':'https://sites.fastspring.com/payparrot/instant/pp-premium'})
+# db.plans.insert({'name':'social','price':'tweet','parrots':'25','product_path':'','product_url':''})
+# db.plans.insert({'name':'standard','price':'25','parrots':'300','product_path':'pp-standard','product_url':'https://sites.fastspring.com/payparrot/instant/pp-standard'})
+# db.plans.insert({'name':'pro','price':'25','parrots':'500','product_path':'pp-pro','product_url':'https://sites.fastspring.com/payparrot/instant/pp-pro'})
+# db.plans.insert({'name':'premium','price':'25','parrots':'1000','product_path':'pp-premium','product_url':'https://sites.fastspring.com/payparrot/instant/pp-premium'})
 
 @route('/accounts/:account_id/plan', method="GET")
 def callback(account_id, db, secure=True):

@@ -43,9 +43,9 @@ class TestCron1(unittest.TestCase):
         with Mock() as Queue:
             from payparrot_dal.queue import Queue
             Queue.insert(
-                'payment_test', 
+                'payments', 
                 {
-                    'suscription_id': str(self.subscription.id),
+                    'subscription_id': str(self.subscription.id),
                     'account_id': str(self.account.id),
                     'parrot_id': str(self.parrot.id)
                 }

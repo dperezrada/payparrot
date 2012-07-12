@@ -46,15 +46,15 @@ class TestCron2(unittest.TestCase):
             
             def get_body(s):
                 return json.dumps({
-                    'suscription_id': str(self.subscription.id),
+                    'subscription_id': str(self.subscription.id),
                     'account_id': str(self.account.id),
                     'parrot_id': str(self.parrot.id)
                 })
 
         with Mock() as Queue:
             from payparrot_dal.queue import Queue
-            Queue.get_message('payment_test') >> mockedQueueMessage()
-            Queue.get_message('payment_test') >> None
+            Queue.get_message('payments') >> mockedQueueMessage()
+            Queue.get_message('payments') >> None
         
         self.message = Messages(self.db, {
             'account_id': self.account.id,

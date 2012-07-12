@@ -5,6 +5,8 @@ virtualenv env
 export PP_PYTHON=/Users/danielguajardo/Sites/payparrot_py
 echo "source $PP_PYTHON/env/bin/activate" >> ~/.profile
 
+source ~/.profile
+
 easy_install pip
 
 cd api
@@ -12,6 +14,10 @@ python setup.py develop
 
 cd ..
 cd dal
+python setup.py develop
+
+cd ..
+cd tests
 python setup.py develop
 
 pip install ipython

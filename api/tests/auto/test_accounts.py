@@ -45,7 +45,17 @@ class TestCreateAccounts(unittest.TestCase):
             'url': 'http://payparrot.com/',
             'callback_url': 'http://demo.payparrot.com',
             'notification_url': 'http://demo.payparrot.com/notifications',
-            'stats': {},
+            'stats': {
+                'parrots_today': 0,
+                'parrots_total': 0,
+                'payments_today': 0,
+                'payments_total': 0
+            }
         }
         response = self.app.get('/accounts/'+account_id)
         self.assertEqual(expected_json, response.json)
+
+    def test_encrypt_password(self):
+        account_from_db = self.db.accounts.find_one({'email': 'daniel@payparrot.com'})
+        self.assertTrue(account_from_db.get('password'))
+        self.assertNotEqual('123', account_from_db.get('password'))

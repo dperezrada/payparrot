@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from bson.objectid import ObjectId
 
 from payparrot_dal.queue import Queue
 from payparrot_dal.base import BaseModel
@@ -8,10 +9,10 @@ class Notifications(BaseModel):
     _meta = {
         'collection': 'notifications',
         'fields': {
-            'subscription_id': {'required': True},
-            'account_id': {'required': True},
+            'subscription_id': {'required': True, 'type': ObjectId},
+            'account_id': {'required': True, 'type': ObjectId},
             'external_id': {},
-            'parrot_id': {'required': True},
+            'parrot_id': {'required': True, 'type': ObjectId},
             'request_url': {'required': True},
             'response_status': {},
             'response_headers': {},
@@ -24,8 +25,9 @@ class Notifications(BaseModel):
     }
 
     def insert(self, safe = True):
+        super(Notifications, self).insert(safe)
         created_message = Queue.insert(
-            'notifications_test', 
+            'notifications', 
             {
                 'subscription_id': str(self.subscription_id),
                 'account_id': str(self.account_id),
@@ -34,5 +36,4 @@ class Notifications(BaseModel):
                 'notification_id': str(self.id)
             }
         )
-        self._data['queue_message_id'] = created_message.id
-        super(Notifications, self).insert(safe)
+        self.update({'queue_message_id': created_message.id})

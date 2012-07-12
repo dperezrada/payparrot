@@ -10,10 +10,9 @@ from bottle import route, request, response, redirect
 from payparrot_api.libs.exceptions import UnauthorizeException
 from payparrot_dal import Accounts, AccountsSessions, Sessions, Twitter, Parrots, Subscriptions, Notifications
 
-@route('/accounts/:account_id/parrots/start', method="GET")
-def parrots_start(account_id, db):
-    # TODO: verificar el public_token
-    account = Accounts.findOne(db,account_id)
+@route('/parrots/start', method="GET")
+def parrots_start(db):
+    account = Accounts.findOne(db,{'credentials.public_token': request.query.get("token")})
     if account:
         twitter = Twitter()
         client = twitter.create_session()
@@ -23,6 +22,7 @@ def parrots_start(account_id, db):
         redirect_url = twitter.redirect_url(tokens)
         redirect(redirect_url)
     else:
+        print "Noooo ---"
         response.status = 404
         return {}
 
@@ -68,17 +68,31 @@ def parrots_finish(db):
                 subscription.update(subscription_parameters)
             notification_id = _create_notification(db, account, parrot, subscription)
             if notification_id:
-                redirect(account.callback_url)
+                redirect_url = generate_redirect_url(account.callback_url, session.external_id, subscription.id, notification_id)
+                redirect(redirect_url)
     else:
         response.status = 404
         return {'error': 'Expired token'}
+
+def generate_redirect_url(callback_url,session_external_id, subscription_id, notification_id):
+    # TODO: Refactor
+    parameters = "";
+    sep = "?";
+    if callback_url.find('?')>=0:
+        sep = "&";
+    if session_external_id:
+        parameters = "%sexternal_id=%s" % (sep, session_external_id)
+    if subscription_id:
+        parameters += "&subscription_id=%s" % subscription_id
+    parameters += "&notification_id=%s" % notification_id;
+    return "%s%s" % (callback_url, parameters)
 
 def _create_notification(db, account,parrot,subscription):
     notification = Notifications(db, {
         'account_id': account.id,
         'parrot_id': parrot.id,
-        'type': 'suscription_activated',
-        'suscription_id': subscription.id,
+        'type': 'subscription_activated',
+        'subscription_id': subscription.id,
         'external_id': subscription.external_id,
         'request_url': account.notification_url
     })

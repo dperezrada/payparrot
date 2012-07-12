@@ -1,5 +1,6 @@
 from bson.objectid import ObjectId
 from types import BuiltinFunctionType
+from datetime import datetime
 
 def update_id(data):
     if data.get('id'):
@@ -22,6 +23,7 @@ class BaseModel(object):
         self._meta['private'] = []
         self._meta['required'] = []
         self._meta['readonly'] = []
+        self._meta['types'] = []
         for key, value in self._meta['fields'].iteritems():
             if value.get('private'):
                 self._meta['private'].append(key)
@@ -29,12 +31,24 @@ class BaseModel(object):
                 self._meta['required'].append(key)
             if value.get('readonly'):
                 self._meta['readonly'].append(key)
+            if value.get('type'):
+                self._meta['types'].append(key)
             if self._data.get(key) is None and value.get('default') is not None:
                 set_default(self._data, key, value.get('default'))
 
     def __getattr__(self, key):
         if key != '_data' and key != '_meta':
             return self._data.get(key)
+    
+    def _set_types(self, data = None):
+        if not data:
+            data = self._data
+        for key in self._meta['types']:
+            try:
+                if data.get(key):
+                    data[key] = self._meta['fields'][key]['type'](data[key])
+            except:
+                pass
 
     # def __setattr__(self, key, value):
     #     if key not in ['_data', '_meta']:
@@ -45,19 +59,23 @@ class BaseModel(object):
         for key, value in self._meta['fields'].iteritems():
             if self._data.get(key) is None and value.get('default') is not None:
                set_default(self._data, key, value.get('default'))
+        self._set_types()
         self.db[self._meta['collection']].insert(self._data, safe = safe)
         update_id(self._data)
 
     def update(self, data, safe = True):
         to_update_data = {}
         self._remove_readonly(data)
-        self.db[self._meta['collection']].update({'_id': ObjectId(self._data['id'])}, {'$set': data}, safe = safe)
         self._data.update(data)
+        self._set_types(data)
+        self.db[self._meta['collection']].update({'_id': ObjectId(self._data['id'])}, {'$set': data}, safe = safe)
     
     def _remove_readonly(self, data):
         for key in data.keys():
-            if key in self._meta['readonly']:
+            if key in self._meta['readonly'] or key not in self._meta['fields'].keys():
                 del data[key]
+        if data.get('id'):
+            del data['id']
     
     @classmethod   
     def _toJSON(cls, data):
@@ -70,6 +88,11 @@ class BaseModel(object):
                 prepared_json[key] = data.get(key)
                 if type(prepared_json[key]) == ObjectId:
                     prepared_json[key] = str(prepared_json[key])
+                elif type(prepared_json[key]) == datetime:
+                    prepared_json[key] = prepared_json[key].isoformat(" ")
+                    splited_values = prepared_json[key].split('.')
+                    if len(splited_values)>0:
+                        prepared_json[key]= splited_values[0]
         if data.get('id'):
             prepared_json['id'] = str(data.get('id'))
         if data.get('_id'):
@@ -91,14 +114,17 @@ class BaseModel(object):
     @classmethod
     def findOne(cls, db, *args, **kwargs):
         if len(args) > 0:
-            if type(args[0]) == str:
+            if type(args[0]) in [str, unicode]:
                 args = list(args);
                 args[0] = ObjectId(args[0])
         result = db[cls._meta['collection']].find_one(*args, **kwargs)
         if result:
-            return cls(db, result)
+            to_return_object = cls(db, result)
+            to_return_object._set_types()
+            return to_return_object 
 
     def refresh(self):
         data = self.db[self._meta['collection']].find_one({'_id': self.id})
         if data:
+            self._set_types(data)
             self._data = data

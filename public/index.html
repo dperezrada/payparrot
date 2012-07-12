@@ -71,56 +71,26 @@
     <div class="container">
 
       <!-- Main hero unit for a primary marketing message or call to action -->
-      <div class="header-info" style="margin-bottom:-20px;">
+      <div class="hero-unit header-info" style="margin-bottom:-20px;margin-top:20px;">
         <h1>Spread your brand</h1>
         <p></p>
         <p></p>
         <p>PayParrot lets you sell subscription-based plans to your customers in exchange for a monthly automated tweet from them about your brand. These tweets are handled by PayParrot on behalf of your users.</p>
+        <p>
+          <img src="/img/ilustration_main.png">
+        </p>
+      	<!-- <p>
+      		<img src="/img/logo-big.png">
+      	</p> -->
+        
       </div>
 
-      <div class="row" style="margin-bottom:0px;margin-top:00px;">
-        <div class="span5 offset1" style="text-align:center;margin-top:50px">
-            <img src="/img/ilustration_main_small.png">
-          </p>
-        </div>
-        <div class="span6"  style="text-align:left;margin-top:50px">
-          <h4 style="text-align:center;">Create a new account</h4>
-          <hr>
-          <form class="form-horizontal" action='/signup' method='POST' id='signup-form'>
-            <fieldset>
-              <div class="control-group">
-                <label class="control-label" for="input01">Company Name</label>
-                <div class="controls">
-                  <input type="text" class="input-xlarge" id="input01" name="company">
-                </div>
-              </div>
-              <div class="control-group">
-                <label class="control-label" for="input01">Personal Name</label>
-                <div class="controls">
-                  <input type="text" class="input-xlarge" id="input01" name="name">
-                </div>
-              </div>
-              <div class="control-group">
-                <label class="control-label" for="input01">E-Mail</label>
-                <div class="controls">
-                  <input type="text" class="input-xlarge" id="input01" name="email">
-                </div>
-              </div>
-              <div class="control-group">
-                <label class="control-label" for="input01">Password</label>
-                <div class="controls">
-                  <input type="password" class="input-xlarge" id="input01" name="password">
-                </div>
-              </div>                                       
-              <div class="form-actions">
-                <button type="submit" class="btn btn-success btn-large">Create my _setAccount</button>
-              </div>
-            </fieldset>
-          </form>          
-        </div>
-      </div>
-
-    
+      <form id="apply_form" class="fieldset form-inline">
+        <p>Apply for private beta</p>
+        <input type="text" class="input-small" placeholder="Your Name" name="name" style="width:250px;">
+        <input type="text" class="input-small" placeholder="Your E-mail" name="email" style="width:250px;">
+        <button id="apply_btn" type="submit" class="btn btn-success">Sign in</button>
+      </form>      
       <br>
       <!-- Example row of columns -->
       <!-- <div class="row">

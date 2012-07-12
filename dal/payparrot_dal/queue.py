@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import json
+import os
 
 from boto import config
 from boto.sqs.connection import SQSConnection
 from boto.sqs.message import Message
-from boto.sqs.queue import Queue
+from boto.sqs.queue import Queue as AwsQueue
 
 if not config.has_section('Boto'):
     config.add_section('Boto')
@@ -12,17 +13,21 @@ if not config.has_section('Boto'):
 
 class Queue(object):
     """docstring for Queue"""
-    aws_key = 'AKIAIN47MW5VQ4RBN7TQ'
-    aws_secret = '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'
+    aws_key = os.environ.get('PAYPARROT_AWS_SQS_KEY')
+    aws_secret = os.environ.get('PAYPARROT_AWS_SQS_SECRET')
+
     
     import logging
     logging.basicConfig(level=logging.ERROR)
 
-
     @classmethod
     def get_queue(cls, queue_name):
-        conn = SQSConnection(cls.aws_key, cls.aws_secret)
-        return conn.get_queue(queue_name)
+        queue_url = os.environ.get('PAYPARROT_AWS_SQS_QUEUE_%s' % queue_name.upper())
+        if queue_url:
+            conn = SQSConnection(cls.aws_key, cls.aws_secret)
+            return AwsQueue(connection = conn, url = queue_url)
+        else:
+            return None
 
     @classmethod
     def insert(cls, queue_name, json_data):        

@@ -34,7 +34,7 @@ class TestCronsIntegration(unittest.TestCase):
         })
         self.message.insert()
         
-        self.redirect = self.app.get('/accounts/%s/parrots/start?external_id=1&token=%s' % (self.account.id, self.account.credentials['public_token']))
+        self.redirect = self.app.get('/parrots/start?external_id=1&token=%s' % self.account.credentials['public_token'])
         print "\n", self.redirect.location
         url = raw_input("Final url? ")
         query_string = urlparse(url).query
@@ -44,23 +44,23 @@ class TestCronsIntegration(unittest.TestCase):
     def tearDownClass(self):
         pp_tests.tear_down(self.db, queue = True)
 
-    def test_cron1(self):
-        from payparrot_scripts.crons.cron1 import main as cron1
-        cron1()
-        
-        subscription = Subscriptions.findOne(self.db, {})
-        self.assertTrue(subscription.first_tweet)
-        
-        self.assertEqual(1, Queue.get_queue('payment_test').count())
-        
-        message = Queue.get_message('payment_test', visibility_timeout=1)
-        self.assertEqual({
-            'suscription_id': str(subscription.id),
-            'account_id': str(subscription.account_id),
-            'parrot_id': str(subscription.parrot_id)
-        }, json.loads(message.get_body()))
+    # def test_cron1(self):
+    #     from payparrot_scripts.crons.cron1 import main as cron1
+    #     cron1()
+    #     
+    #     subscription = Subscriptions.findOne(self.db, {})
+    #     self.assertTrue(subscription.first_tweet)
+    #     
+    #     self.assertEqual(1, Queue.get_queue('payments').count())
+    #     
+    #     message = Queue.get_message('payments', visibility_timeout=1)
+    #     self.assertEqual({
+    #         'subscription_id': str(subscription.id),
+    #         'account_id': str(subscription.account_id),
+    #         'parrot_id': str(subscription.parrot_id)
+    #     }, json.loads(message.get_body()))
     
-    def test_cron2(self):
+    def test_crons(self):
         from payparrot_scripts.crons.cron1 import main as cron1
         cron1()
         
@@ -71,13 +71,13 @@ class TestCronsIntegration(unittest.TestCase):
         
         twitter = Twitter()
         twitter.create_client(parrot.oauth_token, parrot.oauth_token_secret)
-        headers, body = twitter.get("http://api.twitter.com/1/statuses/user_timeline.json?user_id=%s&include_rts=false&count=1" % parrot.screen_name)
+        headers, body = twitter.get("http://api.twitter.com/1/statuses/user_timeline.json?user_id=%s&include_rts=false&count=1" % parrot.twitter_info.get('screen_name'))
         json_twitter_status = json.loads(body)
 
         message_start = self.message.text
         received_message = json_twitter_status[0].get('text')
         self.assertEqual(self.message.text, received_message[0:len(message_start)])
 
-        queue = Queue.get_queue('payment_test')
+        queue = Queue.get_queue('payments')
         self.assertEqual(0, queue.count())
         
