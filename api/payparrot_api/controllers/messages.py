@@ -42,3 +42,20 @@ def update_message(account_id, message_id, db, secure=True):
         response.status = 204
     else:
         response.status = 404
+
+@route('/accounts/:account_id/messages/:message_id', method="PUT")
+def update_message(account_id, message_id, db, secure=True):
+    message = Messages.findOne(db, message_id)
+    if message:
+    	message.update(request.json)
+        response.status = 204
+    else:
+        response.status = 404
+
+@route('/r/:sqs_id', method="GET")
+def redirect_from_message(sqs_id, db):
+    payment = Payments.findOne(db, {'message_id_sqs': sqs_id})
+    if payment:
+        response.redirect(payment.callback_url)
+    else:
+        response.status = 404
