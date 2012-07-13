@@ -28,7 +28,6 @@ def parrots_start(db):
 
 @route('/parrots/finish', method="GET")
 def parrots_finish(db):
-    # TODO: verificar el public_token
     session = Sessions.findOne(db, {'oauth_token': request.query.oauth_token})
     if session:
         account = Accounts.findOne(db, session.account_id)

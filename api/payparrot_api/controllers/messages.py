@@ -2,10 +2,10 @@
 from bson.objectid import ObjectId
 import json 
 
-from bottle import route, request, response
+from bottle import route, request, response, redirect
 
 from payparrot_api.libs.exceptions import UnauthorizeException
-from payparrot_dal import Accounts, AccountsSessions, Messages
+from payparrot_dal import Accounts, AccountsSessions, Messages, Payments
 
 @route('/accounts/:account_id/messages', method="POST")
 def create_message(account_id, db, secure=True):
@@ -40,5 +40,22 @@ def update_message(account_id, message_id, db, secure=True):
     if message:
     	message.update(request.json)
         response.status = 204
+    else:
+        response.status = 404
+
+@route('/accounts/:account_id/messages/:message_id', method="PUT")
+def update_message(account_id, message_id, db, secure=True):
+    message = Messages.findOne(db, message_id)
+    if message:
+    	message.update(request.json)
+        response.status = 204
+    else:
+        response.status = 404
+
+@route('/r/:message_id', method="GET")
+def redirect_from_message(message_id, db):
+    payment = Payments.findOne(db, {'message_id_sqs': message_id})
+    if payment:
+        redirect(payment.callback_url)
     else:
         response.status = 404
