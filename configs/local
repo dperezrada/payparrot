@@ -1,9 +1,13 @@
 export PAYPARROT_DB_NAME=payparrot_test
-export PAYPARROT_DB_USER=
-export PAYPARROT_DB_PASSWORD=
-export PAYPARROT_DB_HOST=localhost
-export PAYPARROT_DB_PORT=27017
+# export PAYPARROT_DB_REPLICA_SET=payparrot
+# export PAYPARROT_DB1=localhost:27018
+# export PAYPARROT_DB2=localhost:27019
+# export PAYPARROT_DB3=localhost:27020
 
+export PAYPARROT_DB_REPLICA_SET=
+export PAYPARROT_DB1=localhost:27017
+
+export PAYPARROT_API_RELOADER=1
 export PAYPARROT_API_HOST=localhost
 export PAYPARROT_API_PORT=8080
 export PAYPARROT_API_DOMAIN=localhost:8080
