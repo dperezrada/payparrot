@@ -16,7 +16,11 @@ def parrots_start(db):
     if account:
         twitter = Twitter()
         client = twitter.create_session()
-        tokens = twitter.get_request_token(client)
+        try:
+            tokens = twitter.get_request_token(client)
+        except:
+            redirect('/twitter_down.html')
+            return
         session = Sessions(db, {'account_id': account.id, 'oauth_token': tokens['oauth_token'], 'oauth_token_secret': tokens['oauth_token_secret'], 'external_id': request.query.external_id})
         session.insert()
         redirect_url = twitter.redirect_url(tokens)
@@ -28,6 +32,8 @@ def parrots_start(db):
 
 @route('/parrots/finish', method="GET")
 def parrots_finish(db):
+    if request.query.denied:
+        redirect('/twitter_denied.html')
     session = Sessions.findOne(db, {'oauth_token': request.query.oauth_token})
     if session:
         account = Accounts.findOne(db, session.account_id)
@@ -35,11 +41,13 @@ def parrots_finish(db):
             response.status = 404
             return {'error': 'Invalid token'}
         twitter = Twitter()
-        access_tokens = twitter.get_access_tokens(request.query.oauth_verifier,{'oauth_token': session.oauth_token, 'oauth_token_secret': session.oauth_token_secret})
-        #Create twitter client
-        # TODO: Check access_tokens
-        twitter.create_client(access_tokens.get('oauth_token'),access_tokens.get('oauth_token_secret'))
-        headers, body = twitter.get('https://api.twitter.com/1/account/verify_credentials.json')
+        try:
+            access_tokens = twitter.get_access_tokens(request.query.oauth_verifier,{'oauth_token': session.oauth_token, 'oauth_token_secret': session.oauth_token_secret})
+            twitter.create_client(access_tokens.get('oauth_token'),access_tokens.get('oauth_token_secret'))
+            headers, body = twitter.get('https://api.twitter.com/1/account/verify_credentials.json')
+        except:
+            redirect('/twitter_auth_problem.html')
+            return
         if headers.status == 200:
             body = json.loads(body)
             parrot = Parrots.findOne(db, {'twitter_id': body.get('id')})
@@ -116,7 +124,6 @@ def get_parrots(account_id, db, secure = True):
     skip = querystring.get('skip', 0)
     limit = querystring.get('limit', 0)
     query_subscriptions = {'account_id': ObjectId(account_id), 'active': True}
-    # import nose; nose.tools.set_trace()
     if from_ or to_:
         query_subscriptions['created_at'] = {}
     if from_:
