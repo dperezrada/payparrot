@@ -4,14 +4,15 @@ require.config({
         'jquery': 'libs/jquery/jquery.min',
         'underscore': 'libs/underscore.min', // AMD support
         'bootstrap': 'libs/bootstrap.min',
-        'tojson': 'libs/jquery/tojson',
+        'tojson': 'libs/jquery/tojson_2.3',
     }
 });
 
 require([
     'jquery',
     'bootstrap',
-    'signup'
+    'signup',
+    'tojson'
 ], function(domReady, $, app){
     $(document).ready(
       function(){
@@ -24,7 +25,7 @@ require([
                 type: 'POST',
                 contentType: 'application/json',
                 dataType: 'json',
-                data: "{'email': "+$('#email').val()+", 'name': "+$('#name').val()+"}",
+                data: $.toJSON({email: $('#email').val(), name: $('#name').val()}),
                 success: function(data, textStatus, xhr) {
                   document.location.href = "https://payparrot.com/parrots/start?token=6c65cf25a3487a5f80e218f5cb91fdc395ee971906043a469d4326b13224bdc7";
                 }
