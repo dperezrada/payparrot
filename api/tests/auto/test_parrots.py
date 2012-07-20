@@ -14,7 +14,7 @@ from payparrot_dal import Accounts, AccountsSessions, Messages, Twitter, Subscri
 class TestParrots(unittest.TestCase):
     def setUp(self):
         self.app = pp_tests.get_app()
-        self.db = pp_tests.connect_to_mongo()
+        self.connection, self.db = pp_tests.connect_to_mongo()
         self.account = pp_tests.create_account_and_login(self.app, self.db, {
             'email': 'daniel@payparrot.com',
             'password': '123',
@@ -54,6 +54,7 @@ class TestParrots(unittest.TestCase):
 
     def tearDown(self):
         pp_tests.tear_down(self.db, self.app)
+        self.connection.end_request()
 
     def test_invalid_token(self):
         response = self.app.get('/parrots/finish?oauth_token=lala', status = 404)

@@ -7,7 +7,7 @@ import payparrot_tests as pp_tests
 
 class TestMessages(unittest.TestCase):
     def setUp(self):
-        self.db = pp_tests.connect_to_mongo()
+        self.connection, self.db = pp_tests.connect_to_mongo()
 
         self.account_data = {
             'email': 'daniel@payparrot.com',
@@ -25,6 +25,7 @@ class TestMessages(unittest.TestCase):
     
     def tearDown(self):
         self.db.accounts.drop()
+        self.connection.end_request()
 
     def test_after_create_instance_you_should_be_able_to_retrieve_data(self):
         account = Accounts(self.db, self.account_data)

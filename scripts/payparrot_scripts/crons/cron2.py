@@ -13,13 +13,18 @@ from payparrot_dal import Accounts, Notifications, Parrots, Messages, Twitter, P
 
 def main():
     log('cron2', 'Starting')
-    db = connect()
-    message = Queue.get_message('payments')
-    while message:
-        payment_message = json.loads(message.get_body())
-        log('cron2', 'Got payment %s' % message.id, payment_message.get('subscription_id')) 
-        process_payment(db, message, payment_message)
+    connection = None
+    try:    
+        connection, db = connect()
         message = Queue.get_message('payments')
+        while message:
+            payment_message = json.loads(message.get_body())
+            log('cron2', 'Got payment %s' % message.id, payment_message.get('subscription_id')) 
+            process_payment(db, message, payment_message)
+            message = Queue.get_message('payments')
+    finally:
+        if connection:
+            connection.end_request()
 
 def process_payment(db, raw_message, payment_message):
     parrot = Parrots.findOne(db, {'_id': ObjectId(payment_message.get('parrot_id'))})
@@ -87,7 +92,7 @@ def store_payment(db, twitter_json, payment_message, message, raw_message):
     }
     if twitter_json.get('error'):
         payment_data['success'] = False
-        log('cron2', 'ERROR: Payment coulndt be processed because of twitter error' % json.dumps(twitter_json), payment_message.get('subscription_id'))
+        log('cron2', 'ERROR: Payment coulndt be processed because of twitter error %s' % json.dumps(twitter_json), payment_message.get('subscription_id'))
     log('cron2', 'Payment executed successfully', payment_message.get('subscription_id'))
     payment = Payments(db, payment_data)
     payment.insert()

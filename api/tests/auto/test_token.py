@@ -9,7 +9,7 @@ from payparrot_dal import Accounts, AccountsSessions
 class TestToken(unittest.TestCase):
     def setUp(self):
         self.app = pp_test.get_app()
-        self.db = pp_test.connect_to_mongo()
+        self.connection, self.db = pp_test.connect_to_mongo()
         self.account_data = {
             'email': 'daniel@payparrot.com',
             'password': '123',
@@ -24,6 +24,7 @@ class TestToken(unittest.TestCase):
     
     def tearDown(self):
         pp_test.tear_down(self.db, self.app)
+        self.connection.end_request()
       
     def test_get_information_with_token(self):
         response = self.app.get('/accounts/%s?token=%s' % (self.response.json.get('id'), self.credentials.get('private_token')))

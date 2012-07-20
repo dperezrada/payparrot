@@ -9,7 +9,7 @@ from payparrot_dal import Accounts, AccountsSessions
 class TestCreateAccounts(unittest.TestCase):
     def setUp(self):
         self.app = pp_test.get_app()
-        self.db = pp_test.connect_to_mongo()
+        self.connection, self.db = pp_test.connect_to_mongo()
         self.account_data = {
             'email': 'daniel@payparrot.com',
             'password': '123',
@@ -24,6 +24,7 @@ class TestCreateAccounts(unittest.TestCase):
     
     def tearDown(self):
         pp_test.tear_down(self.db, self.app)
+        self.connection.end_request()
         
     def test_create_status(self):
         self.assertEqual(201, self.response.status_int)
