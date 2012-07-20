@@ -43,8 +43,9 @@ def notify(db, notification_raw, notification_message):
                 'external_id': str(notification.external_id),
                 'notification_id': str(notification.id),
             }
+            utf8_query_data = dict([(key,val.encode('utf-8')) for key, val in query_data.items() if isinstance(val, basestring)])
             http_client = Http()
-            headers, body = http_client.request(uri = notification.request_url, body = urlencode(query_data), method = 'POST')
+            headers, body = http_client.request(uri = notification.request_url, body = urlencode(utf8_query_data), method = 'POST')
             if int(headers.status) >= 200 and int(headers.status) < 300:
                 notification.update({
                     'response_status': headers.status,

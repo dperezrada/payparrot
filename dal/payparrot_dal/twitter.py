@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import urlparse
 import oauth2 as oauth
 from urllib import urlencode
@@ -47,5 +48,6 @@ class Twitter():
 	def get(self, url):
 		return self.client.request(url)
 	
-	def post(self, url, body):
-		return self.client.request(url, method = 'POST', body=urlencode(body))
+	def post(self, url, body_dict):
+		utf8_body_dict = dict([(key,val.encode('utf-8')) for key, val in body_dict.items() if isinstance(val, basestring)])
+		return self.client.request(url, method = 'POST', body=urlencode(utf8_body_dict))
