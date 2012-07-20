@@ -89,9 +89,11 @@ def generate_redirect_url(callback_url,session_external_id, subscription_id, not
         sep = "&";
     if session_external_id:
         parameters = "%sexternal_id=%s" % (sep, session_external_id)
+        sep = "&"
     if subscription_id:
-        parameters += "&subscription_id=%s" % subscription_id
-    parameters += "&notification_id=%s" % notification_id;
+        parameters += "%ssubscription_id=%s" % (sep, subscription_id)
+        sep = "&"
+    parameters += "%snotification_id=%s" % (sep, notification_id);
     return "%s%s" % (callback_url, parameters)
 
 def _create_notification(db, account,parrot,subscription):
