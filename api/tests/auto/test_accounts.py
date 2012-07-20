@@ -24,7 +24,7 @@ class TestCreateAccounts(unittest.TestCase):
     
     def tearDown(self):
         pp_test.tear_down(self.db, self.app)
-        self.connection.end_request()
+        self.connection.close()
         
     def test_create_status(self):
         self.assertEqual(201, self.response.status_int)

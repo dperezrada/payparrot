@@ -29,7 +29,7 @@ def main():
             message = Queue.get_message('notifications')
     finally:
         if connection:
-            connection.end_request()
+            connection.close()
 
 def notify(db, notification_raw, notification_message):
     notification = Notifications.findOne(db, notification_message.get('notification_id'))

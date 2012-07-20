@@ -24,7 +24,7 @@ class TestToken(unittest.TestCase):
     
     def tearDown(self):
         pp_test.tear_down(self.db, self.app)
-        self.connection.end_request()
+        self.connection.close()
       
     def test_get_information_with_token(self):
         response = self.app.get('/accounts/%s?token=%s' % (self.response.json.get('id'), self.credentials.get('private_token')))

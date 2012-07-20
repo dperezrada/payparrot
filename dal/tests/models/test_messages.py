@@ -25,7 +25,7 @@ class TestMessages(unittest.TestCase):
     
     def tearDown(self):
         self.db.accounts.drop()
-        self.connection.end_request()
+        self.connection.close()
 
     def test_after_create_instance_you_should_be_able_to_retrieve_data(self):
         account = Accounts(self.db, self.account_data)

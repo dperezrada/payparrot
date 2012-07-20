@@ -30,7 +30,7 @@ class TestBase(unittest.TestCase):
     
     def tearDown(self):
         self.db.movies.drop()
-        self.connection.end_request()
+        self.connection.close()
 
     def test_default_value(self):
         self.movie.insert()

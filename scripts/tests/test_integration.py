@@ -44,7 +44,7 @@ class TestCronsIntegration(unittest.TestCase):
     @classmethod
     def tearDownClass(self):
         pp_tests.tear_down(self.db, queue = True)
-        self.connection.end_request()
+        self.connection.close()
 
     # def test_cron1(self):
     #     from payparrot_scripts.crons.cron1 import main as cron1

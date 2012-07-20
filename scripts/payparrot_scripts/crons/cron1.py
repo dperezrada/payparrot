@@ -25,7 +25,7 @@ def main():
             log('cron1', 'Subscription updated', subscription_raw['_id'])
     finally:
         if connection:
-            connection.end_request()
+            connection.close()
 
 
 if __name__ == '__main__':

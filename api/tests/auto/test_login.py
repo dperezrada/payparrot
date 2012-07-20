@@ -23,7 +23,7 @@ class TestLoginSimpleUSer(unittest.TestCase):
     
     def tearDown(self):
         pp_test.tear_down(self.db, self.app)
-        self.connection.end_request()
+        self.connection.close()
       
     def test_cannot_get_logged_page_without_been_logged(self):
         self.response = self.app.get('/logged', status=401)

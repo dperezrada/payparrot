@@ -28,7 +28,7 @@ def main():
                     db.next_payments.remove({'_id': next_payment.get('_id')})
     finally:
         if connection:
-            connection.end_request()
+            connection.close()
 
 if __name__ == '__main__':
     main()            

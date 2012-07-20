@@ -45,6 +45,8 @@ class Queue(object):
             messages = queue.get_messages()
         if len(messages) > 0:
             return messages[0]
+        else:
+            return None
     
     @classmethod
     def delete_message(cls, queue_name, message):

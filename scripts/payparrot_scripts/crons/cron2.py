@@ -23,8 +23,9 @@ def main():
             process_payment(db, message, payment_message)
             message = Queue.get_message('payments')
     finally:
+        log('cron2', 'Finishing')
         if connection:
-            connection.end_request()
+            connection.close()
 
 def process_payment(db, raw_message, payment_message):
     parrot = Parrots.findOne(db, {'_id': ObjectId(payment_message.get('parrot_id'))})
@@ -43,15 +44,14 @@ def process_payment(db, raw_message, payment_message):
             else:
                 log('cron2', 'ERROR: Couldnt delete message', payment_message.get('subscription_id'))
         else:
-            log('cron2', 'ERROR: Problem with twitter %s' % json.dumps(twitter_json), payment_message.get('subscription_id'))
             total_payments_attempts = Payments.find(db, {'message_id_sqs': raw_message.id}).count()
             subscription = Subscriptions.findOne(db, {'account_id': payment.account_id, 'parrot_id': payment.parrot_id})
             if subscription:
                 if total_payments_attempts > 3:
                     log('cron2', 'Too many payments attempts', payment_message.get('subscription_id'))
                     subscription.update({'active': False})
-                    if Queue.delete_message('payments', message_raw):
-                        send_notification(payment,'subscription_deactivated')
+                    if Queue.delete_message('payments', raw_message):
+                        send_notification(db, payment,'subscription_deactivated')
                     else:
                         log('cron2', 'ERROR: Couldnt delete message', payment_message.get('subscription_id'))
                 else:
@@ -93,7 +93,8 @@ def store_payment(db, twitter_json, payment_message, message, raw_message):
     if twitter_json.get('error'):
         payment_data['success'] = False
         log('cron2', 'ERROR: Payment coulndt be processed because of twitter error %s' % json.dumps(twitter_json), payment_message.get('subscription_id'))
-    log('cron2', 'Payment executed successfully', payment_message.get('subscription_id'))
+    else:
+        log('cron2', 'Payment executed successfully', payment_message.get('subscription_id'))
     payment = Payments(db, payment_data)
     payment.insert()
     return payment

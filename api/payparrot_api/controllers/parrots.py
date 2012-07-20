@@ -60,6 +60,11 @@ def parrots_finish(db):
                 })
                 new_parrot.insert()
                 parrot = new_parrot
+            else:
+                parrot.update({
+                    'oauth_token': access_tokens.get('oauth_token'),
+                    'oauth_token_secret': access_tokens.get('oauth_token_secret')
+                })
             subscription = Subscriptions.findOne(db, {'account_id': account.id, 'parrot_id': parrot.id})
             subscription_parameters = {
                 'parrot_id': parrot.id,

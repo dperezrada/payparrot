@@ -24,7 +24,7 @@ class TestAccountsSessions(unittest.TestCase):
     
     def tearDown(self):
         pp_tests.tear_down(self.db)
-        self.connection.end_request()
+        self.connection.close()
 
     def test_create_session_setup_default_elements(self):
         self.assertTrue(self.account_session.expires)

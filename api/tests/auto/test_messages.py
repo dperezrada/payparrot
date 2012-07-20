@@ -43,7 +43,7 @@ class TestCreateMessages(unittest.TestCase):
             self.responses.append(self.app.post_json('/accounts/'+str(self.account_id)+'/messages', message))
     def tearDown(self):
         pp_tests.tear_down(self.db, self.app)
-        self.connection.end_request()
+        self.connection.close()
         
     def test_create_status(self):
         self.assertEqual(201, self.responses[0].status_int)

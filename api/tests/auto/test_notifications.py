@@ -39,7 +39,7 @@ class TestNotifications(unittest.TestCase):
 
     def tearDown(self):
         pp_tests.tear_down(self.db, self.app)
-        self.connection.end_request()
+        self.connection.close()
 
     def test_get_notification(self):
         response = self.app.get('/accounts/%s/notifications/%s' % (self.account.id, self.notification.id))

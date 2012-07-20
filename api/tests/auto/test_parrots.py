@@ -54,7 +54,7 @@ class TestParrots(unittest.TestCase):
 
     def tearDown(self):
         pp_tests.tear_down(self.db, self.app)
-        self.connection.end_request()
+        self.connection.close()
 
     def test_invalid_token(self):
         response = self.app.get('/parrots/finish?oauth_token=lala', status = 404)
