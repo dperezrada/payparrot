@@ -9,7 +9,7 @@ from payparrot_dal import Accounts, AccountsSessions
 class TestLoginSimpleUSer(unittest.TestCase):
     def setUp(self):
         self.app = pp_test.get_app()
-        self.db = pp_test.connect_to_mongo()
+        self.connection, self.db = pp_test.connect_to_mongo()
         self.account_data = {
             'email': 'daniel@payparrot.com',
             'password': '123',
@@ -23,6 +23,7 @@ class TestLoginSimpleUSer(unittest.TestCase):
     
     def tearDown(self):
         pp_test.tear_down(self.db, self.app)
+        self.connection.end_request()
       
     def test_cannot_get_logged_page_without_been_logged(self):
         self.response = self.app.get('/logged', status=401)

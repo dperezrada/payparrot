@@ -28,4 +28,4 @@ def connect():
     else:
         connection = Connection(host = get_dbs_uris(db_keys[0:1]))
     db = connection[os.environ.get("PAYPARROT_DB_NAME")]
-    return db
+    return connection, db

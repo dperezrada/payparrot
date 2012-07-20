@@ -14,7 +14,7 @@ class TestCronsIntegration(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.app = pp_tests.get_app()
-        self.db = pp_tests.connect_to_mongo()
+        self.connection, self.db = pp_tests.connect_to_mongo()
         self.account = Accounts(self.db, {
             'email': 'daniel@payparrot.com',
             'password': '123',
@@ -44,6 +44,7 @@ class TestCronsIntegration(unittest.TestCase):
     @classmethod
     def tearDownClass(self):
         pp_tests.tear_down(self.db, queue = True)
+        self.connection.end_request()
 
     # def test_cron1(self):
     #     from payparrot_scripts.crons.cron1 import main as cron1

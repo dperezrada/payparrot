@@ -19,12 +19,17 @@ VALID_NOTIFICATIONS = [
 ]
 
 def main():
-    db = connect()
-    message = Queue.get_message('notifications')
-    while message:
-        notification_message = json.loads(message.get_body())
-        notify(db, message, notification_message)
+    connection = None
+    try:
+        connection, db = connect()
         message = Queue.get_message('notifications')
+        while message:
+            notification_message = json.loads(message.get_body())
+            notify(db, message, notification_message)
+            message = Queue.get_message('notifications')
+    finally:
+        if connection:
+            connection.end_request()
 
 def notify(db, notification_raw, notification_message):
     notification = Notifications.findOne(db, notification_message.get('notification_id'))

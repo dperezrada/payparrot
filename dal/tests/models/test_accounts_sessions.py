@@ -7,7 +7,7 @@ from payparrot_dal import Accounts, AccountsSessions
 
 class TestAccountsSessions(unittest.TestCase):
     def setUp(self):
-        self.db = pp_tests.connect_to_mongo()
+        self.connection, self.db = pp_tests.connect_to_mongo()
 
         self.account_data = {
             'email': 'daniel@payparrot.com',
@@ -24,6 +24,7 @@ class TestAccountsSessions(unittest.TestCase):
     
     def tearDown(self):
         pp_tests.tear_down(self.db)
+        self.connection.end_request()
 
     def test_create_session_setup_default_elements(self):
         self.assertTrue(self.account_session.expires)

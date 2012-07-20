@@ -20,7 +20,7 @@ class Movies(BaseModel):
 
 class TestBase(unittest.TestCase):
     def setUp(self):
-        self.db = pp_tests.connect_to_mongo()
+        self.connection, self.db = pp_tests.connect_to_mongo()
 
         self.movie_data = {
             'title': 'The Matrix',
@@ -30,6 +30,7 @@ class TestBase(unittest.TestCase):
     
     def tearDown(self):
         self.db.movies.drop()
+        self.connection.end_request()
 
     def test_default_value(self):
         self.movie.insert()

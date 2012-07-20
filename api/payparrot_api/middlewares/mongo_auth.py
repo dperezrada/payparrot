@@ -12,12 +12,13 @@ from payparrot_dal.mongodb import connect
 class MongoPlugin(object):
 	api  = 2
 	
+	connection = None
 	mongo_db = None
 	def get_mongo(self):
 		"Retrieve the mongo instance from the environment"
 		if self.mongo_db: 
 			return self.mongo_db
-		self.mongo_db = connect()
+		self.connection, self.mongo_db = connect()
 		return self.mongo_db
 
 	def __init__(self, keyword='db', json_mongo=False,  **kwargs):
