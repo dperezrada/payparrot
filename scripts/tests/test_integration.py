@@ -3,6 +3,7 @@ import json
 import unittest
 from urlparse import urlparse
 from random import randint
+from time import sleep
 
 import payparrot_tests as pp_tests
 from payparrot_dal import Accounts, Messages, Subscriptions, Parrots, Twitter
@@ -67,6 +68,8 @@ class TestCronsIntegration(unittest.TestCase):
         from payparrot_scripts.crons.cron2 import main as cron2
         cron2()
         
+        sleep(2)
+
         parrot = Parrots.findOne(self.db, {})
         
         twitter = Twitter()
@@ -80,4 +83,8 @@ class TestCronsIntegration(unittest.TestCase):
 
         queue = Queue.get_queue('payments')
         self.assertEqual(0, queue.count())
+
+        from payparrot_scripts.crons.cron3 import main as cron3
+        cron3()
+        
         
