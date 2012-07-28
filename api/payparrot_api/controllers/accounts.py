@@ -18,6 +18,7 @@ def callback():
     print request.query.__dict__
     return {}
 
+
 @route('/login')
 def callback():
     return static_file('login.html', os.path.join(os.path.abspath(os.path.dirname(__file__)), '../../../public/'))    

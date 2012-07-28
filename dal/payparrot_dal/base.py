@@ -77,6 +77,30 @@ class BaseModel(object):
         if data.get('id'):
             del data['id']
     
+    @staticmethod
+    def _clear_json_value(value):
+        if type(value) == ObjectId:
+            value = str(value)
+        elif type(value) == datetime:
+            value = value.isoformat(" ")
+            splited_values = value.split('.')
+            if len(splited_values)>0:
+                value = splited_values[0]
+        return value
+
+    @classmethod
+    def _clear_json_values(cls, data):
+        if type(data) == list:
+            for i, value in enumerate(data):
+                data[i] = cls._clear_json_values(value)
+        elif type(data) == dict:
+            for key, value in data.iteritems():
+                data[key] = cls._clear_json_values(value)
+        else:
+            data = cls._clear_json_value(data)
+        return data
+
+
     @classmethod   
     def _toJSON(cls, data):
         prepared_json = {}
@@ -86,17 +110,11 @@ class BaseModel(object):
         for key, value in cls._meta.get('fields',{}).iteritems():
             if key not in private:
                 prepared_json[key] = data.get(key)
-                if type(prepared_json[key]) == ObjectId:
-                    prepared_json[key] = str(prepared_json[key])
-                elif type(prepared_json[key]) == datetime:
-                    prepared_json[key] = prepared_json[key].isoformat(" ")
-                    splited_values = prepared_json[key].split('.')
-                    if len(splited_values)>0:
-                        prepared_json[key]= splited_values[0]
         if data.get('id'):
             prepared_json['id'] = str(data.get('id'))
         if data.get('_id'):
-            prepared_json['id'] = str(data.get('_id'))            
+            prepared_json['id'] = str(data.get('_id'))
+        cls._clear_json_values(prepared_json)
         return prepared_json
 
 

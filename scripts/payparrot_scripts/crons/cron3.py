@@ -20,13 +20,16 @@ VALID_NOTIFICATIONS = [
 
 def main():
     connection = None
+    # TODO: change i
+    i = 0
     try:
         connection, db = connect()
         message = Queue.get_message('notifications')
-        while message:
+        while message or i<20:
             notification_message = json.loads(message.get_body())
             notify(db, message, notification_message)
             message = Queue.get_message('notifications')
+            i+=1
     finally:
         if connection:
             connection.close()
@@ -48,23 +51,27 @@ def notify(db, notification_raw, notification_message):
                 'external_id': str(notification.external_id),
                 'notification_id': str(notification.id),
             }
+            log('cron3', 'Notification URL: %s' % notification.request_url, notification_message.get('subscription_id'))
             utf8_query_data = dict([(key,val.encode('utf-8')) for key, val in query_data.items() if isinstance(val, basestring)])
             http_client = Http()
-            headers, body = http_client.request(uri = notification.request_url, body = urlencode(utf8_query_data), method = 'POST')
-            if int(headers.status) >= 200 and int(headers.status) < 300:
-                notification.update({
-                    'response_status': headers.status,
-                    'response_headers': headers,
-                    'response_body': body,
-                    'status': 'sent'
-                })
-                Queue.delete_message('notifications', notification_raw)
-                log('cron3', 'Remote notification succeded', notification_message.get('subscription_id'))
-            else:
-                log('cron3', "Failed. Notification response not 2XX (received %s) from url %s" % (
-                    headers.status,
-                    notification.request_url
-                ), notification_message.get('subscription_id'))
+            try:
+                headers, body = http_client.request(uri = notification.request_url, body = urlencode(utf8_query_data), method = 'POST')
+                if int(headers.status) >= 200 and int(headers.status) < 300:
+                    notification.update({
+                        'response_status': headers.status,
+                        'response_headers': headers,
+                        'response_body': body,
+                        'status': 'sent'
+                    })
+                    Queue.delete_message('notifications', notification_raw)
+                    log('cron3', 'Remote notification succeded', notification_message.get('subscription_id'))
+                else:
+                    log('cron3', "Failed. Notification response not 2XX (received %s) from url %s" % (
+                        headers.status,
+                        notification.request_url
+                    ), notification_message.get('subscription_id'))
+            except Exception, e:
+                log('cron3', "Failed. Exception %specified" % e)
         else:
             log('cron3', 'ERROR: No remote url specified', notification_message.get('subscription_id'))
     else:
