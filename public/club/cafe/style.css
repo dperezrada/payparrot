@@ -4175,7 +4175,7 @@ a.badge:hover {
   visibility: hidden;
 }
 html {
-  background: url(/club/mujeres.jpg) no-repeat center center fixed !important;
+  background: url(/background.jpg) no-repeat center center fixed !important;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -4205,7 +4205,7 @@ body {
   font-size: 24px;
 }
 .header-info .policy {
-  font-size: 16px;
+  font-size: 16px !important;
   margin-top: 20px;
 }
 .fieldset {

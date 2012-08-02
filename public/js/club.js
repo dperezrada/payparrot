@@ -27,7 +27,7 @@ require([
                 dataType: 'json',
                 data: JSON.stringify({email: $('#email').val(), name: $('#name').val()}),
                 success: function(data, textStatus, xhr) {
-                  document.location.href = "https://payparrot.com/parrots/start?token=6c65cf25a3487a5f80e218f5cb91fdc395ee971906043a469d4326b13224bdc7";
+                  document.location.href = "https://payparrot.com/parrots/start?token="+token_id;
                 }
               });
             }
