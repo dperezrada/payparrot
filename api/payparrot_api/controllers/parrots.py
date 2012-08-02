@@ -128,8 +128,8 @@ def get_parrots(account_id, db, secure = True):
     querystring = request.query;
     from_ = querystring.get("from")
     to_ = querystring.get("to")
-    skip = querystring.get('skip', 0)
-    limit = querystring.get('limit', 0)
+    skip = int(querystring.get('skip', 0))
+    limit = int(querystring.get('limit', 0))
     query_subscriptions = {'account_id': ObjectId(account_id), 'active': True}
     if from_ or to_:
         query_subscriptions['created_at'] = {}
@@ -142,7 +142,9 @@ def get_parrots(account_id, db, secure = True):
         query_subscriptions['twitter_screen_name'] = screen_name_regex
     parrots_from_subscriptions = Subscriptions.find(db, query_subscriptions, {'parrot_id': True, '_id': False}).skip(skip).limit(limit).sort([('_id', -1)])
     parrots_id = map(lambda x: x.get('parrot_id'), parrots_from_subscriptions)
-    parrots = Parrots.find(db, {'_id': {'$in': parrots_id}})
+    parrots = list(Parrots.find(db, {'_id': {'$in': parrots_id}}))
+    for parrot in parrots:
+        parrot['payments'] = filter(lambda x: x.get('account_id') == account_id, parrot.get('payments'))
     # TODO: fix this
     response.headers['Content-type'] = 'application/json'
     return json.dumps(map(lambda x: Parrots.toJSON(x), parrots))
