@@ -14,14 +14,14 @@ class Accounts(BaseModel):
             'name': {'required': True},
             'startup': {'required': True},
             'password': {'required': True, 'private': True},
-            'salt': {'private': True, 'default': str(random())},
+            'salt': {'private': True, 'default': lambda: str(random())},
             'url': {'required': True},
             'callback_url': {},
             'notification_url': {},
             'credentials': {
                 'readonly': True,
                 'private': True,
-                'default': {
+                'default': lambda: {
                     'private_token': sha256(str(random())+'payparrot'+str(time())).hexdigest(),
                     'public_token': sha256(str(random())+'payparrot'+str(time())).hexdigest()
                 }                

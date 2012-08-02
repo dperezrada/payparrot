@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 import json
+from hashlib import sha1
 
 import payparrot_tests as pp_tests
 from payparrot_dal import Accounts, AccountsSessions
@@ -35,4 +36,16 @@ class TestAccountsSessions(unittest.TestCase):
     def test_get_account_from_session(self):
         account = Accounts.get_from_session(self.db, id = self.account_session.session_id)
         self.assertEqual(self.account.id, account.id)
-        
+
+class TestAccountsDefaults(unittest.TestCase):
+    def setUp(self):
+        self.connection, self.db = pp_tests.connect_to_mongo()
+    
+    def tearDown(self):
+        pp_tests.tear_down(self.db)
+        self.connection.close()
+
+    def test_distinct_session_id(self):
+        account_session1 = AccountsSessions(self.db, {})
+        account_session2 = AccountsSessions(self.db, {})
+        self.assertNotEqual(account_session1.session_id, account_session2.session_id)

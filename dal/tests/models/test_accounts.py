@@ -63,3 +63,7 @@ class TestAccounts(unittest.TestCase):
         self.assertTrue(account.credentials.get('private_token'))
         self.assertTrue(account.credentials.get('public_token'))
 
+    def test_credentials_not_equal(self):
+        account = Accounts(self.db, {})
+        account1 = Accounts(self.db, {})
+        self.assertNotEqual(account.credentials.get('private_token'), account1.credentials.get('private_token'))

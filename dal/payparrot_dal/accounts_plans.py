@@ -15,7 +15,7 @@ class AccountsPlans(BaseModel):
             'parrots': {},
             'account_id': {type: ObjectId},
             'active': {'default': True, 'private': True},
-            'created_at': {'private': True, 'default':datetime.now}
+            'created_at': {'private': True, 'default': datetime.now}
         }
     }
 

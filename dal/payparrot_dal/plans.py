@@ -14,6 +14,6 @@ class Plans(BaseModel):
             'parrots': {},
             'product_url': {},
             'product_path': {},
-            'created_at': {'private': True, 'default':datetime.now}
+            'created_at': {'private': True, 'default': datetime.now}
         }
     }

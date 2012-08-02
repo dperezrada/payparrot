@@ -10,7 +10,7 @@ def update_id(data):
         del data['_id']
 
 def set_default(data, key, default):
-    if type(default) == BuiltinFunctionType:
+    if type(default) == BuiltinFunctionType or (isinstance(default, type(lambda: None)) and default.__name__ == '<lambda>'):
         data[key] = default()
     else:
         data[key] = default
