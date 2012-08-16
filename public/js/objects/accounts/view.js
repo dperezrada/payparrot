@@ -26,7 +26,8 @@ define([
       "click #account-tabs a[href='#profile']":"render",
       "click #account-tabs a[href='#messages']":"messages",
       "click #account-tabs a[href='#pay-button']":"pay_button",
-      "click #account-tabs a[href='#notifications']":"notifications"
+      "click #account-tabs a[href='#notifications']":"notifications",
+      "click .btn_toggle_private":"toggle_private_token"
     },
     exampleBind: function( model ){
       //console.log(model);
@@ -62,6 +63,17 @@ define([
     },
     notifications: function() {
       new NotificationsView(this.model);
+    },
+    toggle_private_token: function(){
+      var btn = $('.btn_toggle_private', this.el);
+      var button_text = btn.text();
+      if(button_text=="Show"){
+        btn.text("Hide");
+        $('.private-token', this.el).show();
+      }else{
+        btn.text("Show");
+        $('.private-token', this.el).hide();
+      }
     }
   });
   return accountListView;

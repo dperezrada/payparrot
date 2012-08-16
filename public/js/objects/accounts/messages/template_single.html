@@ -16,10 +16,15 @@
 			<% } %>
 		</div>
 		<div class="span9">
-			<h4><%= text %><br><small><%= url %></small></h4>
+			<h4 class="show_message"><%= text %><br><small><%= url %></small></h4>
+			<form id='message-form-data-<%= id %>' class='edit_message form-inline' onSubmit='return false;' style="display:none;">
+				<input type="text" class="span8 input-small" placeholder="Message (115 characters)" name="text" maxlength=115 value="<%= text %>">
+				<input type="text" class="span3 input-small" placeholder="URL" name="url" value="<%= url %>">
+				<button class=' btn btn-success btn-small btn_save_edited_message'>Save</button>
+			</form>
 			<p>
 				<small>
-					<a href="#">Delete</a> - 
+					<a class="btn_edit_message" href="#">Edit</a> - 
 					<a href="#">Analytics results</a> - 
 					<a href="#">Quality check</a>
 				</small>	

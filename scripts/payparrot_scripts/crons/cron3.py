@@ -25,7 +25,7 @@ def main():
     try:
         connection, db = connect()
         message = Queue.get_message('notifications')
-        while message or i<20:
+        while message is not None and i<20:
             notification_message = json.loads(message.get_body())
             notify(db, message, notification_message)
             message = Queue.get_message('notifications')
