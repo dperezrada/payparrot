@@ -18,6 +18,7 @@ class Accounts(BaseModel):
             'url': {'required': True},
             'callback_url': {},
             'notification_url': {},
+            'notification_active': {'default': False},
             'credentials': {
                 'readonly': True,
                 'private': True,

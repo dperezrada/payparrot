@@ -52,6 +52,7 @@ class TestAccounts(unittest.TestCase):
             'url': 'http://payparrot.com/',
             'callback_url': 'http://demo.payparrot.com',
             'notification_url': 'http://demo.payparrot.com/notifications',
+            'notification_active': False,
             'stats': {}
         }
         received_json = account.JSON()

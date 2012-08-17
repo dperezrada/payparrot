@@ -12,23 +12,26 @@
 				<td>
 					<p>
 						<%= callback_url %>
-						<br><small>URL Where Parrots will be redirected after creating the subscription. </small>
+						<br><small> 
+						URL Where Parrots will be redirected after creating the subscription. </small>
 					</p> 
 				</td>
 			</tr>
-			<tr>
-				<td>
-					<p>
-						Notifications URL: <br>
-					</p>
-				</td>
-				<td>
-					<p>
-						<%= notification_url %>
-						<br><small>URL Where PayParrot will post notifications to your server.<br> <a href="#">Learn more</a> </small>
-					</p>
-				</td>
-			</tr>
+			<% if (typeof notification_active != "undefined" && notification_active) { %>
+				<tr>
+					<td>
+						<p>
+							Notifications URL: <br>
+						</p>
+					</td>
+					<td>
+						<p>
+							<%= notification_url %>
+							<br><small>URL Where PayParrot will post notifications to your server.<br> <a href="#">Learn more</a> </small>
+						</p>
+					</td>
+				</tr>
+			<% } %>
 			<tr>
 				<td></td>
 				<td><button class="edit-url btn btn-primary">Edit</button></td>
@@ -39,14 +42,24 @@
 
 <hr>
 
+
+<div class="">
+	<h3>How redirections works?</h3>
+	<p> Every time that users subscribe to your service through PayParrot, he will be redirected to a custom URL (Redirect URL) you provide us.</p>
+	<p> We will add to parameters to the Redirect URL, so you can check the info in our API (Optional)</p>
+	<ul>
+		<li>subscription_id</li>
+		<li>notification_id</li>
+	</ul>
+</div>
+
+<% if (typeof notification_active != "undefined" && notification_active) { %>
 <div class="">
 	<h3>How notifications works?</h3>
 	<p>
-		PayParrot has to channels to communicate with your server. 
-		<h4>Redirections</h4>
-		<p> Every time that users generate subscriptions to your service through PayParrot he will be redirected yo a custom URL that you provide us. That URL goes with a POST method with parameters about "subscription_activated" notifications.</p>
-		<h4>Server notifications</h4>
-		<p> Every time that an action is executed regarding a Parrot, we notify your servers with this informations. There are four types of notifications:
+		<p> Every time that an action is executed regarding a Parrot, we notify your servers with this informations. This will be made with a POST to the Nofication URL.</p>
+
+			<p>There are four types of notifications:</p>
 			<ul>
 				<li>
 					subscription_activated
@@ -68,3 +81,4 @@
 		For more information, please read the <a href="#">API & Integration documentation</a>.
 	</p>
 </div>
+<% } %>
