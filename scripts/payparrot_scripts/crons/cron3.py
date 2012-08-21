@@ -5,7 +5,7 @@ import json
 from urllib import urlencode
 from httplib2 import Http
 
-from payparrot_dal import Subscriptions, Notifications
+from payparrot_dal import Subscriptions, Notifications, Accounts
 from payparrot_dal.mongodb import connect
 from payparrot_dal.queue import Queue
 from payparrot_scripts.crons.utils import log 
@@ -25,7 +25,7 @@ def main():
     try:
         connection, db = connect()
         message = Queue.get_message('notifications')
-        while message or i<20:
+        while message is not None and i<20:
             notification_message = json.loads(message.get_body())
             notify(db, message, notification_message)
             message = Queue.get_message('notifications')
@@ -36,6 +36,7 @@ def main():
 
 def notify(db, notification_raw, notification_message):
     notification = Notifications.findOne(db, notification_message.get('notification_id'))
+    account = Accounts.findOne(db, notification.account_id)
     if notification:
         log('cron3', 'Notifying remote customer', notification_message.get('subscription_id'))
         if not notification_message.get('type') in VALID_NOTIFICATIONS:
@@ -53,23 +54,32 @@ def notify(db, notification_raw, notification_message):
             }
             log('cron3', 'Notification URL: %s' % notification.request_url, notification_message.get('subscription_id'))
             utf8_query_data = dict([(key,val.encode('utf-8')) for key, val in query_data.items() if isinstance(val, basestring)])
-            http_client = Http()
+            delete_message = False
             try:
-                headers, body = http_client.request(uri = notification.request_url, body = urlencode(utf8_query_data), method = 'POST')
-                if int(headers.status) >= 200 and int(headers.status) < 300:
-                    notification.update({
-                        'response_status': headers.status,
-                        'response_headers': headers,
-                        'response_body': body,
-                        'status': 'sent'
-                    })
-                    Queue.delete_message('notifications', notification_raw)
-                    log('cron3', 'Remote notification succeded', notification_message.get('subscription_id'))
+                if account.notification_active:
+                    http_client = Http()
+                    headers, body = http_client.request(uri = notification.request_url, body = urlencode(utf8_query_data), method = 'POST')
+                    if int(headers.status) >= 200 and int(headers.status) < 300:
+                        notification.update({
+                            'response_status': headers.status,
+                            'response_headers': headers,
+                            'response_body': body,
+                            'status': 'sent'
+                        })
+                        log('cron3', 'Remote notification succeded', notification_message.get('subscription_id'))
+                    else:
+                        log('cron3', "Failed. Notification response not 2XX (received %s) from url %s" % (
+                            headers.status,
+                            notification.request_url
+                        ), notification_message.get('subscription_id'))
                 else:
-                    log('cron3', "Failed. Notification response not 2XX (received %s) from url %s" % (
-                        headers.status,
-                        notification.request_url
-                    ), notification_message.get('subscription_id'))
+                    delete_message = True
+                    notification.update({
+                            'status': 'off'
+                    })
+                if delete_message:
+                    Queue.delete_message('notifications', notification_raw)
+
             except Exception, e:
                 log('cron3', "Failed. Exception %specified" % e)
         else:

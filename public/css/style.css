@@ -134,7 +134,7 @@ body {
   font-size: 13px;
   line-height: 18px;
   color: #333333;
-  background-color: #ffffff;
+  background-color: "transparent";
 }
 a {
   color: #0088cc;
@@ -4345,4 +4345,7 @@ a.badge:hover {
   width: 400px;
   height: 200px;
   background: url(/web/img/pricing-info2.png) no-repeat;
+}
+.credentials.table tr td:first-child {
+  width: 100px;
 }

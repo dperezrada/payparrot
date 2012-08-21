@@ -9,7 +9,7 @@ from boto.sqs.queue import Queue as AwsQueue
 
 if not config.has_section('Boto'):
     config.add_section('Boto')
-    config.set('Boto', 'debug', '0')
+config.set('Boto', 'debug', '0')
 
 class Queue(object):
     """docstring for Queue"""

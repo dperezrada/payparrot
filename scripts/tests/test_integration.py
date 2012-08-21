@@ -87,5 +87,7 @@ class TestCronsIntegration(unittest.TestCase):
 
         from payparrot_scripts.crons.cron3 import main as cron3
         cron3()
-        
+
+        raw_input("Check? ")
+
         
