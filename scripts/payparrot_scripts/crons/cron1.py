@@ -26,6 +26,7 @@ def main():
     finally:
         if connection:
             connection.close()
+        log('cron1', 'Finishing')
 
 
 if __name__ == '__main__':

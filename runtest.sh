@@ -10,15 +10,15 @@ fi
 for test in ${@}; do
 	if [[ 'api' == $test ]]; then
 		echo "API AUTO TESTS"
-		nosetests api/tests/auto;
+		nosetests api/tests/auto -x;
 	fi
 	if [[ 'dal' == $test ]]; then
 		echo "API DAL TESTS"
-		nosetests dal/tests;
+		nosetests dal/tests -x;
 	fi
 	if [[ 'scripts' == $test ]]; then
 		echo "API SCRIPTS TESTS"
-		nosetests scripts/tests -s;
+		nosetests scripts/tests -sx;
 	fi 
 done
 

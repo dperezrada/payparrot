@@ -4,9 +4,11 @@ from datetime import datetime
 from payparrot_dal import Subscriptions, NextPayments
 from payparrot_dal.mongodb import connect
 from payparrot_dal.queue import Queue
+from payparrot_scripts.crons.utils import log
 
 def main():
     connection = None
+    log('cron4', 'Starting')
     try:
         connection, db = connect()
         next_payments = NextPayments.find(
@@ -31,6 +33,7 @@ def main():
     finally:
         if connection:
             connection.close()
+        log('cron4', 'Finishing')
 
 if __name__ == '__main__':
     main()            

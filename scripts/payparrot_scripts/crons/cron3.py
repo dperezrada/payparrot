@@ -22,6 +22,7 @@ def main():
     connection = None
     # TODO: change i
     i = 0
+    log('cron3', 'Starting')
     try:
         connection, db = connect()
         message = Queue.get_message('notifications')
@@ -33,6 +34,7 @@ def main():
     finally:
         if connection:
             connection.close()
+        log('cron3', 'Finishing')
 
 def notify(db, notification_raw, notification_message):
     notification = Notifications.findOne(db, notification_message.get('notification_id'))
