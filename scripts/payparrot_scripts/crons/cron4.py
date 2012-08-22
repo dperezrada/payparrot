@@ -14,8 +14,8 @@ def main():
         ).sort([('_id', -1)])
         
         for next_payment in next_payments:
-            subscription = Subscriptions.findOne({'account_id': next_payment.get('account_id'), 'parrot_id': next_payment.get('parrot_id')})
-            if subscription:
+            subscription = Subscriptions.findOne(db, {'account_id': next_payment.get('account_id'), 'parrot_id': next_payment.get('parrot_id')})
+            if subscription and subscription.active:
                 created_message = Queue.insert(
                     'payments', 
                     {
@@ -26,6 +26,8 @@ def main():
                 )
                 if created_message:
                     db.next_payments.remove({'_id': next_payment.get('_id')})
+            else:
+                db.next_payments.remove({'_id': next_payment.get('_id')})
     finally:
         if connection:
             connection.close()

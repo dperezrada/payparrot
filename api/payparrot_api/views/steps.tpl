@@ -159,7 +159,9 @@
         <div class="span12">
           <h3>Notification and Redirect URLs</h3>
           <p>Redirect URL is where PayParrot redirects a user after a payment, with parameters about that payment</p>
-          <p>Notification URL is where PayParrot send POST requests with parameters, after every action related to your account (subscription created, payent executed, subscription cancelled, etc)</p>
+          %if notifications_active:
+            <p>Notification URL is where PayParrot send POST requests with parameters, after every action related to your account (subscription created, payent executed, subscription cancelled, etc)</p>
+          %end
           <hr>
         </div>
         <div class="span12">
@@ -168,10 +170,12 @@
             <fieldset>
               <input type="text" class="span3 input-small" placeholder="URL" name="url1">
             </fieldset>
-            <label class="control-label" for="input01">Notification URL</label>
-            <fieldset>
-              <input type="text" class="span3 input-small" placeholder="URL" name="url2">
-            </fieldset>            
+            %if notifications_active:
+              <label class="control-label" for="input01">Notification URL</label>
+              <fieldset>
+                <input type="text" class="span3 input-small" placeholder="URL" name="url2">
+              </fieldset>
+            %end
             <div class="form-actions">
                 <button type="submit" class="btn btn btn-back">Back</button>
                 <button type="submit" class="btn btn-success btn-finish">Set up my account</button>

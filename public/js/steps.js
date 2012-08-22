@@ -88,10 +88,13 @@ require([
 		    	],
 		    	account: {
 			    	logo_url: $('#form-data-logo input[name=url]').val(),
-			    	callback_url: $('#form-data-notifications input[name=url1]').val(),
-			    	notification_url: $('#form-data-notifications input[name=url2]').val()
+			    	callback_url: $('#form-data-notifications input[name=url1]').val()
 		    	}
 		    }
+		    if($('#form-data-notifications input[name=url2]').length > 0){
+		    	data['account']['notification_url'] = $('#form-data-notifications input[name=url2]').val();
+		    }
+		    
 
 		    var errors = {
 		    	0: {
@@ -119,9 +122,16 @@ require([
 		    	errors[1].faults.push('URL specified for your company logo is not a valid url');
 		    }
 
-			if (!simple_url_validator.test(data.account.callback_url) || !simple_url_validator.test(data.account.notification_url)) {
-		    	errors[2].faults.push('One of the specified URLs for notiications is not valid');
-		    }		    
+		    var error_notifications = false;
+			if (!simple_url_validator.test(data.account.callback_url)) {
+				error_notifications = true;
+		    }
+		    if(data['account']['notification_url'] != undefined && !simple_url_validator.test(data.account.notification_url)){
+		    	error_notifications = true;
+		    }
+		    if(error_notifications){
+				errors[2].faults.push('One of the specified URLs for notiications is not valid');
+		    }
 		    if ((errors[0].faults.length+errors[1].faults.length+errors[2].faults.length)==0) {
 		    	$('.btn-finish').attr('disabled',true);
 		    	$('.btn-finish').html("<img src='/img/loading.gif' width=16>");

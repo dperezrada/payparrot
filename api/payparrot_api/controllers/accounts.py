@@ -40,7 +40,10 @@ def callback(db):
 
 @route('/accounts/setup', method="GET")
 def callback(db, secure=True):
-    return template('steps',{'account_id': request.account.id})    
+    return template(
+        'steps',
+        {'account_id': request.account.id, 'notifications_active': request.account.notification_active}
+    )
 
 @route('/accounts/subscriptions', method="GET")
 def callback(db, secure=True):
