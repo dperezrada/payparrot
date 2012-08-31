@@ -29,6 +29,7 @@ application.catchall = False
 application = ErrorHandler(application)
 if os.environ.get('PAYPARROT_ENV', '') == 'PRODUCTION':
     import newrelic.agent
+    newrelic.agent.initialize(NEW_RELIC_CONFIG)
     application = newrelic.agent.wsgi_application()(application)
 
 
