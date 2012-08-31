@@ -27,6 +27,10 @@ except:
 
 application.catchall = False
 application = ErrorHandler(application)
+if os.environ.get('PAYPARROT_ENV', '') == 'PRODUCTION':
+    import newrelic.agent
+    application = newrelic.agent.wsgi_application()(application)
+
 
 if __name__ == '__main__':
     bottle.TEMPLATE_PATH = [os.path.join(os.path.abspath(os.path.dirname(__file__)), './views')]
